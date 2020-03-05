@@ -49,7 +49,7 @@ user - WAgency_mieMBr0s94v
 pass - 7&/39lkYT·7!Sjo0
 
 
-# accesos formula https		*/
+# accesos formula https
 
 Email:
 miembros@formulahttps.club
