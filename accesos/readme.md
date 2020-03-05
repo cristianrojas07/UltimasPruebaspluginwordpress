@@ -1,8 +1,12 @@
 /*   ACCESOS PLESK	*/
+
 Servidor: server191022.servidoresdedicados.com
+
 IP: 31.24.154.153
+
 Usuario: root
-Contraseña: Od!!4pCHFb
+
+ContraseÃ±a: Od!!4pCHFb
 
 
 /*		DATOS BD ROBHERNANDEZ / NO-MODIFICADOS		*/
@@ -32,7 +36,7 @@ wordpress admin:
 
 user - WhatsAgency_n94vx5le
 
-pass - 2hdYT7&/3·7!Sj5
+pass - 2hdYT7&/3Â·7!Sj5
 
 
 xxxxxxxxxxxxxxxxxxxx
@@ -42,7 +46,7 @@ wordpress miembros admin:
 
 user - WAgency_mieMBr0s94v
 
-pass - 7&/39lkYT·7!Sjo0
+pass - 7&/39lkYTÂ·7!Sjo0
 
 /*		FIN accesos WHATSAGENCY		*/
 
