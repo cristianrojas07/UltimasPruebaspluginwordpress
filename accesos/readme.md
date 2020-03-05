@@ -1,4 +1,4 @@
-/*   ACCESOS PLESK	*/
+# ACCESOS PLESK
 
 Servidor: server191022.servidoresdedicados.com
 
@@ -9,8 +9,8 @@ Usuario: root
 Contraseña: Od!!4pCHFb
 
 
-/*		DATOS BD ROBHERNANDEZ / NO-MODIFICADOS		*/
-/*
+# DATOS BD ROBHERNANDEZ / NO-MODIFICADOS
+
 admin_no_modificados
 user_nomodify
 Jh94sr7?
@@ -20,9 +20,9 @@ http://robhernandez.club/wp-admin
 admin - GanaConRob
 
 pass - 6&7/8)df?)%431d
-*/
 
-/*		accesos WHATSAGENCY		*/
+
+# accesos WHATSAGENCY
 
 suscripcion plesk:
 
@@ -48,10 +48,8 @@ user - WAgency_mieMBr0s94v
 
 pass - 7&/39lkYT·7!Sjo0
 
-/*		FIN accesos WHATSAGENCY		*/
 
-
-/*		accesos formula https		*/
+# accesos formula https		*/
 
 Email:
 miembros@formulahttps.club
@@ -84,4 +82,3 @@ Admin Password - ?YG34s$ds967%
 
 Admin Email - solonetworkonline@gmail.com
 
-/*		FIN accesos formula https		*/
