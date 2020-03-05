@@ -46,9 +46,9 @@ class MemberGenius {
 
 	function hooks() {
 		add_action('plugins_loaded', array(&$this, 'register_widgets'));
-		register_activation_hook('member-genius/member-genius.php', array(&$this->model, 'install'));
+		register_activation_hook(dirname(__FILE__) . '/miembro-press.php', array(&$this->model, 'install'));
 		add_action('plugins_loaded', array(&$this->model, 'maybeInstall'));
-		register_deactivation_hook('member-genius/member-genius.php', array(&$this->model, 'uninstall'));
+		register_deactivation_hook(dirname(__FILE__) . '/miembro-press.php', array(&$this->model, 'uninstall'));
 		@session_start();
 		add_action('init', array(&$this, 'init'));
 		add_action('wp_enqueue_scripts', array(&$this->view, 'enqueue_scripts'));
@@ -157,7 +157,7 @@ class MemberGenius {
 	private function placeholder() {
 		global $wpdb;
 		$placeholder = get_page_by_path('membergenius');
-		$content = array( 'post_title' => 'MiembroPress', 'post_type' => 'page', 'post_name' => 'membergenius', 'post_content' => 'Do not edit.', 'post_status' => 'publish', 'post_author' => 1, 'comment_status' => 'closed' );
+		$content = array( 'post_title' => 'MiembroPress', 'post_type' => 'page', 'post_name' => 'miembropress', 'post_content' => 'Do not edit.', 'post_status' => 'publish', 'post_author' => 1, 'comment_status' => 'closed' );
 		if (!$placeholder) {
 			wp_insert_post($content);
 		}
@@ -170,13 +170,15 @@ class MemberGenius {
 	function init() {
 		$current_user = wp_get_current_user();
 		global $membergenius;
-		if (strpos($_SERVER["REQUEST_URI"], '/genius/') !== false) {
+		if (strpos($_SERVER["REQUEST_URI"], '/miembropress/') !== false) {
 			MemberGenius::clearCache();
 		}
 		$membergenius_givenuser = null;
 		$membergenius_givenpass = null;
 		remove_all_filters('retrieve_password');
-		$this->placeholder();
+		
+		// ESTO AGREGA UNA PAGINA AL MENU
+		// $this->placeholder();
 		if (is_user_logged_in()) {
 			if (!defined("DONOTCACHEPAGE")) {
 				define("DONOTCACHEPAGE", 1);
@@ -334,15 +336,16 @@ class MemberGenius {
 		if ($hash == null) {
 			if (isset($_POST["membergenius_hash"])) {
 				$hash = $_POST["membergenius_hash"];
-			} elseif (isset($_SERVER["QUER".chr(89)."_STRING"])) {
-				$hash = urldecode($_SERVER["QUER".chr(89)."_STRING"]);
+			} elseif (isset($_SERVER["QUERY_STRING"])) {
+				$hash = urldecode($_SERVER["QUERY_STRING"]);
 				$split = preg_split('@[/&]@', $hash, 4);
 				if (count($split) >= 3) {
 					list(, $plugin, $hash) = $split;
 				} elseif (count($split) == 2) {
 					list(, $plugin) = $split;
 				}
-				if ($plugin != "genius") {
+
+				if ($plugin != "miembropress") {
 					return null;
 				}
 			}
@@ -615,9 +618,9 @@ class MemberGeniusModel {
 
 	public function signupURL($hash="", $escaped=false) {
 		if ($escaped) {
-			return site_url("?".urlencode("/genius/").$hash);
+			return site_url("?".urlencode("/miembropress/").$hash);
 		}
-		return site_url("index.php?/genius/".$hash);
+		return site_url("index.php?/miembropress/".$hash);
 	}
 
 	public function hash($length=6) {
@@ -850,7 +853,8 @@ class MemberGeniusModel {
 	function getLevels($user=null) {
 		global $wpdb;
 		$levels = array();
-		$levelQuery = $wpdb->get_results( "SELECT ".$this->levelTable.". *, COUNT(u1.ID) as active, '0' as canceled FROM ".$this->levelTable." LEFT JOIN ".$this->userTable." u1 ON (".$this->levelTable.".ID = u1.level_id AND u1.level_status = 'A') GROUP By ".$this->levelTable.".ID ORDER By level_name" );
+	    $query = "SELECT {$this->levelTable}.*, COUNT(u1.ID) as active, '0' as canceled FROM {$this->levelTable} LEFT JOIN {$this->userTable} u1 ON ({$this->levelTable}.ID = u1.level_id AND u1.level_status = 'A') GROUP By {$this->levelTable}.ID ORDER By level_name";
+		$levelQuery = $wpdb->get_results( $query );
 		foreach ($levelQuery as $levelKey => $l) {
 			$id = $l->ID;
 			$levels[$id] = $l;
@@ -914,7 +918,7 @@ class MemberGeniusModel {
 		}
 		if (isset($q->query_vars["orderby"]) && $q->query_vars["orderby"] == "lastlogin") {
 			$orderAddition = $this->userSettingsTable.".user_value DESC";
-            $q->query_orderby = "ORDER B".chr(89). " " .$orderAddition;
+            $q->query_orderby = "ORDER BY " .$orderAddition;
 		}
 		if (isset($q->query_vars["cron"])) {
 			$custom = true;
@@ -929,7 +933,7 @@ class MemberGeniusModel {
 
 		if (isset($q->query_vars["orderby"]) && $q->query_vars["orderby"] == "lastlogin") {
 			$custom = true;
-			$q->query_where = "INNER JOIN ".$this->userSettingsTable." ON (".$wpdb->users.".ID = ".$this->userSettingsTable.".user_id AND user_key='loginLastTime') ". $q->query_where; $q->query_fields .= ", user_value ";
+			$q->query_where = " INNER JOIN ".$this->userSettingsTable." ON (".$wpdb->users.".ID = ".$this->userSettingsTable.".user_id AND user_key='loginLastTime') ". $q->query_where; $q->query_fields .= ", user_value ";
 		}
 
 		if (isset($q->query_vars["s"]) && !empty($q->query_vars["s"])) {
@@ -1792,13 +1796,13 @@ class MemberGeniusCartGeneric extends MemberGeniusCart {
 	function instructions() {
 		global $membergenius; ?>
 		<h3>Automatic Registration</h3>
-         <p><?php echo chr(89); ?>ou can either use MiembroPress to build a list of free members or charge them for one-time access.</p>
+         <p>You can either use MiembroPress to build a list of free members or charge them for one-time access.</p>
          <p>Just make sure to set your thank you URL of your payment button to the level where you want to provide access:</p>
          <p><table class="widefat" style="width:400px;">
          <thead>
          <tr>
             <th scope="col" style="text-align:center;"><nobr>Level Name</nobr></th>
-            <th scope="col">Thank <?php echo chr(89); ?>ou URL / Return URL</th>
+            <th scope="col">Thank You URL / Return URL</th>
          </tr>
          </thead>
          <?php foreach ($membergenius->model->getLevels() as $level): ?>
@@ -1808,7 +1812,7 @@ class MemberGeniusCartGeneric extends MemberGeniusCart {
          <?php endforeach; ?>
          </table></p>
 
-         <p>(<b>Note:</b> It is HIGHL<?php echo chr(89); ?> suggested that if you click this link, you instead Right-Click and choose the <code>Open in Incognito Window</code> option.</p>
+         <p>(<b>Note:</b> It is HIGHLY suggested that if you click this link, you instead Right-Click and choose the <code>Open in Incognito Window</code> option.</p>
 
          <blockquote>
          <p>For example, to take PayPal payments using a BUSINESS (not a Personal or Premier account), complete the following steps:</p>
@@ -1828,7 +1832,7 @@ class MemberGeniusCartGeneric extends MemberGeniusCart {
             <thead>
             <tr>
                <th scope="col" style="text-align:center;"><nobr>Level Name</nobr></th>
-               <th scope="col">Thank <?php echo chr(89); ?>ou URL / Return URL</th>
+               <th scope="col">Thank You URL / Return URL</th>
             </tr>
             </thead>
 
@@ -1844,15 +1848,15 @@ class MemberGeniusCartGeneric extends MemberGeniusCart {
          </ol>
          </blockquote>
 
-         <p><?php echo chr(89); ?>ou can now either direct link to this button or use a sales letter template such as <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to host your sales letter and display your payment button.</p>
+         <p>You can now either direct link to this button or use a sales letter template such as <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to host your sales letter and display your payment button.</p>
 
          <h3>Manual Registration</h3>
 
-         <p>When activated, MiembroPress will protect all the pages and posts on your blog. Once AN<?php echo chr(89); ?> WordPress users logs in, they will get access to all the content on your blog.</p>
+         <p>When activated, MiembroPress will protect all the pages and posts on your blog. Once ANY WordPress users logs in, they will get access to all the content on your blog.</p>
 
          <p>This means you can manually <a href="user-new.php">add new users</a> to your site at any time.</p>
 
-         <p><?php echo chr(89); ?>ou could also great a &quot;catch-all&quot; user, for example, <a href="user-new.php">create a new user</a> with username &quot;secret&quot; and password &quot;secret&quot; and give this for ALL your members to share the same login information.</p>
+         <p>You could also great a &quot;catch-all&quot; user, for example, <a href="user-new.php">create a new user</a> with username &quot;secret&quot; and password &quot;secret&quot; and give this for ALL your members to share the same login information.</p>
       <?php
 	}
 }
@@ -2177,14 +2181,14 @@ class MemberGeniusCartJVZ extends MemberGeniusCart {
 					<li><input type="checkbox" /> Create your product in the JVZoo member's area by going to <code>Sellers, Seller's Dashboard</code>.</li>
 					<li><input type="checkbox" /> Click the giant yellow button that says: <code>Add A Product (It's FREE!)</code></li>
 					<li><input type="checkbox" /> Fill in the name, price, commission payout, support email address, landing page (i.e. <code><?php if (is_ssl()): ?>https://<?php else: ?>http://<?php endif; ?><?php echo $_SERVER["HTTP_HOST"]; ?></code>, sales page URL (i.e. <code><?php if (is_ssl()): ?>https://<?php else: ?>http://<?php endif; ?><?php echo $_SERVER["HTTP_HOST"]; ?></code>).</li>
-					<li><input type="checkbox" /> Set <code>Delivery Method</code> to <code>Thank <?php echo chr(89); ?>ou Page</code> (NOT Protected Download).</li>
+					<li><input type="checkbox" /> Set <code>Delivery Method</code> to <code>Thank You Page</code> (NOT Protected Download).</li>
 				</ol>
 			</blockquote>
-			<h3>Step 3: Set Thank <?php echo chr(89); ?>ou Page</h3>
+			<h3>Step 3: Set Thank You Page</h3>
 			<blockquote>
 				<ol style="list-style-type:upper-alpha;">
 				<p><input type="checkbox" /> While you're still creating that JVZoo product, be SURE that you check <code>Pass parameters to Download Page.</code> This is extremely important.</p>
-				<p><input type="checkbox" /> Set the <code>Thank <?php echo chr(89); ?>ou / Download Page</code> to the URL below:</p>
+				<p><input type="checkbox" /> Set the <code>Thank You / Download Page</code> to the URL below:</p>
 				<p align="center">
 					<textarea name="membergenius_checkout" id="membergenius_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo htmlentities($checkout); ?></textarea><br />
 					<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('membergenius_checkout').select(); return false;" value="Select All" />
@@ -2237,16 +2241,16 @@ class MemberGeniusCartJVZ extends MemberGeniusCart {
 					<p><input type="submit" class="button" value="Save JVZoo Product IDs" /></p>
 				</blockquote>
 			</blockquote>
-			<h3>Step 6: Create <?php echo chr(89); ?>our Test Button in JVZoo</h3>
+			<h3>Step 6: Create Your Test Button in JVZoo</h3>
 			<blockquote>
 				<ol style="list-style-type:upper-alpha;">
 					<li><input type="checkbox" /> Go to <code>Seller, Seller's Dashboard</code>, then under the <code>Additional Functions</code> subtitle on that page, click the <code>Test Purchases</code> button.</li>
 					<li><input type="checkbox" /> On the next screen, find the product you just created in the dropdown list, and click <code>Create Test Purchase Code</code>.</li>
 					<li><input type="checkbox" /> Be sure you're logged out of this membership site. The JVZoo page will give you a <code>Buy / Link</code>. Right click and open this link in a <code>New Incognito Window</code>. This will send you to a checkout page where you'll use a second PayPal account to pay $0.01 and verify that the checkout process works for you.</li>
-					<li><input type="checkbox" /> Pay the $0.01, be redirected to your JVZoo purchases, click <code>Access <?php echo chr(89); ?>our Purchase</code> and you'll end up at your MiembroPress registration page to create an account for the product you just test-purchased.</li>
+					<li><input type="checkbox" /> Pay the $0.01, be redirected to your JVZoo purchases, click <code>Access Your Purchase</code> and you'll end up at your MiembroPress registration page to create an account for the product you just test-purchased.</li>
 				</ol>
 			</blockquote>
-			<h3>Step 6: Copy the Buy Button Code from JVZoo and Paste Into <?php echo chr(89); ?>our Sales Letter</h3>
+			<h3>Step 6: Copy the Buy Button Code from JVZoo and Paste Into Your Sales Letter</h3>
 			<blockquote>
 				<p><input type="checkbox" /> Go to <code>Seller, Seller's Dashboard</code>, find the product you just created, and click <code>Buy Buttons</code>. This will take you to a new screen where you are presented with special code to place on your website to accept payments.</p>
 				<p>Grab the HTML code to place on your web pages. We use <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to present sales letters to customers.</p>
@@ -2499,13 +2503,13 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 					<li><input type="checkbox" /> Confirm that the option for <code>Receive IPN messages (Enabled)</code> is checked and click the <code>Save</code> button to save your changes.</li>
 				</ol>
 			</blockquote>
-			<h3>Step 2: Paste <?php echo chr(89); ?>our &quot;Identity Token&quot; from PayPal Below</h3>
+			<h3>Step 2: Paste Your &quot;Identity Token&quot; from PayPal Below</h3>
 			<blockquote>
 				<ol style="list-style-type:upper-alpha;">
 					<li><input type="checkbox" /> In your PayPal account, go to: <code>Profile</code>, <code>My Selling Tools</code>, the <code>Selling Online</code> section, then <code>Website Preferences</code>.<br />
 					If you don't have a <code>Profile</code> tab, click the &quot;head&quot; icon on the top right, <code>Profile and Settings</code> and then <code>Website Preferences.</code><br />
 					Click &quot;Update&quot; on the right.</li>
-					<li><input type="checkbox" /> Under the Payment Data Transfer section, it should have the text <code>Identity Token:</code> followed by a series of letters and numbers. Copy that special code EXACTL<?php echo chr(89); ?> by highlighting it with your mouse. Be sure not to select the exact text says &quot;Identity Token:&quot; but everything directly after it.</li>
+					<li><input type="checkbox" /> Under the Payment Data Transfer section, it should have the text <code>Identity Token:</code> followed by a series of letters and numbers. Copy that special code EXACTLY by highlighting it with your mouse. Be sure not to select the exact text says &quot;Identity Token:&quot; but everything directly after it.</li>
 					<li><input type="checkbox" /> Then right click the text box below, and choose &quot;Paste&quot; to place your PDT Identity Token.</li>
 				</ol>
 				<label><b>PDT Identity Token:</b>
@@ -2519,7 +2523,7 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 			<blockquote>
 				<ol style="list-style-type:upper-alpha;">
 					<li><input type="checkbox" /> Create a button that your customers can click on to pay you money and gain access to your site.<br />
-					In <a target="_blank" href="https://www.paypal.com">PayPal</a>, Go to <code>Merchant Services</code>, then <code>Create Payment Buttons For <?php echo chr(89); ?>our Website</code> and then choose to create a <code>Buy Now</code> button (for single payments) or a <code>Subscription</code> button for recurring payments.<br />
+					In <a target="_blank" href="https://www.paypal.com">PayPal</a>, Go to <code>Merchant Services</code>, then <code>Create Payment Buttons For Your Website</code> and then choose to create a <code>Buy Now</code> button (for single payments) or a <code>Subscription</code> button for recurring payments.<br />
 					If you don't have a <code>Merchant Services</code> tab, click the <code>Tools</code> tab, <code>PayPal Buttons</code>, <code>Create a Button</code>, then <code>Create New Button.</code>
 					</li>
 					<li>Under <code>Choose a Button Type</code>, choose <code>Buy Now</code> for a single payment site or <code>Subscription</code> for a payment plan or continuity site.</li>
@@ -2545,7 +2549,7 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 					<li><input type="checkbox" /> We highly recommend that in the <code>Step 2: Track Inventory (optional)</code> section, you leave <code>Save Button at PayPal</code> checked.</li>
 				</ol>
 			</blockquote>
-			<h3>Step 4: Set the &quot;Thank <?php echo chr(89); ?>ou URL&quot; of <?php echo chr(89); ?>our Button</h3>
+			<h3>Step 4: Set the &quot;Thank You URL&quot; of Your Button</h3>
 			<blockquote>
 				<ol style="list-style-type:upper-alpha;">
 					<li><input type="checkbox" /> Click on <code>Step 3: Customize Advanced Features (optional)</code> on PayPal screen to keep going.</li>
@@ -2559,7 +2563,7 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 			</blockquote>
 			<h3>Step 5: Paste the Code Below in the &quot;Add Advanced Variables&quot; Field</h3>
 			<blockquote>
-				<p><?php echo chr(89); ?>ou're almost finished creating your payment button.</p>
+				<p>You're almost finished creating your payment button.</p>
 				<p><input type="checkbox" /> At the very botton of the page, check the <code>Add Advanced Variables</code> checkbox, and in the box below it, paste in this final bit of code:</p>
 			</blockquote>
 			<p align="center" style="text-align:center;">
@@ -2569,7 +2573,7 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 			<blockquote>
 				<p>Please make sure that you select, copy and paste all three lines above, into your PayPal button, with no extra spaces anywhere.</p>
 			</blockquote>
-			<h3>Step 6: Copy the Button Code from PayPal and Paste Into <?php echo chr(89); ?>our Sales Letter</h3>
+			<h3>Step 6: Copy the Button Code from PayPal and Paste Into Your Sales Letter</h3>
 			<blockquote>
 				<p><input type="checkbox" /> Click <code>Create Button</code> and you should be taken to a new screen where you are presented with special code to place on your website to accept payments.</p>
 				<p>We highly suggest you click the <code>Email</code> tab to grab a simple link that you can place on your web pages. We use <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to present sales letters to customers.</p>
@@ -5727,7 +5731,7 @@ class MemberGeniusAdmin {
 		}
 		if (!is_admin()) {
 			if ($globalHeader = $membergenius->model->levelSetting(-1, "header")) {
-				eval( '?> '.stripslashes($globalHeader).' <?php ' );
+				eval( ' ?> '.stripslashes($globalHeader).' <?php ' );
 			}
 			if (isset($membergenius->registerLevel->ID) && ($header = $membergenius->model->levelSetting($membergenius->registerLevel->ID, "header"))) {
 				eval( ' ?> '.stripslashes($header).' <?php ' );
@@ -5735,76 +5739,77 @@ class MemberGeniusAdmin {
 		}
 		?>
 		<?php if (!is_admin()): ?>
-		<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-		<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-		<b>Rellene el siguiente formulario</b></p>
-		<p align="center"><b style="background-color:yellow;">Nueva Cuenta:</b> Si no tienes una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-		<b><a style="text-decoration:underline;" href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta</a></b></p>
-		<?php else: ?>
-		<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-		<b><a href="<?php echo $existingLink; ?>" style="text-decoration:underline;">Haga clic aquí para iniciar sesión &amp; agregue esta compra a su cuenta existente</a></b></p>
-		<p align="center"><b style="background-color:yellow;">Nueva cuenta: </b> Si no tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-		<b>
-		<?php if ((isset($_GET["existing"]) && $_GET["existing"] == 0) || count($_POST) > 0): ?>
-		Rellene el siguiente formulario para crear una nueva cuenta
-		<?php else: ?>
-		<a style="text-decoration:underline;" href="#" onclick="document.getElementById('membergenius_registration').style.display='block'; this.innerHTML = 'Rellene el siguiente formulario para crear una nueva cuenta'; return false;">Haz clic aquí para crear una nueva cuenta</a>
-		<?php endif; ?>
-		</b></p>
-		<?php endif; ?><br />
+			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
+				<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
+				<b>Rellene el siguiente formulario</b></p>
+				<p align="center"><b style="background-color:yellow;">Nueva Cuenta:</b> Si no tienes una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
+				<b><a style="text-decoration:underline;" href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta</a></b></p>
+			<?php else: ?>
+				<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
+				<b><a href="<?php echo $existingLink; ?>" style="text-decoration:underline;">Haga clic aquí para iniciar sesión &amp; agregue esta compra a su cuenta existente</a></b></p>
+				<p align="center"><b style="background-color:yellow;">Nueva cuenta: </b> Si no tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
+					<b>
+					<?php if ((isset($_GET["existing"]) && $_GET["existing"] == 0) || count($_POST) > 0): ?>
+						Rellene el siguiente formulario para crear una nueva cuenta
+					<?php else: ?>
+						<a style="text-decoration:underline;" href="#" onclick="document.getElementById('membergenius_registration').style.display='block'; this.innerHTML = 'Rellene el siguiente formulario para crear una nueva cuenta'; return false;">Haz clic aquí para crear una nueva cuenta</a>
+					<?php endif; ?>
+					</b>
+				</p>
+			<?php endif; ?><br />
 		<?php endif; ?>
 		<form method="post">
 			<input type="hidden" name="action" value="miembropress_register">
 			<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
-			<input type="hidden" name="wp_http_referer" value="membergenius" />
+				<input type="hidden" name="wp_http_referer" value="membergenius" />
 			<?php endif; ?>
 			<?php if (isset($membergenius->registerTemp)): ?><input type="hidden" name="membergenius_temp" value="<?php echo htmlentities($membergenius->registerTemp); ?>">
 			<?php elseif (isset($membergenius->registerLevel->level_hash)): ?><input type="hidden" name="membergenius_hash" value="<?php echo htmlentities($membergenius->registerLevel->level_hash); ?>">
 			<?php endif; ?>
 			<?php if (isset($membergenius->registerLevel->ID)): ?>
-			<input type="hidden" name="miembropress_register" value="<?php echo intval($membergenius->registerLevel->ID); ?>">
+				<input type="hidden" name="miembropress_register" value="<?php echo intval($membergenius->registerLevel->ID); ?>">
 			<?php endif; ?>
 			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-			<h3 style="margin:0;">Acceso a cuenta existente</h3>
-			<?php if (isset($_GET["passwordSent"])): ?>
-			<blockquote>
-				<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
-			</blockquote>
-			<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
-			<blockquote>
-				<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
-			</blockquote>
-			<?php elseif (isset($_POST["membergenius_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
-			<blockquote>
-				<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
-				Abre en una nueva ventana, asegúrese de volver a esta página.</p>
-			</blockquote>
-			<?php endif; ?>
-			<table cellpadding="0" cellspacing="0">
-				<tbody>
-					<tr>
-						<td style="vertical-align:top; width:200px;"><label for="membergenius_username"><b>Nombre de usuario:</b></label></td>
-						<td style="vertical-align:top;"><input type="text" name="membergenius_username" id="membergenius_username" size="15" value="<?php echo htmlentities($username); ?>"></td>
-					</tr>
-					<tr>
-						<td style="vertical-align:top;"><label for="membergenius_password"><b>Contraseña:</b></label></td>
-						<td style="vertical-align:top;"><input type="password" name="membergenius_password1" id="membergenius_password" size="10"></td>
-					</tr>
-					<tr>
-						<td style="vertical-align:top;">&nbsp;</td>
-						<td style="vertical-align:top;">
-							<input type="submit" class="button-primary" value="   Ingresar a la cuenta existente   "> &nbsp;&nbsp;&nbsp;
-							<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+				<h3 style="margin:0;">Acceso a cuenta existente</h3>
+				<?php if (isset($_GET["passwordSent"])): ?>
+					<blockquote>
+						<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
+					</blockquote>
+				<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
+					<blockquote>
+						<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
+					</blockquote>
+				<?php elseif (isset($_POST["membergenius_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
+					<blockquote>
+						<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
+						Abre en una nueva ventana, asegúrese de volver a esta página.</p>
+					</blockquote>
+				<?php endif; ?>
+				<table cellpadding="0" cellspacing="0">
+					<tbody>
+						<tr>
+							<td style="vertical-align:top; width:200px;"><label for="membergenius_username"><b>Nombre de usuario:</b></label></td>
+							<td style="vertical-align:top;"><input type="text" name="membergenius_username" id="membergenius_username" size="15" value="<?php echo htmlentities($username); ?>"></td>
+						</tr>
+						<tr>
+							<td style="vertical-align:top;"><label for="membergenius_password"><b>Contraseña:</b></label></td>
+							<td style="vertical-align:top;"><input type="password" name="membergenius_password1" id="membergenius_password" size="10"></td>
+						</tr>
+						<tr>
+							<td style="vertical-align:top;">&nbsp;</td>
+							<td style="vertical-align:top;">
+								<input type="submit" class="button-primary" value="   Ingresar a la cuenta existente   "> &nbsp;&nbsp;&nbsp;
+								<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 
 			<?php else: ?>
-			<?php if (!is_admin()): ?>
-			<div id="membergenius_registration">
-				<h3 style="margin:0;">Registro de Nueva Cuenta</h3>
-				<?php $membergenius->social->registration(); ?>
+				<?php if (!is_admin()): ?>
+					<div id="membergenius_registration">
+					<h3 style="margin:0;">Registro de Nueva Cuenta</h3>
+					<?php $membergenius->social->registration(); ?>
 				<?php endif; ?>
 
 				<table cellpadding="0" cellspacing="0">
@@ -5885,7 +5890,7 @@ class MemberGeniusAdmin {
 						</tr>
 						<?php if (is_admin()): ?>
 						<tr>
-							<td style="vertical-align:middle;"><label for="membergenius_email"><b>Membership Level:</b></label></td>
+							<td style="vertical-align:middle;"><label for="membergenius_email"><b>Nivel de Membresia:</b></label></td>
 							<td style="vertical-align:middle;">
 								<select name="membergenius_level">
 									<?php foreach ($membergenius->model->getLevels() as $level): ?>
@@ -5904,11 +5909,11 @@ class MemberGeniusAdmin {
 				</table>
 				<?php
 				if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
-				<script type="text/javascript">
-				<!--
-				//document.getElementById("membergenius_registration").style.display="none";
-				// -->
-				</script>
+					<script type="text/javascript">
+					<!--
+					//document.getElementById("membergenius_registration").style.display="none";
+					// -->
+					</script>
 				<?php endif; ?>
 				<script type="text/javascript">
 					<!--
@@ -5936,7 +5941,15 @@ class MemberGeniusAdmin {
 			</div>
 			<?php endif; ?>
 		</form>
-		<?php if (!is_admin()) { if ($globalFooter = $membergenius->model->levelSetting(-1, "footer")) { eval( ' ?> '.stripslashes($globalFooter).' <?php ' ); } if (isset($membergenius->registerLevel->ID) && ($footer = $membergenius->model->levelSetting($membergenius->registerLevel->ID, "footer"))) { eval( ' ?> '.stripslashes($footer).' <?php ' ); } } ?>
+		<?php if (!is_admin()) { 
+			if ($globalFooter = $membergenius->model->levelSetting(-1, "footer")) { 
+				eval( ' ?> '.stripslashes($globalFooter).' <?php ' ); 
+			} 
+			
+			if (isset($membergenius->registerLevel->ID) && ($footer = $membergenius->model->levelSetting($membergenius->registerLevel->ID, "footer"))) { 
+				eval( ' ?> '.stripslashes($footer).' <?php ' ); 
+			} 
+		} ?>
 		<?php
 	}
 
@@ -6863,7 +6876,7 @@ class MemberGeniusSocialHandler {
 		if ($url == null) {
 			$url = home_url("wp-login.php?miembropress_login=".$this->slug);
 		}
-		return ' < aid = "membergenius_social"href = "'.htmlentities($url).'"name = "miembropress_login_'.$this->slug.'"class = "button button-primary button-large"style = "display:block; width:100%; max-width:300px; margin-top:10px; text-align:center; background-color: '.$this->color.'; border:none !important; color: #fff; text-decoration: none; text-shadow:0 0 0 !important; box-shadow:0 0 0 ! important; border-radius: 3px; cursor:pointer; vertical-align: middle; height: 30px; line-height: 28px; padding: 0 12px 2px; margin-bottom:5px;"onclick = "jQuery(\'#user_login, #user_pass, #rememberme, #wp_submit, #membergenius_username, #membergenius_firstname, #membergenius_lastname, #membergenius_email, #membergenius_password1, #membergenius_password2\').attr(\'disabled\', true);" > < spanclass = "dashicons '.$this->dashicon.'"style = "width:40px; height:40px; font-size:30px;" > < / span > '.htmlentities($text).' < / a > ';
+		return ' <a id = "membergenius_social" href = "'.htmlentities($url).'" name = "miembropress_login_'.$this->slug.'" class = "button button-primary button-large" style = "display:block; width:100%; max-width:300px; margin-top:10px; text-align:center; background-color: '.$this->color.'; border:none !important; color: #fff; text-decoration: none; text-shadow:0 0 0 !important; box-shadow:0 0 0 ! important; border-radius: 3px; cursor:pointer; vertical-align: middle; height: 30px; line-height: 28px; padding: 0 12px 2px; margin-bottom:5px;"onclick = "jQuery(\'#user_login, #user_pass, #rememberme, #wp_submit, #membergenius_username, #membergenius_firstname, #membergenius_lastname, #membergenius_email, #membergenius_password1, #membergenius_password2\').attr(\'disabled\', true);" > <span class = "dashicons '.$this->dashicon.'" style = "width:40px; height:40px; font-size:30px;"> </span> '.htmlentities($text).' </a> ';
 	}
 
 	public function login_form_bottom($buffer) {
@@ -6898,7 +6911,7 @@ class MemberGeniusSocialHandler {
 	public function login_message() {
 		if (!isset($_GET["miembropress_login"])) { return; }
 		if ($_GET["miembropress_login"] != $this->slug_connect) { return; }
-		echo ' < pclass = "message" > Thisisthefirsttimeyouarelogginginwithyour'.$this->name.'account . Continuelogginginwithyourexistingaccounttocontinue . < / p > ';
+		echo ' <p class="message"> This is the first time you are logging in with your '.$this->name.' account. Continue logging in with your existing account to continue. </p> ';
 	}
 
 	public function registration() {
@@ -6908,9 +6921,9 @@ class MemberGeniusSocialHandler {
 		$level = key($get);
 		array_shift($get);
 		$socialLink = "?".$level."&miembropress_register=".$this->slug;
-		echo ' < palign = "center" > '.$this->button($this->label_register, $socialLink).' < / p > ';
+		echo ' <p align = "center" > '.$this->button($this->label_register, $socialLink).' </p> ';
 		if (is_wp_error($this->error)) {
-			echo ' < blockquoteclass = "error" > '.htmlentities($this->error->get_error_message()).' < / blockquote > ';
+			echo ' <blockquote class = "error" > '.htmlentities($this->error->get_error_message()).' </blockquote> ';
 		}
 	}
 }
@@ -7473,7 +7486,7 @@ class MemberGeniusActivation {
 			</div>-->
 		<?php elseif ($call == "CANCELLED"): ?>
 			<div class="error">
-				<p><b>MiembroPress Alert:</b> <?php echo chr("89"); ?>our license has been <a href="<?php echo $url; ?>">cancelled for non-payment</a>.</p>
+				<p><b>MiembroPress Alert:</b> Your license has been <a href="<?php echo $url; ?>">cancelled for non-payment</a>.</p>
 			</div>
 		<?php elseif ($call == "UNKNOWN"): ?>
 			<div class="error">
@@ -7481,7 +7494,7 @@ class MemberGeniusActivation {
 			</div>
 		<?php elseif ($call == "OVERFLOW"): ?>
 			<div class="error">
-				<p><b>MiembroPress Alert:</b> <?php echo chr("89"); ?>ou are using more than 5 sites with MiembroPress, please <a href="http://<?php echo $this->upgradeURL; ?>">upgrade to Ultimate</a> now.</p>
+				<p><b>MiembroPress Alert:</b> You are using more than 5 sites with MiembroPress, please <a href="http://<?php echo $this->upgradeURL; ?>">upgrade to Ultimate</a> now.</p>
 			</div>
 		<?php elseif ($call == "FAILED"): ?>
 			<div class="error">
@@ -7551,7 +7564,7 @@ class MemberGeniusActivation {
 							</tr>
 							<tr valign="top" hidden>
 								<td colspan="3">
-									<p><b>Note:</b> <?php echo chr("89"); ?>ou need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
+									<p><b>Note:</b> You need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
 								</td>
 							</tr>
 						</table>
@@ -7588,7 +7601,7 @@ class MemberGeniusActivation {
    								</tr>
 							   <tr valign="top" hidden>
 								   <td colspan="3">
-									   <p><b>Note:</b> <?php echo chr("89"); ?>ou need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
+									   <p><b>Note:</b> You need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
 								   </td>
 							   </tr>
 						   </table>
@@ -7626,7 +7639,7 @@ class MemberGeniusActivation {
    								</tr>
 							   <tr valign="top" hidden>
 								   <td colspan="3">
-									   <p><b>Note:</b> <?php echo chr("89"); ?>ou need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
+									   <p><b>Note:</b> You need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
 								   </td>
 							   </tr>
 						   </table>
@@ -7664,7 +7677,7 @@ class MemberGeniusActivation {
    								</tr>
 							   <tr valign="top" hidden>
 								   <td colspan="3">
-									   <p><b>Note:</b> <?php echo chr("89"); ?>ou need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
+									   <p><b>Note:</b> You need to enter the email address <B>you used to PURCHASE</B> MiembroPress, not necessarily the administrator email address of this blog.</p>
 								   </td>
 							   </tr>
 						   </table>

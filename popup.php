@@ -6,7 +6,7 @@
         <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script>var cerraranuncio = anuncio => {document.getElementById(anuncio).style.display = "none";}</script>
-        <script>var pathname = jQuery(location).attr('href');var verificar = pathname.indexOf("genius") > -1;jQuery(function() {if (!verificar) {document.getElementById('maximizer').style.display = "block";}});</script>
+        <script>var pathname = jQuery(location).attr('href');var verificar = pathname.indexOf("miembropress") > -1;jQuery(function() {if (!verificar) {document.getElementById('maximizer').style.display = "block";}});</script>
     </head>
     <body>
         <?php
