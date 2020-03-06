@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <title>Codigo Popup</title>
-        <link rel="stylesheet" href="css/estilo.css" type="text/css">
+        <link rel="stylesheet" href="../assets/css/estilo.css" type="text/css">
         <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script>var cerraranuncio = anuncio => {document.getElementById(anuncio).style.display = "none";}</script>
@@ -73,5 +73,5 @@
     echo "<h2>This is a popup preview. Close It and follow the instructions below:</h2>";
     echo "<h2>Press CTRL + U and then copy the popup code</h2>";
     echo "<h3>Example</h3>";
-    echo "<img style='width: 90%; display: block; margin: 0 auto;' src='images/ejemplocodigo.jpg' alt='codigo de ejemplo' />";
+    echo "<img style='width: 90%; display: block; margin: 0 auto;' src='../assets/images/ejemplocodigo.jpg' alt='codigo de ejemplo' />";
 ?>
