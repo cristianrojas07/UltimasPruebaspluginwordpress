@@ -12,8 +12,9 @@ class MiembroPressAdmin {
 		if ($this->activation->call == 0) {
 			add_filter("plugin_action_links", array(&$this, 'links_unregistered'), 10, 2);
 			return;
+		}else{
+			require_once( path_url_inc . 'controller/customizer/login-customizer.php');
 		}
-		require_once( path_url_inc . 'customizer/login-customizer.php');
 		add_action( 'admin_bar_menu', array( $this, "admin_bar" ), 35 );
 		if (!is_admin()) { return; }
 		add_action('admin_init', array(&$this, 'admin_init'));
@@ -29,42 +30,47 @@ class MiembroPressAdmin {
 		add_action('add_meta_boxes', array(&$this, 'meta_boxes'));
 		add_filter("wp_insert_post", array(&$this, 'meta_save'), 10, 2);
 		add_filter("save_post", array(&$this, 'meta_save'));
+		
 	}
 
-	public function cloak_placeholder($query) {
-		if (!is_admin()) { return $query; }
-		if ($placeholder = get_page_by_path("miembropress")) {
-			if ($query != "") {
-				$query .= " AND ";
-			}
-			$query .= "ID <> ".intval($placeholder->ID);
-		}
-		return $query;
+	public function menu_setup() {
+		$menu = add_menu_page('MiembroPress', 'MiembroPress', 'administrator', $this->ttlMenu(), array(&$this, "menu_dashboard"), base_url . '/assets/images/iconmiembropress.png');
+
+		$this->menu = admin_url("admin.php?page=".$this->ttlMenu());
+
+		if ($this->activation->call == 0) { return; }
+
+		add_submenu_page($this->ttlMenu(), 'Dashboard', 'Dashboard', 'administrator', $this->ttlMenu(), array(&$this, "menu_dashboard"));
+
+		add_submenu_page($this->ttlMenu(), 'Settings', 'Settings', 'administrator', $this->ttlMenu("settings"), array(&$this, "menu_settings"));
+
+		add_submenu_page($this->ttlMenu(), 'Members', 'Members', 'administrator', $this->ttlMenu("members"), array(&$this, "menu_members"));
+
+		add_submenu_page($this->ttlMenu(), 'Levels', 'Levels', 'administrator', $this->ttlMenu("levels"), array(&$this, "menu_levels"));
+
+		add_submenu_page($this->ttlMenu(), 'Content', 'Content', 'administrator', $this->ttlMenu("content"), array(&$this, "menu_content"));
+
+		add_submenu_page($this->ttlMenu(), 'Payments', 'Payments', 'administrator', $this->ttlMenu("payments"), array(&$this, "menu_payments"));
+
+		add_submenu_page($this->ttlMenu(), 'Autoresponder', 'Autoresponder', 'administrator', $this->ttlMenu("autoresponder"), array(&$this, "menu_autoresponder"));
+
+		add_submenu_page($this->ttlMenu(), 'Social', 'Social', 'administrator', $this->ttlMenu("social"), array(&$this, "menu_social"));
+		
+		add_submenu_page($this->ttlMenu(), 'Popup', 'Maximizer', 'administrator', $this->ttlMenu("popup"), array(&$this, "menu_popup"));
 	}
 
-	public function tabLink($name="") {
+	public function ttlMenu($name=""){
 		if ($name != "") {
 			$suffix = "-".$name;
 		} else { $suffix = ""; }
-		return admin_url('admin.php?page='.plugin_basename('miembro-press/miembro-press.php').$suffix);
+		return plugin_basename('miembro-press/miembro-press.php'.$suffix);
 	}
 
-	public function dashboard_setup() {
-		if (!current_user_can('administrator')) { return; }
-		wp_add_dashboard_widget('miembropress', 'MiembroPress Dashboard', array(&$this, 'menu_dashboard_panel'));
-	}
-
-	public function customizerLink() {
-		$options = get_option( 'login_customizer_settings', array() );
-
-		$url = add_query_arg(
-			array(
-				'autofocus[panel]' => 'logincust_panel',
-				'url' => rawurlencode( get_permalink( $options['page'] ) ),
-			),
-			admin_url( 'customize.php' )
-		);
-		return $url;
+	public function links_unregistered($links, $file) {
+		if ($file == plugin_basename('miembro-press/miembro-press.php')) {
+			array_unshift($links, '<a href="options-general.php?page='.$file.'">Register</a>');
+		}
+		return $links;
 	}
 
 	public function admin_bar() {
@@ -103,6 +109,153 @@ class MiembroPressAdmin {
 		$this->add_sub_menu("Maximizer", $this->tabLink("popup"), "miembropress", "miembropress_popup");
 		$this->add_sub_menu("Custom Login", $this->customizerLink(), "miembropress", "miembropress_customizer");
 	}
+	
+	public function tabLink($name="") {
+		if ($name != "") {
+			$suffix = "-".$name;
+		} else { $suffix = ""; }
+		return admin_url('admin.php?page='.plugin_basename('miembro-press/miembro-press.php').$suffix);
+	}
+
+	public function customizerLink() {
+		$options = get_option( 'login_customizer_settings', array() );
+
+		$url = add_query_arg(
+			array(
+				'autofocus[panel]' => 'logincust_panel',
+				'url' => rawurlencode( get_permalink( $options['page'] ) ),
+			),
+			admin_url( 'customize.php' )
+		);
+		return $url;
+	}
+
+	public function admin_init() {
+		if (!isset($_REQUEST["page"])) { return; }
+		if (strpos($_REQUEST["page"], plugin_basename('miembro-press/miembro-press.php')) === false) { return; }
+		wp_enqueue_script('jquery');
+		$this->thickbox();
+	}
+
+	private function thickbox() {
+		wp_enqueue_script('thickbox',null,array('jquery'));
+		wp_enqueue_style('thickbox.css', '/'.constant("WPINC").'/js/thickbox/thickbox.css', null, '1.0');
+	}
+
+	public function profile_update($userID) {
+		global $miembropress;
+		MiembroPress::clearCache();
+		if (!current_user_can("administrator")) { return; }
+		$post = $_POST;
+		$user = intval($userID);
+		$transactions = array();
+		$levels = array();
+		$subscribed = array();
+		$allLevels = array();
+		$date = array();
+		$date_original = array();
+		$levels = "";
+
+		if (isset($_POST["miembropress_transaction"])) {
+			$transactions = $_POST["miembropress_transaction"];
+		}
+		if (isset($_POST["miembropress_transaction"])) {
+			$transactions_original = $_POST["miembropress_transaction_original"];
+		}
+		if (isset($_POST["miembropress_date"])) {
+			$date = $_POST["miembropress_date"];
+		}
+		if (isset($_POST["miembropress_date_original"])) {
+			$date_original = $_POST["miembropress_date_original"];
+		}
+		if (isset($_POST["miembropress_level"])) {
+			$allLevels = $_POST["miembropress_level"];
+		}
+		if (isset($_POST["miembropress_subscribed"])) {
+			$subscribed = $_POST["miembropress_subscribed"];
+		}
+		if (isset($_POST["miembropress_levels"])) {
+			$levels = $_POST["miembropress_levels"];
+		}
+
+		foreach ($transactions as $level => $transaction) {
+			if ($transactions[$level] == $transactions_original[$level]) { continue; }
+			$miembropress->model->updateTransaction($user, $level, $transaction);
+		}
+
+		foreach (array_keys($allLevels) as $level) {
+			if (isset($subscribed[$level])) {
+				$miembropress->model->setSubscribed($user, $level);
+			} else {
+				$miembropress->model->setSubscribed($user, $level, false);
+			}
+		}
+
+		foreach ($date as $level => $theDate) {
+			if ($date[$level] == $date_original[$level]) { continue; }
+			$miembropress->model->updateLevelDate($user, $level, $theDate);
+			if (strtotime($date[$level]) < strtotime($date_original[$level])) {
+				$start = strtotime($date[$level]);
+				$end = time();
+				if ($start <= 1 || $end <= 1) { break; }
+				$offset = 0;
+				while ($start <= $end) {
+					$miembropress->model->processUpgrade($start, $userID);
+					$start = $start + 86400;
+				}
+			}
+		}
+		
+		if (isset($_POST["miembropress_action_move"])) {
+			$miembropress->model->move($user, $levels);
+		} elseif (isset($_POST["miembropress_action_add"])) {
+			$miembropress->model->add($user, $levels);
+		} elseif (isset($_POST["miembropress_action_remove"])) {
+			$miembropress->model->remove($user, $levels);
+		} elseif (isset($_POST["miembropress_action_cancel"])) {
+			$miembropress->model->cancel($user, $levels);
+		} elseif (isset($_POST["miembropress_action_uncancel"])) {
+			$miembropress->model->uncancel($user, $levels);
+		} elseif (isset($_POST["miembropress_action_delete"])) {
+			$miembropress->model->deleteUser($user); $this->maybeRedirect();
+		}
+		if (isset($_POST["miembropress_action_password"])) {
+			$this->retrieve_password($user);
+		}
+		if (isset($_POST["miembropress_action_impersonate"]) && current_user_can("administrator")) {
+			$userdata = get_user_by("id", $user);
+			wp_set_current_user($user, $userdata->user_login);
+			wp_set_auth_cookie($user, true);
+			do_action('wp_login', $userdata->user_login, $userdata);
+			wp_redirect(admin_url());
+			die();
+		}
+	}
+
+
+
+
+
+
+
+
+
+	public function cloak_placeholder($query) {
+		if (!is_admin()) { return $query; }
+		if ($placeholder = get_page_by_path("miembropress")) {
+			if ($query != "") {
+				$query .= " AND ";
+			}
+			$query .= "ID <> ".intval($placeholder->ID);
+		}
+		return $query;
+	}
+
+	public function dashboard_setup() {
+		if (!current_user_can('administrator')) { return; }
+		wp_add_dashboard_widget('miembropress', 'MiembroPress Dashboard', array(&$this, 'menu_dashboard_panel'));
+	}
+
 	function add_root_menu($name, $id, $href = FALSE) {
 		global $wp_admin_bar;
 		if ( !is_super_admin() || !is_admin_bar_showing() ) return;
@@ -127,12 +280,7 @@ class MiembroPressAdmin {
 		}
 	}
 
-	public function admin_init() {
-		if (!isset($_REQUEST["page"])) { return; }
-		if (strpos($_REQUEST["page"], plugin_basename('miembro-press/miembro-press.php')) === false) { return; }
-		wp_enqueue_script('jquery');
-		$this->thickbox();
-	}
+	
 
 	public function meta_boxes() {
 		if (!function_exists("add_meta_box")) { return; }
@@ -143,13 +291,6 @@ class MiembroPressAdmin {
 	public function links($links, $file) {
 		if ($file == plugin_basename('miembro-press/miembro-press.php')) {
 			array_unshift($links, '<a href="options-general.php?page='.$file.'">Settings</a>');
-		}
-		return $links;
-	}
-
-	public function links_unregistered($links, $file) {
-		if ($file == plugin_basename('miembro-press/miembro-press.php')) {
-			array_unshift($links, '<a href="options-general.php?page='.$file.'">Register</a>');
 		}
 		return $links;
 	}
@@ -333,90 +474,7 @@ class MiembroPressAdmin {
         <?php
 	}
 
-	public function profile_update($userID) {
-		global $miembropress;
-		MiembroPress::clearCache();
-		if (!current_user_can("administrator")) { return; }
-		$post = $_POST;
-		$user = intval($userID);
-		$transactions = array();
-		$levels = array();
-		$subscribed = array();
-		$allLevels = array();
-		$date = array();
-		$date_original = array();
-		$levels = "";
-		if (isset($_POST["miembropress_transaction"])) {
-			$transactions = $_POST["miembropress_transaction"];
-		}
-		if (isset($_POST["miembropress_transaction"])) {
-			$transactions_original = $_POST["miembropress_transaction_original"];
-		}
-		if (isset($_POST["miembropress_date"])) {
-			$date = $_POST["miembropress_date"];
-		}
-		if (isset($_POST["miembropress_date_original"])) {
-			$date_original = $_POST["miembropress_date_original"];
-		}
-		if (isset($_POST["miembropress_level"])) {
-			$allLevels = $_POST["miembropress_level"];
-		}
-		if (isset($_POST["miembropress_subscribed"])) {
-			$subscribed = $_POST["miembropress_subscribed"];
-		}
-		if (isset($_POST["miembropress_levels"])) {
-			$levels = $_POST["miembropress_levels"];
-		}
-		foreach ($transactions as $level => $transaction) {
-			if ($transactions[$level] == $transactions_original[$level]) { continue; }
-			$miembropress->model->updateTransaction($user, $level, $transaction);
-		}
-		foreach (array_keys($allLevels) as $level) {
-			if (isset($subscribed[$level])) {
-				$miembropress->model->setSubscribed($user, $level);
-			} else {
-				$miembropress->model->setSubscribed($user, $level, false);
-			}
-		}
-		foreach ($date as $level => $theDate) {
-			if ($date[$level] == $date_original[$level]) { continue; }
-			$miembropress->model->updateLevelDate($user, $level, $theDate);
-			if (strtotime($date[$level]) < strtotime($date_original[$level])) {
-				$start = strtotime($date[$level]);
-				$end = time();
-				if ($start <= 1 || $end <= 1) { break; }
-				$offset = 0;
-				while ($start <= $end) {
-					$miembropress->model->processUpgrade($start, $userID);
-					$start = $start + 86400;
-				}
-			}
-		}
-		if (isset($_POST["miembropress_action_move"])) {
-			$miembropress->model->move($user, $levels);
-		} elseif (isset($_POST["miembropress_action_add"])) {
-			$miembropress->model->add($user, $levels);
-		} elseif (isset($_POST["miembropress_action_remove"])) {
-			$miembropress->model->remove($user, $levels);
-		} elseif (isset($_POST["miembropress_action_cancel"])) {
-			$miembropress->model->cancel($user, $levels);
-		} elseif (isset($_POST["miembropress_action_uncancel"])) {
-			$miembropress->model->uncancel($user, $levels);
-		} elseif (isset($_POST["miembropress_action_delete"])) {
-			$miembropress->model->deleteUser($user); $this->maybeRedirect();
-		}
-		if (isset($_POST["miembropress_action_password"])) {
-			$this->retrieve_password($user);
-		}
-		if (isset($_POST["miembropress_action_impersonate"]) && current_user_can("administrator")) {
-			$userdata = get_user_by("id", $user);
-			wp_set_current_user($user, $userdata->user_login);
-			wp_set_auth_cookie($user, true);
-			do_action('wp_login', $userdata->user_login, $userdata);
-			wp_redirect(admin_url());
-			die();
-		}
-	}
+	
 
 	function retrieve_password($userID) {
 		global $wpdb, $wp_hasher;
@@ -514,29 +572,7 @@ class MiembroPressAdmin {
 		echo '</div>';
 		echo '</fieldset>';
 	}
-
-	public function ttlMenu($name=""){
-		if ($name != "") {
-			$suffix = "-".$name;
-		} else { $suffix = ""; }
-		return plugin_basename('miembro-press/miembro-press.php'.$suffix);
-	}
-
-	public function menu_setup() {
-		$menu = add_menu_page('MiembroPress', 'MiembroPress', 'administrator', $this->ttlMenu(), array(&$this, "menu_dashboard"), base_url . '/assets/images/iconmiembropress.png');
-		$this->menu = admin_url("admin.php?page=".$this->ttlMenu());
-		if ($this->activation->call == 0) { return; }
-		add_submenu_page($this->ttlMenu(), 'Dashboard', 'Dashboard', 'administrator', $this->ttlMenu(), array(&$this, "menu_dashboard"));
-		add_submenu_page($this->ttlMenu(), 'Settings', 'Settings', 'administrator', $this->ttlMenu("settings"), array(&$this, "menu_settings"));
-		add_submenu_page($this->ttlMenu(), 'Members', 'Members', 'administrator', $this->ttlMenu("members"), array(&$this, "menu_members"));
-		add_submenu_page($this->ttlMenu(), 'Levels', 'Levels', 'administrator', $this->ttlMenu("levels"), array(&$this, "menu_levels"));
-		add_submenu_page($this->ttlMenu(), 'Content', 'Content', 'administrator', $this->ttlMenu("content"), array(&$this, "menu_content"));
-		add_submenu_page($this->ttlMenu(), 'Payments', 'Payments', 'administrator', $this->ttlMenu("payments"), array(&$this, "menu_payments"));
-		add_submenu_page($this->ttlMenu(), 'Autoresponder', 'Autoresponder', 'administrator', $this->ttlMenu("autoresponder"), array(&$this, "menu_autoresponder"));
-		add_submenu_page($this->ttlMenu(), 'Social', 'Social', 'administrator', $this->ttlMenu("social"), array(&$this, "menu_social"));
-		add_submenu_page($this->ttlMenu(), 'Popup', 'Maximizer', 'administrator', $this->ttlMenu("popup"), array(&$this, "menu_popup"));
-	}
-
+	
 	public function meta_save($postID=0) {
 		global $post;
 		global $miembropress;
@@ -2745,10 +2781,7 @@ class MiembroPressAdmin {
 		<?php
 	}
 
-	private function thickbox() {
-		wp_enqueue_script('thickbox',null,array('jquery'));
-		wp_enqueue_style('thickbox.css', '/'.constant("WPINC").'/js/thickbox/thickbox.css', null, '1.0');
-	}
+	
 
 	function register($blank=false) {
 		global $wpdb;

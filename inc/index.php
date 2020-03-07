@@ -6,12 +6,12 @@ define( 'base_url_inc' , plugin_dir_url( __FILE__ ));
 // FOR REQUIRE
 define( 'path_url_inc' , plugin_dir_path( __FILE__ ));
 
-require_once('admin/admin.php');
-require_once('protection/protection.php');
+require_once('controller/admin/admin.php');
+require_once('controller/protection/protection.php');
+require_once('controller/social/social.php');
+require_once('controller/shortcodes/shortcodes.php');
 require_once('model/model.php');
 require_once('view/view.php');
-require_once('social/social.php');
-require_once('shortcodes/shortcodes.php');
 
 $miembropress = new MiembroPress();
 

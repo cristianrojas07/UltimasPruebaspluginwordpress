@@ -200,7 +200,6 @@ class MiembroPressActivation {
 					update_option($this->slug, $settings);
 	
 					$this->call = $lastversion;
-	
 					return $lastversion;
 				}
 			} else {
