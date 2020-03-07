@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusSocialHandlerFacebook extends MemberGeniusSocialHandler {
+class MiembroPressSocialHandlerFacebook extends MiembroPressSocialHandler {
 	var $slug = "facebook";
 	var $name = "Facebook";
 	var $dashicon = "dashicons-facebook";

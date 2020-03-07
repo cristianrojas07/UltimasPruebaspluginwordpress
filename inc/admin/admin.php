@@ -2,18 +2,18 @@
 
 require_once('activation/activation.php');
 
-class MemberGeniusAdmin {
+class MiembroPressAdmin {
 	public $activation;
 	public $menu;
 	function __construct() {
-		$this->activation = new MemberGeniusActivation("http://2amactivation.com/incomemachine", "membergenius", "MiembroPress", "http://www.incomemachine.com/members");
+		$this->activation = new MiembroPressActivation("miembropress", "MiembroPress");
 		if (!function_exists('add_action')) { return; }
 		add_action('admin_menu', array(&$this, 'menu_setup'));
 		if ($this->activation->call == 0) {
 			add_filter("plugin_action_links", array(&$this, 'links_unregistered'), 10, 2);
 			return;
 		}
-		//require_once( path_url_inc . 'customizer/login-customizer.php');
+		require_once( path_url_inc . 'customizer/login-customizer.php');
 		add_action( 'admin_bar_menu', array( $this, "admin_bar" ), 35 );
 		if (!is_admin()) { return; }
 		add_action('admin_init', array(&$this, 'admin_init'));
@@ -33,7 +33,7 @@ class MemberGeniusAdmin {
 
 	public function cloak_placeholder($query) {
 		if (!is_admin()) { return $query; }
-		if ($placeholder = get_page_by_path("membergenius")) {
+		if ($placeholder = get_page_by_path("miembropress")) {
 			if ($query != "") {
 				$query .= " AND ";
 			}
@@ -51,7 +51,7 @@ class MemberGeniusAdmin {
 
 	public function dashboard_setup() {
 		if (!current_user_can('administrator')) { return; }
-		wp_add_dashboard_widget('membergenius', 'MiembroPress Dashboard', array(&$this, 'menu_dashboard_panel'));
+		wp_add_dashboard_widget('miembropress', 'MiembroPress Dashboard', array(&$this, 'menu_dashboard_panel'));
 	}
 
 	public function customizerLink() {
@@ -85,23 +85,23 @@ class MemberGeniusAdmin {
 		} else {
 			$logout_link = null;
 		}
-		$this->add_root_menu("MiembroPress", "membergenius", $this->tabLink());
-		$this->add_sub_menu("Dashboard", $this->tabLink(), "membergenius", "miembropress_dashboard" );
-		$this->add_sub_menu("Settings", $this->tabLink("settings"), "membergenius", "miembropress_settings" );
+		$this->add_root_menu("MiembroPress", "miembropress", $this->tabLink());
+		$this->add_sub_menu("Dashboard", $this->tabLink(), "miembropress", "miembropress_dashboard" );
+		$this->add_sub_menu("Settings", $this->tabLink("settings"), "miembropress", "miembropress_settings" );
 		if ($nonmember_link) {
-			$this->add_sub_menu("&nbsp;&nbsp; View Non-Member Page", $nonmember_link, "membergenius", "miembropress_nonmember_link" );
+			$this->add_sub_menu("&nbsp;&nbsp; View Non-Member Page", $nonmember_link, "miembropress", "miembropress_nonmember_link" );
 		}
 		if ($logout_link) {
-			$this->add_sub_menu("&nbsp;&nbsp; View Log-Out Page", $logout_link, "membergenius", "miembropress_logout_link" );
+			$this->add_sub_menu("&nbsp;&nbsp; View Log-Out Page", $logout_link, "miembropress", "miembropress_logout_link" );
 		}
-		$this->add_sub_menu("Members", $this->tabLink("members"), "membergenius", "miembropress_members" );
-		$this->add_sub_menu("Levels", $this->tabLink("levels"), "membergenius", "miembropress_levels" );
-		$this->add_sub_menu("Content", $this->tabLink("content"), "membergenius", "miembropress_content" );
-		$this->add_sub_menu("Payments", $this->tabLink("payments"), "membergenius", "miembropress_payments" );
-		$this->add_sub_menu("Autoresponder", $this->tabLink("autoresponder"), "membergenius", "miembropress_autoresponder");
-		$this->add_sub_menu("Social", $this->tabLink("social"), "membergenius", "miembropress_social");
-		$this->add_sub_menu("Maximizer", $this->tabLink("popup"), "membergenius", "miembropress_popup");
-		$this->add_sub_menu("Custom Login", $this->customizerLink(), "membergenius", "miembropress_customizer");
+		$this->add_sub_menu("Members", $this->tabLink("members"), "miembropress", "miembropress_members" );
+		$this->add_sub_menu("Levels", $this->tabLink("levels"), "miembropress", "miembropress_levels" );
+		$this->add_sub_menu("Content", $this->tabLink("content"), "miembropress", "miembropress_content" );
+		$this->add_sub_menu("Payments", $this->tabLink("payments"), "miembropress", "miembropress_payments" );
+		$this->add_sub_menu("Autoresponder", $this->tabLink("autoresponder"), "miembropress", "miembropress_autoresponder");
+		$this->add_sub_menu("Social", $this->tabLink("social"), "miembropress", "miembropress_social");
+		$this->add_sub_menu("Maximizer", $this->tabLink("popup"), "miembropress", "miembropress_popup");
+		$this->add_sub_menu("Custom Login", $this->customizerLink(), "miembropress", "miembropress_customizer");
 	}
 	function add_root_menu($name, $id, $href = FALSE) {
 		global $wp_admin_bar;
@@ -116,7 +116,7 @@ class MemberGeniusAdmin {
 	}
 
 	public function maybeRedirect() {
-		if (isset($_REQUEST["wp_http_referer"]) && strpos($_REQUEST['wp_http_referer'], "membergenius") !== FALSE) {
+		if (isset($_REQUEST["wp_http_referer"]) && strpos($_REQUEST['wp_http_referer'], "miembropress") !== FALSE) {
 			wp_redirect($this->tabLink("members"));
 			die();
 		}
@@ -136,8 +136,8 @@ class MemberGeniusAdmin {
 
 	public function meta_boxes() {
 		if (!function_exists("add_meta_box")) { return; }
-		add_meta_box('membergenius-meta', 'MiembroPress', array(&$this, "meta"), "post", "side", "high");
-		add_meta_box('membergenius-meta', 'MiembroPress', array(&$this, "meta"), "page", "side", "high");
+		add_meta_box('miembropress-meta', 'MiembroPress', array(&$this, "meta"), "post", "side", "high");
+		add_meta_box('miembropress-meta', 'MiembroPress', array(&$this, "meta"), "page", "side", "high");
 	}
 
 	public function links($links, $file) {
@@ -177,7 +177,7 @@ class MemberGeniusAdmin {
 		$sequentialLink = add_query_arg(array('page'=>$this->ttlMenu("levels"), 'miembropress_action'=>'upgrade'), admin_url('admin.php'));
 		$social_facebook = $miembropress->model->userSetting($user->ID, "social_facebook");
 		$social_google = $miembropress->model->userSetting($user->ID, "social_google"); ?>
-		<div id="MemberGeniusUserProfile">
+		<div id="MiembroPressUserProfile">
 			<h3>MiembroPress</h3>
 
 			<!-- Social integration -->
@@ -316,11 +316,11 @@ class MemberGeniusAdmin {
 				<?php endforeach; ?>
 				<?php endif; ?>
 			</ul>
-		</div> <!-- id MemberGeniusUserProfile -->
+		</div> <!-- id MiembroPressUserProfile -->
 
         <script type="text/javascript">
 			<!-- // Move MiembroPress preferences to the top of the profile page
-			jQuery("#MemberGeniusUserProfile").insertBefore("h2:first");
+			jQuery("#MiembroPressUserProfile").insertBefore("h2:first");
 			jQuery(function() {
 			// Have text next to Subscribed checkbox show yes or no
 				jQuery(".miembropress_subscribed").click(function() {
@@ -335,7 +335,7 @@ class MemberGeniusAdmin {
 
 	public function profile_update($userID) {
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (!current_user_can("administrator")) { return; }
 		$post = $_POST;
 		$user = intval($userID);
@@ -476,12 +476,12 @@ class MemberGeniusAdmin {
 	}
 
 	public function columns($columns) {
-		$columns['membergenius'] = 'Access';
+		$columns['miembropress'] = 'Access';
 		return $columns;
 	}
 
 	public function columns_remove($posts_columns) {
-		unset($posts_columns['membergenius']);
+		unset($posts_columns['miembropress']);
 		return $posts_columns;
 	}
 
@@ -505,10 +505,10 @@ class MemberGeniusAdmin {
 	}
 
 	public function column_edit($column_name, $post_type) {
-		if ($column_name != "membergenius") { return; }
+		if ($column_name != "miembropress") { return; }
 		echo '<fieldset class="inline-edit-col-left" style="clear:left;">';
 		echo '<div class="inline-edit-col">';
-		echo '<label class="inline-edit-membergenius">';
+		echo '<label class="inline-edit-miembropress">';
 		$this->meta(false);
 		echo '</label>   ';
 		echo '</div>';
@@ -547,7 +547,7 @@ class MemberGeniusAdmin {
 		if (function_exists("wp_is_post_autosave") && wp_is_post_autosave($postID)) { return; }
 		if (function_exists("wp_is_post_revision") && ($postRevision = wp_is_post_revision($postID))) { $postID = $postRevision; }
 		if (!current_user_can('edit_post', $postID)) { return; }
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$protect = ($_POST["miembropress_protect"] == 1);
 		if ($protect) {
 			$miembropress->model->protect($postID, -1);
@@ -633,8 +633,7 @@ class MemberGeniusAdmin {
 
 	public function menu_header($text="") {
 		$call = $this->activation->call();
-		if ($this->activation->debug) { echo "call=$call"; }
-		if (empty($call) || $call == "FAILED" || $call == "CANCELLED" || $call == "UNREGISTERED" || $call == "FAILED" || $call == "BLOCKED") {
+		if (empty($call) || $call == "FAILED" || $call == "UNREGISTERED") {
 			$this->activation->message($call);
 			$this->activation->register($call);
 			return;
@@ -679,7 +678,6 @@ class MemberGeniusAdmin {
 		// -->
 		</style>
 
-
 		<?php
 	}
 
@@ -687,7 +685,7 @@ class MemberGeniusAdmin {
 		global $miembropress; ?>
 		<div class="wrap" style="clear:both;">
 			<?php $this->menu_header("Dashboard"); ?>
-			<?php ?>
+
 			<?php
 			if (strlen($this->activation->call) > 256) {
 				echo '<xmp>' . $this->activation->call . '</xmp>';
@@ -722,7 +720,7 @@ class MemberGeniusAdmin {
 						</form>
 				    </td>
 					<td width="480" valign="top" style="padding:10px;">
-						<iframe allowtransparency="true" style="visibility: hidden;" src="http://www.membergenius.com/ads/?email=<?php echo urlencode($miembropress->admin->activation->email); ?>&members=<?php echo intval($miembropress->model->getMemberCount()); ?>&version=<?php echo $miembropress->admin->activation->version; ?>" width="480" height="360" frameborder="1" border="1"></iframe>
+						<iframe allowtransparency="true" style="visibility: hidden;" src="http://www.miembropress.com/ads/?email=<?php echo urlencode($miembropress->admin->activation->email); ?>&members=<?php echo intval($miembropress->model->getMemberCount()); ?>&version=<?php echo $miembropress->admin->activation->version; ?>" width="480" height="360" frameborder="1" border="1"></iframe>
 					</td>
 				</tr>
 			</table>
@@ -938,7 +936,7 @@ class MemberGeniusAdmin {
 			</script>
 			<script type="text/javascript">
 				var chartWidth;
-				if (jQuery("#membergenius.postbox").length == 0) { chartWidth = 700; }
+				if (jQuery("#miembropress.postbox").length == 0) { chartWidth = 700; }
 				else { chartWidth = 450; }
 
 				function drawVisualization() {
@@ -1067,7 +1065,7 @@ class MemberGeniusAdmin {
 							<?php foreach ($pages as $page): ?>
 							<?php
 							if ($page->post_name == "wishlist-member") { continue; }
-							if ($page->post_name == "membergenius") { continue; }
+							if ($page->post_name == "miembropress") { continue; }
 							if ($page->post_name == "copyright") { continue; }
 							if ($page->post_name == "disclaimer") { continue; }
 							if ($page->post_name == "earnings") { continue; }
@@ -1086,7 +1084,7 @@ class MemberGeniusAdmin {
 							<option value="" <?php selected($nonmember_page == 0); ?>>Enter an external URL below...</option>
 							<option value="-1" <?php selected($nonmember_page == "-1"); ?>>[WordPress Login Page]</option>
 							<?php foreach ($pages as $page): ?>
-							<?php if ($page->post_name == "wishlist-member") { continue; } if ($page->post_name == "membergenius") { continue; } if ($page->post_name == "copyright") { continue; } if ($page->post_name == "disclaimer") { continue; } if ($page->post_name == "earnings") { continue; } if ($page->post_name == "privacy") { continue; } if ($page->post_name == "terms-conditions") { continue; } if ($miembropress->model->isProtected($page->ID)) { continue; } ?>
+							<?php if ($page->post_name == "wishlist-member") { continue; } if ($page->post_name == "miembropress") { continue; } if ($page->post_name == "copyright") { continue; } if ($page->post_name == "disclaimer") { continue; } if ($page->post_name == "earnings") { continue; } if ($page->post_name == "privacy") { continue; } if ($page->post_name == "terms-conditions") { continue; } if ($miembropress->model->isProtected($page->ID)) { continue; } ?>
 							<option <?php selected($nonmember_page == $page->ID); ?> value="<?php echo intval($page->ID); ?>"><?php echo htmlentities($page->post_title); ?></option>
 							<?php endforeach; ?>
 						</select>
@@ -1110,7 +1108,7 @@ class MemberGeniusAdmin {
 							<?php foreach ($pages as $page): ?>
 							<?php
 							if ($page->post_name == "wishlist-member") { continue; }
-							if ($page->post_name == "membergenius") { continue; }
+							if ($page->post_name == "miembropress") { continue; }
 							if ($page->post_name == "copyright") { continue; }
 							if ($page->post_name == "disclaimer") { continue; }
 							if ($page->post_name == "earnings") { continue; }
@@ -1436,7 +1434,7 @@ class MemberGeniusAdmin {
 					<tbody>
 						<?php foreach ($posts as $post): ?>
 						<?php
-						if ($post->post_name == "wishlist-member" || $post->post_name == "membergenius") {
+						if ($post->post_name == "wishlist-member" || $post->post_name == "miembropress") {
 							continue;
 						}
 						?>
@@ -1751,7 +1749,7 @@ class MemberGeniusAdmin {
 		$pages = array(0 => "Choose Page");
 		foreach ($thePages as $pageKey => $pageValue) {
 			if ($pageValue->post_name == "wishlist-member") { continue; }
-			if ($pageValue->post_name == "membergenius") { continue; }
+			if ($pageValue->post_name == "miembropress") { continue; }
 			if ($pageValue->post_name == "copyright") { continue; }
 			if ($pageValue->post_name == "disclaimer") { continue; }
 			if ($pageValue->post_name == "earnings") { continue; }
@@ -2394,7 +2392,7 @@ class MemberGeniusAdmin {
 			$cartClass = $miembropress->carts[$currentCart];
 		}
 
-		if (!class_exists($cartClass) || get_parent_class($cartClass) != "MemberGeniusCart") {
+		if (!class_exists($cartClass) || get_parent_class($cartClass) != "MiembroPressCart") {
 			$cartClass = null;
 		} ?>
 		<div class="wrap" style="clear:both;">
@@ -2650,7 +2648,7 @@ class MemberGeniusAdmin {
 					<input type="checkbox" name="miembropress_users[<?php echo intval($user->ID); ?>]" id="miembropress_users[<?php echo intval($user->ID); ?>]" value="<?php echo intval($user->ID); ?>">
 					</th>
 					<td><label style="vertical-align:top;" for="miembropress_users[<?php echo intval($user->ID); ?>]"><?php echo htmlentities($fullname); ?></label></td>
-					<td><strong><a href="user-edit.php?user_id=<?php echo intval($user->ID); ?>&amp;wp_http_referer=membergenius"><?php echo htmlentities($user->user_login); ?></a></strong></td>
+					<td><strong><a href="user-edit.php?user_id=<?php echo intval($user->ID); ?>&amp;wp_http_referer=miembropress"><?php echo htmlentities($user->user_login); ?></a></strong></td>
 					<td><a href="mailto:<?php echo htmlentities($user->user_email); ?>"><?php echo htmlentities($user->user_email); ?></a></td>
 					<td style="text-align:center;">
 						<ul style="margin:0;">
@@ -2760,8 +2758,8 @@ class MemberGeniusAdmin {
 		if (!function_exists("current_user_can") || !current_user_can("manage_options") || !is_admin() || strpos($page, $pluginPage) === false) {
 			if (!$miembropress->registerLevel && !$miembropress->registerTemp) { return; }
 		}
-		extract(MemberGenius::extract());
-		$validate = MemberGenius::validate();
+		extract(MiembroPress::extract());
+		$validate = MiembroPress::validate();
 		if (isset($miembropress->registerMetadata)) {
 			extract($miembropress->registerMetadata);
 		}
@@ -2810,7 +2808,7 @@ class MemberGeniusAdmin {
 		<form method="post">
 			<input type="hidden" name="action" value="miembropress_register">
 			<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
-				<input type="hidden" name="wp_http_referer" value="membergenius" />
+				<input type="hidden" name="wp_http_referer" value="miembropress" />
 			<?php endif; ?>
 			<?php if (isset($miembropress->registerTemp)): ?><input type="hidden" name="miembropress_temp" value="<?php echo htmlentities($miembropress->registerTemp); ?>">
 			<?php elseif (isset($miembropress->registerLevel->level_hash)): ?><input type="hidden" name="miembropress_hash" value="<?php echo htmlentities($miembropress->registerLevel->level_hash); ?>">
@@ -3024,8 +3022,8 @@ class MemberGeniusAdmin {
 		if ($vars["action"] != "miembropress_register") {
 			return array("error", new WP_Error("invalid_action", "Not a valid action"));
 		}
-		extract(MemberGenius::extract($vars));
-		$validate = MemberGenius::validate($vars);
+		extract(MiembroPress::extract($vars));
+		$validate = MiembroPress::validate($vars);
 		$level = null;
 		if (isset($vars["miembropress_level"])) {
 			$level = intval($vars["miembropress_level"]);

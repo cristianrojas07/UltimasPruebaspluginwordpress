@@ -1,6 +1,6 @@
 <?php 
 
-class MemberGeniusCartPayPal extends MemberGeniusCart {
+class MiembroPressCartPayPal extends MiembroPressCart {
 	function instructions() {
 		global $miembropress;
 		if (isset($_POST["paypal_token"])) {
@@ -122,7 +122,7 @@ class MemberGeniusCartPayPal extends MemberGeniusCart {
 	function verify() {
 		global $miembropress;
 		$info = null;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (isset($_GET["tx"])) {
 			$info = $this->verifyPDT($_GET["tx"], $miembropress->model->setting("paypal_token"));
 		} elseif (isset($_POST["payer_email"])) {

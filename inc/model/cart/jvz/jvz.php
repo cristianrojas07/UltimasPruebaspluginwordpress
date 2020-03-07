@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusCartJVZ extends MemberGeniusCart {
+class MiembroPressCartJVZ extends MiembroPressCart {
 	function instructions() {
 		global $miembropress;
 		if (isset($_POST["jvz_token"])) {
@@ -144,7 +144,7 @@ class MemberGeniusCartJVZ extends MemberGeniusCart {
 	function verify() {
 		global $miembropress;
 		$info = null;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (isset($_GET["cbreceipt"])) {
 			$info = $this->verifyPDT($_GET, $miembropress->model->setting("jvz_token"));
 		} elseif (isset($_POST["caffitid"])) {

@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusView {
+class MiembroPressView {
 	public function __construct() {
 		add_action("wp_head", array(&$this, "head"));
 		add_action("wp_footer", array(&$this, "foot"));
@@ -44,7 +44,7 @@ class MemberGeniusView {
 	public function download() {
 		global $miembropress;
 		if (!current_user_can("administrator")) { return; }
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		@ob_end_clean();
 		header("Content-type:text/plain");
 		header('Content - Description: FileTransfer');

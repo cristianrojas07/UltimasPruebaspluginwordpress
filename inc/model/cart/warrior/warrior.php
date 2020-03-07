@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusCartWarrior extends MemberGeniusCart {
+class MiembroPressCartWarrior extends MiembroPressCart {
 	function instructions() {
 		global $miembropress;
 		$levels = $miembropress->model->getLevels();
@@ -81,7 +81,7 @@ class MemberGeniusCartWarrior extends MemberGeniusCart {
 	function verify() {
 		global $miembropress;
 		$info = null;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (!isset($_POST["RECEIVERBUSINESS"])) { return; }
 		$token = $miembropress->model->setting("warriorplus_token");
 		if (!$token) { return; }

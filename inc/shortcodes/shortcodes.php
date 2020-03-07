@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusShortcodes {
+class MiembroPressShortcodes {
 	public function __construct() {
 		add_shortcode('mg_firstname', array(&$this, 'firstname'));
 		add_shortcode('mg_lastname', array(&$this, 'lastname'));

@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusSocialHandlerGoogle extends MemberGeniusSocialHandler {
+class MiembroPressSocialHandlerGoogle extends MiembroPressSocialHandler {
 	var $slug = "google";
 	var $name = "Google";
 	var $dashicon = "dashicons-googleplus";

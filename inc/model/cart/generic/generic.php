@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusCartGeneric extends MemberGeniusCart {
+class MiembroPressCartGeneric extends MiembroPressCart {
 	function instructions() {
 		global $miembropress; ?>
 		<h3>Automatic Registration</h3>

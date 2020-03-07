@@ -7,7 +7,7 @@ require_once('jvz/jvz.php');
 require_once('paypal/paypal.php');
 require_once('warrior/warrior.php');
 
-class MemberGeniusCart {
+class MiembroPressCart {
 	private $secret;
 	public function instructions() { }
 	public function validate() { }

@@ -2,10 +2,10 @@
 
 require_once('handler/social-handler.php');
 
-class MemberGeniusSocial {
+class MiembroPressSocial {
 	var $handlers;
 	function __construct() {
-		$this->handlers = array( "google" => new MemberGeniusSocialHandlerGoogle, "facebook" => new MemberGeniusSocialHandlerFacebook );
+		$this->handlers = array( "google" => new MiembroPressSocialHandlerGoogle, "facebook" => new MiembroPressSocialHandlerFacebook );
 	}
 
 	function registration() {

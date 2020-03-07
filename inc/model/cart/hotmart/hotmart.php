@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusCartHotmart extends MemberGeniusCart {
+class MiembroPressCartHotmart extends MiembroPressCart {
 	function instructions() {
 		global $miembropress;
 		if (isset($_POST["hotmart_id"])) {
@@ -150,7 +150,7 @@ class MemberGeniusCartHotmart extends MemberGeniusCart {
 	function verify() {
 		global $miembropress;
 		$info = null;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (isset($_GET["transaction"])) {
 			$info = $this->verifyPDT($_GET["transaction"], $_GET["aff"], $miembropress->model->setting("hotmart_token"));
 		}

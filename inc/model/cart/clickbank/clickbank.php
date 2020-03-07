@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusCartClickbank extends MemberGeniusCart {
+class MiembroPressCartClickbank extends MiembroPressCart {
 	function instructions() {
 		global $miembropress;
 		if (isset($_POST["clickbank_token"])) {
@@ -175,7 +175,7 @@ class MemberGeniusCartClickbank extends MemberGeniusCart {
 	function verify() {
 		global $miembropress;
 		$info = null;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (isset($_POST["ctransaction"]) && $_POST["ctransaction"] == "TEST" && $_POST["ccustemail"] == "testuser@somesite.com") {
 			ob_end_clean();
 			header("HTTP/1.1 200 OK");

@@ -3,7 +3,7 @@
 require_once('facebook/facebook.php');
 require_once('google/google.php');
 
-class MemberGeniusSocialHandler {
+class MiembroPressSocialHandler {
 	var $error = null;
 	var $ready = false;
 	var $slug_callback, $slug_connect;

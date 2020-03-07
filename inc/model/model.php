@@ -2,7 +2,7 @@
 
 require_once('cart/cart.php');
 
-class MemberGeniusModel {
+class MiembroPressModel {
 
 	private $levelTable;
 	private $levelSettingsTable;
@@ -292,10 +292,10 @@ class MemberGeniusModel {
 			}
 			return $maybeUnserialize;
 		} elseif (count($args) > 1 && $value === null) {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			$wpdb->query("DELETE FROM ".$this->settingsTable." WHERE option_name = '".esc_sql($name)."'");
 		} else {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			if (is_array($value) || is_object($value)) {
 				$value = serialize($value);
 			}
@@ -343,10 +343,10 @@ class MemberGeniusModel {
 			}
 			return stripslashes($maybeUnserialize);
 		} elseif (count($args) == 3 && $levelValue === null) {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			$wpdb->query("DELETE FROM ".$this->levelSettingsTable." WHERE level_id = ".intval($levelID)." AND level_key = '".esc_sql($levelKey)."'");
 		} else {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			if (is_array($value) || is_object($value)) {
 				$value = serialize($value);
 			}
@@ -396,10 +396,10 @@ class MemberGeniusModel {
 			}
 			return $maybeUnserialize;
 		} elseif (count($args) == 2 && $userValue === null) {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			$wpdb->query("DELETE FROM ".$this->userSettingsTable." WHERE user_id = ".intval($userID)." AND user_key = '".esc_sql($userKey)."'");
 		} else {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 			if (is_array($userValue) || is_object($userValue)) {
 				$userValue = serialize($userValue);
 			}
@@ -412,7 +412,7 @@ class MemberGeniusModel {
 	function onDeleteUser($userID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$user = intval($userID);
 		$wpdb->query("DELETE FROM ".$this->userTable." WHERE user_id = $user");
 		$wpdb->query("DELETE FROM ".$this->userSettingsTable." WHERE user_id = $user");
@@ -421,7 +421,7 @@ class MemberGeniusModel {
 	function onDeletePost($postID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$post = intval($postID);
 		$wpdb->query("DELETE FROM ".$this->contentTable." WHERE post_id = $post");
 	}
@@ -468,15 +468,15 @@ class MemberGeniusModel {
 			return;
 		}
 		if ($hash == $this->setting("paypal_secret")) {
-			return new MemberGeniusCartPayPal();
+			return new MiembroPressCartPayPal();
 		} elseif ($hash == $this->setting("jvz_secret")) {
-			return new MemberGeniusCartJVZ();
+			return new MiembroPressCartJVZ();
 		} elseif ($hash == $this->setting("clickbank_secret")) {
-			return new MemberGeniusCartClickbank();
+			return new MiembroPressCartClickbank();
 		} elseif ($hash == $this->setting("warriorplus_secret")) {
-			return new MemberGeniusCartWarrior();
+			return new MiembroPressCartWarrior();
 		} elseif ($hash == $this->setting("hotmart_secret")) {
-			return new MemberGeniusCartHotmart();
+			return new MiembroPressCartHotmart();
 		}
 	}
 
@@ -489,7 +489,7 @@ class MemberGeniusModel {
 	function preUserQuery($q) {
 		global $wpdb;
 		$custom = false;
-		if (isset($q->query_vars["membergenius"]) && $q->query_vars["membergenius"] == "1") {
+		if (isset($q->query_vars["miembropress"]) && $q->query_vars["miembropress"] == "1") {
 			$custom = true;
 		}
 		if (isset($q->query_vars["orderby"]) && $q->query_vars["orderby"] == "lastlogin") {
@@ -633,7 +633,7 @@ class MemberGeniusModel {
 	function deleteUser($userID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$current_user = wp_get_current_user();
 		$user = intval($userID);
 		if ($user == $current_user->ID) { return; }
@@ -644,7 +644,7 @@ class MemberGeniusModel {
 	function deleteTemp($tempID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		return $wpdb->query("DELETE FROM ".$this->tempTable." WHERE id = ".intval($tempID));
 	}
 
@@ -706,7 +706,7 @@ class MemberGeniusModel {
 	function setSubscribed($userID, $levelID, $status=true) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (!$userID || !$levelID) { return false; }
 		$user = intval($userID);
 		$level = intval($levelID);
@@ -800,7 +800,7 @@ class MemberGeniusModel {
 	function createLevel($name, $all=false, $comments=true, $hash=null) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$name = preg_replace('@[^a-z0-9\-\_\ ]@si', '', $name);
 		$hash = preg_replace('@[^a-z0-9]@si', '', $hash);
 		if ($this->hashCollision($hash)) { return; }
@@ -822,7 +822,7 @@ class MemberGeniusModel {
 
 	function deleteLevel($id) {
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if (!is_numeric($id)) { return; }
 		global $wpdb;
 		$level = intval($id);
@@ -834,7 +834,7 @@ class MemberGeniusModel {
 	function editLevel($id, $data) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$level = intval($id);
 		if ($level == 0) { return; }
 		if (!is_array($data)) { return; }
@@ -877,7 +877,7 @@ class MemberGeniusModel {
 	function subscribe($userID, $levelID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$user = intval($userID);
 		$level = intval($levelID);
 		$wpdb->query("UPDATE ".$this->userTable." SET level_subscribed=1 WHERE user_id = $user AND level_id = $level");
@@ -886,7 +886,7 @@ class MemberGeniusModel {
 	function unsubscribe($userID, $levelID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$user = intval($userID);
 		$level = intval($levelID);
 		$wpdb->query("UPDATE ".$this->userTable." SET level_subscribed=0 WHERE user_id = $user AND level_id = $level");
@@ -895,7 +895,7 @@ class MemberGeniusModel {
 	function add($userID, $levelID, $transaction=null, $dateAdded=null) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
 		$user = intval($userID); $level = intval($levelID);
 		if (!is_numeric($dateAdded) || @intval($dateAdded) <= 1) {
@@ -926,7 +926,7 @@ class MemberGeniusModel {
 	function move($userID, $levelID, $transaction=null, $dateAdded=null) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
 		$user = intval($userID);
 		$level = intval($levelID);
@@ -937,7 +937,7 @@ class MemberGeniusModel {
 	function remove($userID, $levelID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
 		$user = intval($userID);
 		$level = intval($levelID);
@@ -951,7 +951,7 @@ class MemberGeniusModel {
 	function cancel($userID, $levelID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
 		$user = intval($userID);
 		$level = intval($levelID);
@@ -965,7 +965,7 @@ class MemberGeniusModel {
 	function uncancel($userID, $levelID) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
 		$user = intval($userID);
 		$level = intval($levelID);
@@ -979,7 +979,7 @@ class MemberGeniusModel {
 	function protect($postID, $levelID=-1) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$level = intval($levelID);
 		$post = intval($postID);
 		$wpdb->query("INSERT IGNORE INTO ".$this->contentTable." SET level_id = $level, post_id = $post");
@@ -988,7 +988,7 @@ class MemberGeniusModel {
 	function unprotect($postID, $levelID=-1) {
 		global $wpdb;
 		global $miembropress;
-		MemberGenius::clearCache();
+		MiembroPress::clearCache();
 		$level = intval($levelID);
 		$post = intval($postID);
 		$wpdb->query("DELETE FROM ".$this->contentTable." WHERE level_id = $level AND post_id = $post");

@@ -1,6 +1,6 @@
 <?php
 
-class MemberGeniusProtection {
+class MiembroPressProtection {
 	public $allowed;
 	public $protectedTitle;
 	public $protectedLevel;
@@ -168,7 +168,7 @@ class MemberGeniusProtection {
 	public function excludePageList($pages, $r) {
 		if (!is_admin()) { return $pages; }
 		for ($i = 0; $i < sizeof($pages); $i++) {
-			if ($pages[$i]->post_name == "membergenius") {
+			if ($pages[$i]->post_name == "miembropress") {
 				unset($pages[$i]);
 				break;
 			}
@@ -178,7 +178,7 @@ class MemberGeniusProtection {
 
 	public function excludePageBackend($query) {
 		if (!is_admin()) { return $query; }
-		if ($placeholder = get_page_by_path("membergenius")) {
+		if ($placeholder = get_page_by_path("miembropress")) {
 			$query->set( 'post__not_in', array( $placeholder->ID ) );
 		}
 		return $query;
@@ -191,7 +191,7 @@ class MemberGeniusProtection {
 		}
 		$allPages = get_all_page_ids();
 		$excludePages = array_diff($allPages, $this->allowed);
-		if ($placeholder = get_page_by_path("membergenius")) {
+		if ($placeholder = get_page_by_path("miembropress")) {
 			$excludePages[] = intval($placeholder->ID);
 		}
 		return array_merge($pages, $excludePages);

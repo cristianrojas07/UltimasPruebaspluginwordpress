@@ -12,12 +12,10 @@ require_once('model/model.php');
 require_once('view/view.php');
 require_once('social/social.php');
 require_once('shortcodes/shortcodes.php');
-require_once('mgapi/mgapi.php');
-require_once('mgapi/mgapi2.php');
 
-$miembropress = new MemberGenius();
+$miembropress = new MiembroPress();
 
-class MemberGenius {
+class MiembroPress {
 
 	public $admin;
 	public $protection;
@@ -31,13 +29,13 @@ class MemberGenius {
 	public $signingOn = false;
 
 	function __construct() {
-		$this->admin = new MemberGeniusAdmin();
-		$this->protection = new MemberGeniusProtection();
-		$this->model = new MemberGeniusModel();
-		$this->view = new MemberGeniusView();
-		$this->social = new MemberGeniusSocial();
-		$shortcodes = new MemberGeniusShortcodes();
-		$this->carts = array( "Hotmart" => "MemberGeniusCartHotmart", "Generic" => "MemberGeniusCartGeneric", "Clickbank" => "MemberGeniusCartClickbank",  "JVZoo" => "MemberGeniusCartJVZ", "PayPal" => "MemberGeniusCartPayPal", "WarriorPlus" => "MemberGeniusCartWarrior", );
+		$this->admin = new MiembroPressAdmin();
+		$this->protection = new MiembroPressProtection();
+		$this->model = new MiembroPressModel();
+		$this->view = new MiembroPressView();
+		$this->social = new MiembroPressSocial();
+		$shortcodes = new MiembroPressShortcodes();
+		$this->carts = array( "Hotmart" => "MiembroPressCartHotmart", "Generic" => "MiembroPressCartGeneric", "Clickbank" => "MiembroPressCartClickbank",  "JVZoo" => "MiembroPressCartJVZ", "PayPal" => "MiembroPressCartPayPal", "WarriorPlus" => "MiembroPressCartWarrior", );
 		$this->hooks();
 	}
 
@@ -61,7 +59,7 @@ class MemberGenius {
 		add_action('wp_footer', array(&$this->view, 'autoresponder'));
 		add_filter('pre_get_posts', array(&$this->view, 'order'));
 		add_action('admin_bar_menu', array( $this, "admin_bar_switch_user" ), 50 );
-		//add_action('admin_bar_menu', array( $this, "admin_bar_switcher" ), 35 );
+		add_action('admin_bar_menu', array( $this, "admin_bar_switcher" ), 35 );
 		add_action('wp_before_admin_bar_render', array(&$this, 'admin_bar_remove_profile'));
 		add_action('init', array(&$this, 'remove_profile_access'));
 		add_action('after_setup_theme', array(&$this, 'widgets_init'));
@@ -130,7 +128,6 @@ class MemberGenius {
 		if ($wp_admin_bar->get_node("incomemachine")) { return; }
 		
 		$parse = parse_url(get_home_url());
-		
 		if ((!isset($parse["path"]) || $parse["path"] == "/") && @is_dir(trailingslashit(constant("ABSPATH"))."members/wp-admin")) {
 			$wp_admin_bar->add_menu(array( 'parent' => 'site-name', 'id' => 'incomemachine', 'title' => __( 'Switch to Backend'), 'href' => home_url("/members/wp-admin")) );
 		} elseif ((isset($parse["path"]) && $parse["path"] == "/members") && @is_dir(trailingslashit(constant("ABSPATH"))."wp-admin")) {
@@ -189,7 +186,7 @@ class MemberGenius {
 		$current_user = wp_get_current_user();
 		global $miembropress;
 		if (strpos($_SERVER["REQUEST_URI"], '/miembropress/') !== false) {
-			MemberGenius::clearCache();
+			MiembroPress::clearCache();
 		}
 		$miembropress_givenuser = null;
 		$miembropress_givenpass = null;
@@ -240,12 +237,8 @@ class MemberGenius {
 			
 			$request = null;
 			$temp = "";
-			if ($this->apiRequest()) {
-				$api = new MGAPI2();
-				die();
-			}
 			if ($request = $this->hashRequest()) {
-				MemberGenius::clearCache();
+				MiembroPress::clearCache();
 				if ($registerLevel = $this->model->getLevelFromHash($request)) {
 					$this->registerLevel = $registerLevel;
 					$temp = null;
@@ -374,15 +367,11 @@ class MemberGenius {
 		return $hash;
 	}
 
-	public function apiRequest() {
-		return strpos($_SERVER['REQUEST_URI'], '/wlmapi/2.0/') !== false || strpos($_SERVER['REQUEST_URI'], '/wlmapi/2_0/') !== false;
-	}
-
 	public static function validate($vars=null) {
 		if ($vars == null) {
 			$vars = $_POST;
 		}
-		extract(MemberGenius::extract($vars));
+		extract(MiembroPress::extract($vars));
 		$validate = array();
 		$validate["empty"] = empty($username);
 		$validate["username"] = strlen($username) >= 4;
@@ -440,7 +429,7 @@ class MemberGenius {
 			$password2 = stripslashes($vars["miembropress_password2"]);
 		}
 		if ($password1 == "") {
-			$password1 = MemberGenius::generate();
+			$password1 = MiembroPress::generate();
 			$password2 = $password1;
 		}
 		return array( "username" => trim($username), "firstname" => trim($firstname), "lastname" => trim($lastname), "email" => trim($email), "password1" => trim($password1), "password2" => trim($password2) );
@@ -454,240 +443,6 @@ if (!function_exists("class_alias")) {
 		$newclass();
 	}
 }
-
-if (!is_plugin_active("wishlist-member/wishlist-member.php") && !class_exists("WLMAPI")) {
-	class_alias("MGAPI", "WLMAPI");
-}
-
-/*
-if ( !class_exists('PluginInfo') ): class PluginInfo {
-	public $name;
-	public $slug;
-	public $version;
-	public $homepage;
-	public $sections;
-	public $download_url;
-	public $author;
-	public $author_homepage;
-	public $requires;
-	public $tested;
-	public $upgrade_notice;
-	public $rating;
-	public $num_ratings;
-	public $downloaded;
-	public $last_updated;
-	public $id = 0;
-
-	public static function fromJson($json){
-		$apiResponse = json_decode($json);
-		if ( empty($apiResponse) || !is_object($apiResponse) ){ return null; }
-		$valid = isset($apiResponse->name) && !empty($apiResponse->name) && isset($apiResponse->version) && !empty($apiResponse->version);
-		if ( !$valid ){ return null; }
-		$info = new PluginInfo();
-		foreach(get_object_vars($apiResponse) as $key => $value){ $info->$key = $value; }
-		return $info;
-	}
-
-	public function toWpFormat(){
-		$info = new StdClass;
-		$sameFormat = array( 'name', 'slug', 'version', 'requires', 'tested', 'rating', 'upgrade_notice', 'num_ratings', 'downloaded', 'homepage', 'last_updated', 'plugin' );
-		foreach($sameFormat as $field){
-			if ( isset($this->$field) ) {
-				$info->$field = $this->$field;
-			}
-		}
-
-		$info->download_link = $this->download_url;
-		if ( !empty($this->author_homepage) ){
-			$info->author = sprintf('<a href="%s">%s</a>', $this->author_homepage, $this->author);
-		} else {
-			$info->author = $this->author;
-		}
-
-		if ( is_object($this->sections) ){
-			$info->sections = get_object_vars($this->sections);
-		} elseif ( is_array($this->sections) ) {
-			$info->sections = $this->sections;
-		} else {
-			$info->sections = array('description' => '');
-		}
-		return $info;
-	}
-} endif;
-
-if ( !class_exists('PluginUpdate') ): class PluginUpdate {
-	public $id = 0;
-	public $slug;
-	public $version;
-	public $homepage;
-	public $download_url;
-	public $upgrade_notice;
-	public static function fromJson($json){
-		$pluginInfo = PluginInfo::fromJson($json);
-		if ( $pluginInfo != null ) {
-			return PluginUpdate::fromPluginInfo($pluginInfo);
-		} else { return null; }
-	}
-
-	public static function fromPluginInfo($info){
-		$update = new PluginUpdate();
-		$copyFields = array('id', 'slug', 'version', 'homepage', 'download_url', 'upgrade_notice');
-		foreach($copyFields as $field){ $update->$field = $info->$field; }
-		return $update;
-	}
-
-	public function toWpFormat(){
-		$update = new StdClass;
-		$update->id = $this->id;
-		$update->slug = $this->slug;
-		$update->new_version = $this->version;
-		$update->url = $this->homepage;
-		$update->package = $this->download_url;
-		if ( !empty($this->upgrade_notice) ){
-			$update->upgrade_notice = $this->upgrade_notice;
-		}
-		return $update;
-	}
-} endif;
-
-if ( !class_exists('PluginUpdateChecker') ): class PluginUpdateChecker {
-	public $metadataUrl = '';
-	public $pluginFile = '';
-	public $slug = '';
-	public $checkPeriod = 12;
-	public $optionName = '';
-	function __construct($metadataUrl, $pluginFile, $slug = '', $checkPeriod = 12, $optionName = ''){
-		$this->metadataUrl = $metadataUrl;
-		$this->pluginFile = plugin_basename($pluginFile);
-		$this->checkPeriod = $checkPeriod;
-		$this->slug = $slug;
-		$this->optionName = $optionName;
-		if ( empty($this->slug) ){
-			$this->slug = basename($this->pluginFile, '.php');
-		}
-		if ( empty($this->optionName) ){
-			$this->optionName = 'external_updates-' . $this->slug;
-		}
-		$this->installHooks();
-	}
-
-	function installHooks(){
-		add_filter('plugins_api', array(&$this, 'injectInfo'), 10, 3);
-		add_filter('site_transient_update_plugins', array(&$this,'injectUpdate'));
-		add_filter('transient_update_plugins', array(&$this,'injectUpdate'));
-		$cronHook = 'check_plugin_updates-' . $this->slug;
-		if ( $this->checkPeriod > 0 ){ add_filter('cron_schedules', array(&$this, '_addCustomSchedule'));
-			if ( !wp_next_scheduled($cronHook) && !defined('WP_INSTALLING') ) {
-				$scheduleName = 'every' . $this->checkPeriod . 'hours';
-				wp_schedule_event(time(), $scheduleName, $cronHook);
-			}
-			add_action($cronHook, array(&$this, 'checkForUpdates'));
-			add_action( 'admin_init', array(&$this, 'maybeCheckForUpdates') );
-		} else {
-			wp_clear_scheduled_hook($cronHook);
-		}
-	}
-
-	function _addCustomSchedule($schedules){
-		if ( $this->checkPeriod && ($this->checkPeriod > 0) ){
-			$scheduleName = 'every' . $this->checkPeriod . 'hours';
-			$schedules[$scheduleName] = array( 'interval' => $this->checkPeriod * 3600, 'display' => sprintf('Every %d hours', $this->checkPeriod), );
-		}
-		return $schedules;
-	}
-
-	function requestInfo($queryArgs = array()){
-		$queryArgs['installed_version'] = $this->getInstalledVersion();
-		$queryArgs = apply_filters('puc_request_info_query_args-'.$this->slug, $queryArgs);
-		$options = array( 'timeout' => 30, 'headers' => array( 'Accept' => 'application/json' ), );
-		$options = apply_filters('puc_request_info_options-'.$this->slug, array());
-		$url = $this->metadataUrl;
-		if ( !empty($queryArgs) ){
-			$url = add_query_arg($queryArgs, $url);
-		}
-		$result = wp_remote_get( $url, $options );
-		$pluginInfo = null;
-		if ( !is_wp_error($result) && isset($result['response']['code']) && ($result['response']['code'] == 200) && !empty($result['body']) ){
-			$pluginInfo = PluginInfo::fromJson($result['body']);
-		}
-		$pluginInfo = apply_filters('puc_request_info_result-'.$this->slug, $pluginInfo, $result);
-		return $pluginInfo;
-	}
-
-	function requestUpdate(){
-		$pluginInfo = $this->requestInfo(array('checking_for_updates' => '1'));
-		if ( $pluginInfo == null ){ return null; }
-		return PluginUpdate::fromPluginInfo($pluginInfo);
-	}
-
-	function getInstalledVersion(){
-		if ( !function_exists('get_plugins') ){
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-		}
-		$allPlugins = get_plugins();
-		if ( array_key_exists($this->pluginFile, $allPlugins) && array_key_exists('Version', $allPlugins[$this->pluginFile]) ){
-			return $allPlugins[$this->pluginFile]['Version'];
-		} else { return ''; };
-	}
-
-	function checkForUpdates(){
-		$state = get_option($this->optionName);
-		if ( empty($state) ){
-			$state = new StdClass;
-			$state->lastCheck = 0;
-			$state->checkedVersion = '';
-			$state->update = null;
-		}
-		$state->lastCheck = time();
-		$state->checkedVersion = $this->getInstalledVersion();
-		update_option($this->optionName, $state);
-		$state->update = $this->requestUpdate();
-		update_option($this->optionName, $state);
-	}
-
-	function maybeCheckForUpdates(){
-		if ( empty($this->checkPeriod) ){ return; }
-		$state = get_option($this->optionName);
-		if (strpos($_SERVER["PHP_SELF"], 'update-core.php') !== FALSE) {
-			$state->lastCheck = 0;
-		}
-		$shouldCheck = empty($state) || !isset($state->lastCheck) || ( (time() - $state->lastCheck) >= $this->checkPeriod*3600 );
-		if ( $shouldCheck ){ $this->checkForUpdates(); }
-	}
-
-	function injectInfo($result, $action = null, $args = null){
-		$relevant = ($action == 'plugin_information') && isset($args->slug) && ($args->slug == $this->slug);
-		if ( !$relevant ){ return $result; }
-		$pluginInfo = $this->requestInfo();
-		if ($pluginInfo){ return $pluginInfo->toWpFormat(); }
-		return $result;
-	}
-
-	function injectUpdate($updates){
-		$state = get_option($this->optionName);
-		if ( !empty($state) && isset($state->update) && !empty($state->update) ){
-			if ( version_compare($state->update->version, $this->getInstalledVersion(), '>') ){
-				$wp_format = $state->update->toWpFormat();
-				$wp_format->plugin = $this->pluginFile;
-				$updates->response[$this->pluginFile] = $wp_format;
-			}
-		}
-		return $updates;
-	}
-
-	function addQueryArgFilter($callback){
-		add_filter('puc_request_info_query_args-'.$this->slug, $callback);
-	}
-
-	function addHttpRequestArgFilter($callback){
-		add_filter('puc_request_info_options-'.$this->slug, $callback);
-	}
-
-	function addResultFilter($callback){
-		add_filter('puc_request_info_result-'.$this->slug, $callback, 10, 2);
-	}
-} endif;
-*/
 
 wp_register_style( 'miembro-press-css', base_url . '/assets/css/estilo.css');
 wp_enqueue_style( 'miembro-press-css' );
