@@ -198,11 +198,11 @@ class MiembroPressSocialHandler {
 		echo $this->button();
 		?>
 		<script type="text/javascript">
-			<!--
+			
 			jQuery(function() {
 				jQuery("#miembropress_social").insertAfter("#wp-submit");
 			});
-			// -->
+			
 		</script>
 		<?php
 	}

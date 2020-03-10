@@ -282,10 +282,10 @@ class MiembroPressProtection {
 
 	public function noFooter() { ?>
 		<style type="text/css">
-		<!--
+		
 		.entry-meta, .navigation, .nav-menu, .site-info, #colophon { display:none; }
 		.entry-title { text-align:center; }
-		// -->
+		
 		</style>
 		<?php
 	}

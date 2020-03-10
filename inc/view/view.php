@@ -213,7 +213,7 @@ class MiembroPressView {
 			<?php endforeach; ?>
 
 			<script type="text/javascript">
-			<!--
+			
 			jQuery(function() {
 			<?php foreach ($autoresponders as $key => $value): ?>
 			var theAutoresponder = jQuery(document.getElementById("miembropress_autoresponder[<?php echo $key; ?>]"));
@@ -240,7 +240,7 @@ class MiembroPressView {
 
 			<?php endforeach; ?>
 			});
-			  // -->
+			  
 			  </script>
 		<?php
 	}
