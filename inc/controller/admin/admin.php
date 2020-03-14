@@ -15,7 +15,7 @@ class MiembroPressAdmin {
 		}else{
 			require_once( path_url_inc . 'controller/customizer/login-customizer.php');
 		}
-		add_action( 'admin_bar_menu', array( $this, "admin_bar" ), 35 );
+		add_action('admin_bar_menu', array($this, "admin_bar" ), 35 );
 		if (!is_admin()) { return; }
 		add_action('admin_init', array(&$this, 'admin_init'));
 		add_action('profile_update', array(&$this, 'profile_update'));
@@ -26,7 +26,7 @@ class MiembroPressAdmin {
 		add_filter('manage_posts_columns', array(&$this, 'columns'));
 		add_action('manage_posts_custom_column', array(&$this, 'column'), 10, 2);
 		add_action('wp_dashboard_setup', array($this, 'dashboard_setup'));
-		add_filter("plugin_action_links", array(&$this, 'links'), 10, 2);
+		//add_filter("plugin_action_links", array(&$this, 'links'), 10, 2);
 		add_action('add_meta_boxes', array(&$this, 'meta_boxes'));
 		add_filter("wp_insert_post", array(&$this, 'meta_save'), 10, 2);
 		add_filter("save_post", array(&$this, 'meta_save'));
@@ -38,7 +38,8 @@ class MiembroPressAdmin {
 
 		$this->menu = admin_url("admin.php?page=".$this->ttlMenu());
 
-		if ($this->activation->call == 0) { return; }
+		$call = $this->activation->call();
+		if (empty($call) || $call == "FAILED" || $call == "UNREGISTERED" || $call == "OBSOLETE") { return;	}
 
 		add_submenu_page($this->ttlMenu(), 'Dashboard', 'Dashboard', 'administrator', $this->ttlMenu(), array(&$this, "menu_dashboard"));
 
@@ -1302,15 +1303,15 @@ class MiembroPressAdmin {
 								$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 							}
 							if ($nameLevel == "Personal") {
-								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 3)");
+								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 1)");
 								$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 							}
 							if ($nameLevel == "Profesional") {
-								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 9)");
+								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 3)");
 								$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 							}
 							if ($nameLevel == "Agencia") {
-								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 30)");
+								$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 10)");
 								$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 							}
 							if (isset($levelInfo->level_page_register) && ($redirect = get_permalink(intval($levelInfo->level_page_register)))) {
@@ -1353,15 +1354,15 @@ class MiembroPressAdmin {
 				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 			}
 			if ($nameLevel == "Personal") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 3)");
+				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 1)");
 				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 			}
 			if ($nameLevel == "Profesional") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 9)");
+				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 3)");
 				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 			}
 			if ($nameLevel == "Agencia") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 30)");
+				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 10)");
 				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
 			}
 			$miembropress->model->removeTemp($txn);
@@ -2335,7 +2336,7 @@ class MiembroPressAdmin {
 			<?php $this->menu_header("Dashboard"); ?>
 			
 			<?php if(strlen($this->activation->call) > 256): ?>
-				<xmp><?php echo $this->activation->call; ?></pre>
+				<xmp><?php echo $this->activation->call; ?></xmp>
 			<?php endif; ?>
 
 			<?php if ($this->activation->call == 0 || strlen($this->activation->call) > 256): ?>
@@ -2382,7 +2383,7 @@ class MiembroPressAdmin {
 
 	public function links_unregistered($links, $file) {
 		if ($file == plugin_basename('miembro-press/miembro-press.php')) {
-			array_unshift($links, '<a href="options-general.php?page='.$file.'">Register</a>');
+			array_unshift($links, '<a href="admin.php?page='.$file.'">Registrar</a>');
 		}
 		return $links;
 	}
@@ -2943,7 +2944,8 @@ class MiembroPressAdmin {
 
 	public function menu_header($text="") {
 		$call = $this->activation->call();
-		if (empty($call) || $call == "FAILED" || $call == "UNREGISTERED") {
+
+		if (empty($call) || $call == "FAILED" || $call == "UNREGISTERED" || $call == "OBSOLETE") {
 			$this->activation->message($call);
 			$this->activation->register($call);
 			return;
@@ -2991,7 +2993,8 @@ class MiembroPressAdmin {
 
 	public function menu_dashboard_panel() {
 		global $miembropress;
-		if ($this->activation->call == 0) { return; }
+		$call = $this->activation->call();
+		if (empty($call) || $call == "FAILED" || $call == "UNREGISTERED" || $call == "OBSOLETE") { return;	}
 		if (isset($_REQUEST["s"]) && !empty($_REQUEST["s"])) {
 			$this->menu_members();
 			return;
@@ -3072,7 +3075,16 @@ class MiembroPressAdmin {
 			</table>
 		</form>
 		<div style="clear:both; width:100%; margin-top:20px; text-align:center;">
-	      	<a class="recent_link" href="#" style="font-weight:bold;" onclick="jQuery('.recent_link').css('font-weight', 'normal'); jQuery(this).css('font-weight', 'bold'); jQuery('#miembropress_recent_signups').show(); jQuery('#miembropress_recent_logins').hide(); return false;">Recent Signups</a> - <a class="recent_link" href="#" onclick="jQuery('.recent_link').css('font-weight', 'normal'); jQuery(this).css('font-weight', 'bold'); jQuery('#miembropress_recent_signups').hide(); jQuery('#miembropress_recent_logins').show(); return false;">Recent Logins</a>
+	      	<a class="recent_link" href="#" style="font-weight:bold;" onclick="jQuery('.recent_link').css('font-weight', 'normal');
+			jQuery(this).css('font-weight', 'bold'); 
+			jQuery('#miembropress_recent_signups').show();
+			jQuery('#miembropress_recent_logins').hide();
+			return false;">Recent Signups</a>
+			-
+			<a class="recent_link" href="#" onclick="jQuery('.recent_link').css('font-weight', 'normal'); jQuery(this).css('font-weight', 'bold');
+			jQuery('#miembropress_recent_signups').hide();
+			jQuery('#miembropress_recent_logins').show();
+			return false;">Recent Logins</a>
         </div>
 
 		<?php
@@ -3091,7 +3103,7 @@ class MiembroPressAdmin {
 		      <?php endforeach; ?>
 		    </ul>
 		</div>
-	    <div id="miembropress_recent_logins" <?php if ($recentLoginScroll): ?>style="display:none; height:150px; overflow:auto;"<?php endif; ?>>
+			  <div id="miembropress_recent_logins" <?php if ($recentLoginScroll): ?>style="display:none; height:150px; overflow:auto;"<?php else: ?>style="display:none;"<?php endif; ?>>
 	      	<ul>
 		      	<?php foreach ($recent_logins as $recent_login): ?>
 			        <li>

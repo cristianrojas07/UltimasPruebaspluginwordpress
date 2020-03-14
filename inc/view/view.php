@@ -41,54 +41,6 @@ class MiembroPressView {
 		}
 	}
 
-	public function download() {
-		global $miembropress;
-		if (!current_user_can("administrator")) { return; }
-		MiembroPress::clearCache();
-		@ob_end_clean();
-		header("Content-type:text/plain");
-		header('Content - Description: FileTransfer');
-		header('Content - Type: application / octet - stream');
-		header('Content - Disposition: attachment; filename = "export.csv"');
-		header('Content - Transfer - Encoding: binary');
-		header('Connection: Keep - Alive');
-		header('Expires: 0');
-		header('Cache - Control: must - revalidate, post - check = 0, pre - check = 0');
-		header('Pragma: public ');
-		$query = "";
-		$status = null;
-		if (isset($_POST["miembropress_level"]) && is_array($_POST["miembropress_level"])) {
-			$query .= "&levels=".implode(",", $_POST["miembropress_level"]);
-		}
-		if (isset($_POST["miembropress_status"])) {
-			if ($_POST["miembropress_status"] == "active") {
-				$query .= "&status=A";
-			} elseif ($_POST["miembropress_status"] == "canceled") {
-				$query .= "&status=C";
-			} elseif ($_POST["miembropress_status"] == "all") {
-				$query .= "&status=A,C";
-			}
-		}
-		$members = $miembropress->model->getMembers($query);
-		echo "username,firstname,lastname,email,level,date";
-		foreach ($members as $memberKey => $member) {
-			$username = $member->user_login;
-			$firstname = get_user_meta($member->ID,'first_name', true);
-			$lastname = get_user_meta($member->ID,'last_name', true);
-			$email = $member->user_email;
-			$levels = array();
-			foreach ($miembropress->model->getLevelInfo($member->ID) as $userLevel) {
-				$levels[] = $userLevel->level_name;
-			}
-			$level = implode(",", $levels);
-			$date = $member->user_registered;
-			$line = array( "username" => $username, "firstname" => $firstname, "lastname" => $lastname, "email" => $email, "level" => $level, "date" => $date );
-			$line = array_map(array(&$this, "download_sanitize"), $line);
-			echo implode($line,",")." ";
-		}
-		die();
-	}
-
 	private function download_sanitize($input) {
 		return '"'.addcslashes($input, "\"") . '"';
     }

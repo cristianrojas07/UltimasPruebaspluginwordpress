@@ -1,52 +1,40 @@
 <?php
 
-$path = $_SERVER['DOCUMENT_ROOT'];
+$path = dirname_for(4);
 require_once($path . '/wp-load.php');
 $carpeta = dirname(dirname(__FILE__));
 require_once($carpeta . '/miembro-press.php');
 
-
-function curl_get($consulta, $authorization){
-    $cp = curl_init();
-    curl_setopt($cp, CURLOPT_URL, $consulta);
-    curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($cp, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-    curl_setopt($cp, CURLOPT_CUSTOMREQUEST, "GET");
-    $retorno = curl_exec($cp);
-    curl_close($cp);
-    return $retorno;
-}
-
-function consulta_secret($valor){
-    global $wpdb;
-    $prefix = $wpdb->prefix . "miembropress_";
-    $settingsTable = $prefix . "settings";
-    $registros = $wpdb->get_var( "SELECT option_value FROM $settingsTable WHERE option_name = '$valor'" );
-    return $registros;
+function dirname_for($cantidad){
+	$url = dirname(__FILE__);
+	for($i = 0; $i<$cantidad; $i++){
+		$url = dirname($url);
+	}
+	return $url;
 }
 
 function consulta_items($producto){
     global $miembropress;
-    $idProducto = "";
+    $levelId = "";
     $levels = $miembropress->model->getLevels();
     $items = $miembropress->model->setting("hotmart_items");
     foreach ($levels as $level){
         $item = "";
-        if ($items[$level->ID]) {
+        if (isset($items[$level->ID])) {
             $item = $items[$level->ID];
             if($item == $producto){
-                $idProducto = $level->ID;
+                $levelId = $level->ID;
             }
         }
     }
-    return $idProducto;
+    return $levelId;
 }
 
-function obtener_hash($idProducto){
+function obtener_hash($levelId){
     global $wpdb;
     $prefix = $wpdb->prefix . "miembropress_";
     $levelsTable = $prefix . "levels";
-    $hashlink = $wpdb->get_var( "SELECT level_hash FROM $levelsTable WHERE ID = '$idProducto'" );
+    $hashlink = $wpdb->get_var( "SELECT level_hash FROM $levelsTable WHERE ID = '$levelId'" );
     return $hashlink;
 }
 
@@ -58,6 +46,7 @@ function obtener_hash_por_offert($nombrePlan){
     return $hashlink;
 }
 
+
 function generar_enlace($hashlink){
     global $miembropress;
     $checkout = $miembropress->model->signupURL($hashlink);
@@ -65,59 +54,40 @@ function generar_enlace($hashlink){
 }
 
 
-if(isset($_GET) && isset($_GET['transaction'])){
-    $id = consulta_secret('hotmart_id');
-    $secret = consulta_secret('hotmart_secretid');
-    $basic = consulta_secret('hotmart_basic');
-    $transaccion = $_GET['transaction'];
-    $URL = "https://api-sec-vlc.hotmart.com/security/oauth/token?grant_type=client_credentials&";
-    $headers = ['Authorization: Basic '.$basic];
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=$id&client_secret=$secret");
-    curl_setopt($ch, CURLOPT_POST, true);
-    $dates = curl_exec($ch);
-    curl_close($ch);
-    $otro = json_decode($dates, true);
-    $token = $otro['access_token'];
-    
-    $consulta = "https://api-hot-connect.hotmart.com/reports/rest/v2/history?transaction=".$transaccion;
-    $authorization = "Authorization: Bearer " . $token;
-    $retorno = curl_get($consulta, $authorization);
-    $result = json_decode($retorno, true);
+if(isset($_POST) && isset($_POST['transaction'])){
+    $transaccion = $_POST['transaction'];
+    $existeOffert = false;
+    $status = "";
+    $productId = "";
+    $nombrePlan = "";
 
-    if(!empty($result)){
-        foreach($result['data'] as $data){
-            foreach($data as $purchase){
-                $keyOffert = $purchase['key'];
-                if ($purchase['status'] == 'APPROVED'){
-                    $approved = true;
-                };
-            }
-        }
+    if(isset($_POST['status'])){
+        $status = $_POST['status'];
+    }
+
+    if(isset($_POST['prod'])){
+        $productId = $_POST['prod'];
+    }
+
+    if(isset($_POST['name_subscription_plan'])){
+        $nombrePlan = $_POST['name_subscription_plan'];
     }
     
-    if ($approved) {
-        $consulta = "https://api-hot-connect.hotmart.com/reports/rest/v2/purchaseDetails?transaction=".$transaccion;
-        $jsonCodificado = curl_get($consulta, $authorization);
-        $result = json_decode($jsonCodificado, true);
-        foreach($result['data'] as $data){
-            $producto = $data['productId'];
+    if ($status == "approved" || $status == "completed") {
+        if(isset($_POST['off'])){
+            $existeOffert = true;
         }
-        $offert = "https://api-hot-connect.hotmart.com/product/rest/v2/$producto/offers/";
-        $offertCodificado = curl_get($offert, $authorization);
-        $ofertas = json_decode($offertCodificado, true);
-        foreach($ofertas['data'] as $data){
-            if ($data['key'] == $keyOffert){
-                $existeOffert = true;
-                $nombrePlan = $data['planName'];
-            }
-        }
-        $idProducto = consulta_items($producto);
-        if($existeOffert){
-            if($idProducto != ""){
+
+        $levelId = consulta_items($productId);
+
+        var_dump($transaccion);
+        var_dump($status);
+        var_dump($productId);
+        var_dump($nombrePlan);
+        var_dump($existeOffert);
+        
+        if(!$existeOffert){
+            if($levelId != ""){
                 $hashlink = obtener_hash_por_offert($nombrePlan);
                 if (!empty($hashlink)){
                     $redirectLink = generar_enlace($hashlink);
@@ -125,10 +95,11 @@ if(isset($_GET) && isset($_GET['transaction'])){
                 }
             }
         }else{
-            if($idProducto != ""){
-                $hashlink = obtener_hash($idProducto);
+            if($levelId != ""){
+                $hashlink = obtener_hash($levelId);
                 if (!empty($hashlink)){
                     $redirectLink = generar_enlace($hashlink);
+					var_dump($redirectLink);
                     header("Location: $redirectLink");
                 }
             }

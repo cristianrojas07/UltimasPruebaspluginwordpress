@@ -99,16 +99,6 @@ class MiembroPressActivation {
 				$settings = array();
 			}
 			$settings["key"] = trim($_POST["licenciaMember"]);
-
-			$license = trim($_POST["licenciaMember"]);
-			$myURL = $_SERVER['HTTP_HOST'];
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_URL, "https://miembros.miembropress.com/activacion.php?license=$license&url=$myURL");
-			curl_exec($ch);
-			curl_close($ch);
-
 			update_option($this->slug, $settings);
 		}
 
@@ -174,7 +164,8 @@ class MiembroPressActivation {
 				$results = wp_remote_retrieve_body($result);
 				$obj = json_decode($results, true);
 
-				if ($obj['success'] == false) {
+				if (!$obj['success'] || !$obj['status']) {
+					$this->call = 0;
 					return "FAILED";
 				}
 
@@ -186,7 +177,16 @@ class MiembroPressActivation {
 				}
 			}
 			if ($obj) {
-				if($obj['success'] && $obj['activado'] && $obj['maxsitio'] != 0){
+				if($obj['success'] && $obj['maxsitio'] != 0 && $obj['status']){
+					$license = $key;
+					$myURL = $_SERVER['HTTP_HOST'];
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($ch, CURLOPT_URL, "https://miembros.miembropress.com/activacion.php?license=$license&url=$myURL");
+					curl_exec($ch);
+					curl_close($ch);
+
 					$version = $lastversion;
 					$time = time();
 					$hash = "";
@@ -212,13 +212,57 @@ class MiembroPressActivation {
 				return $return;
 			}
 		}
-		$this->call = $lastversion;
-		return $lastversion;
+		//$this->call = $lastversion;
+		//return $lastversion;
+		$this->call = $this->val_status($lastversion, true, !$settings["lastversion"]);
+		return $this->val_status($lastversion, false, !$settings["lastversion"]);
     }
-    
+	
+	function val_status($lastversion, $call = false, $noExist = false){
+		if (!function_exists( 'wp_remote_get' ) ) {
+			require_once( ABSPATH . 'wp-includes/http.php' );
+		}
+
+		if (function_exists("wp_remote_get")) {
+			$response = "";
+			$result = wp_remote_get($this->fullURL, array( 'timeout'=>30, 'sslverify' => false, 'httpversion' => '1.1' ));
+
+			if(is_wp_error($response)) {
+				$response = "FAILED";
+			}
+
+			$results = wp_remote_retrieve_body($result);
+			$obj = json_decode($results, true);
+			if (!$obj['status']) {
+				if(!$noExist){
+					$this->settings = get_option($this->slug);
+					unset($this->settings["lastversion"]);
+					update_option($this->slug, $this->settings);
+				}
+				if($call){
+					return 0;
+				}
+				return "OBSOLETE";
+			}else{
+				if($noExist){
+					$this->settings = get_option($this->slug);
+					$this->settings["lastversion"] = $lastversion;
+					update_option($this->slug, $this->settings);
+				}
+				return $lastversion;
+			}
+
+		} else {
+			$snoopy = new Snoopy();
+			$snoopy->_fp_timeout = 10;
+			if ($result = $snoopy->fetch($url)) {
+				$results = $snoopy->results;
+			}
+		}
+	}
+
     function message($call="") {
 		if (empty($call)) { $call = $this->call(); }
-		$url = "tools.php?page=" . plugin_basename('miembro-press/miembro-press.php');
 		?>
 		<?php if (empty($call)) : ?>
 		<!-- do nothing -->
@@ -230,6 +274,10 @@ class MiembroPressActivation {
 			<div class="error">
 				<p><b>MiembroPress Alert:</b> <a href="<?php echo $url; ?>">Incorrect license key</a></p>
 			</div>
+		<?php elseif ($call == "OBSOLETE"): ?>
+		<div class="error">
+			<p><b>MiembroPress Alert:</b> <a href="<?php echo $url; ?>">You have not renewed your product</a></p>
+		</div>
 		<?php endif; ?>
 		<?php
     }
@@ -246,7 +294,7 @@ class MiembroPressActivation {
 						<tr>
 							<th colspan="2" style="padding: 20px;background: #d4d4d4;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">Enter your license:
 								<input type="text" id="licenciaMember" name="licenciaMember" value="<?php echo $_POST["licenciaMember"]?>" placeholder="Please enter your license" size="32"/>
-								<input type="submit" value="Validate MiembroPress" name="Enviar" />
+								<input type="submit" class="button-activate btn" value="Validate MiembroPress" name="Enviar" />
 							</th>
 						</tr>
 					</tfoot>

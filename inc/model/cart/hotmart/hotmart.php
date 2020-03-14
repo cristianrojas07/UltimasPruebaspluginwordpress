@@ -104,7 +104,7 @@ class MiembroPressCartHotmart extends MiembroPressCart {
 							<blockquote>
 								<ol style="list-style-type:upper-alpha;">
 								<p align="center">
-									<textarea name="miembropress_checkout" id="miembropress_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo plugins_url('/miembro-press/request.php', dirname(__FILE__) ) ?></textarea><br />
+									<textarea name="miembropress_checkout" id="miembropress_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo base_url_inc . "request.php" ?></textarea><br />
 									<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
 								</p>
 								</ol>

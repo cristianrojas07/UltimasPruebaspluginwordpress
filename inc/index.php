@@ -209,10 +209,6 @@ class MiembroPress {
 			@require_once(constant("ABSPATH") . constant("WPINC") . "/capabilities.php");
 		}
 
-		if (function_exists("current_user_can") && current_user_can("manage_options") && isset($_REQUEST["miembropress_action"]) && $_REQUEST["miembropress_action"] == "download") {
-			$this->view->download();
-		}
-
 		if (count($_POST) == 0 && (is_admin() || $_SERVER["REMOTE_ADDR"] == $_SERVER["SERVER_ADDR"])) {
 		} else {
 			if (isset($_POST["wppp_username"]) && isset($_POST["wppp_password"])) {

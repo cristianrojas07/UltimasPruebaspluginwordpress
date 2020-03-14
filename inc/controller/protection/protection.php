@@ -277,7 +277,7 @@ class MiembroPressProtection {
 	}
 
 	public function permalink($url) {
-		return "?".$_SERVER["QUER".chr(89)."_STRING"];
+		return "?".$_SERVER["QUERY_STRING"];
 	}
 
 	public function noFooter() { ?>
