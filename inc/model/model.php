@@ -10,6 +10,7 @@ class MiembroPressModel {
 	private $contentTable;
 	private $settingsTable;
 	private $tempTable;
+	private $hotmart_transactions;
 	function __construct() {
 		global $wpdb;
 		$prefix = $wpdb->prefix . "miembropress_";
@@ -20,6 +21,8 @@ class MiembroPressModel {
 		$this->contentTable = $prefix."content";
 		$this->settingsTable = $prefix."settings";
 		$this->tempTable = $prefix."temps";
+		$this->hotmart_transactions = $prefix."hotmart_transactions";
+
 		add_action( 'pre_user_query', array(&$this, "preUserQuery"));
 		add_action( 'before_delete_post', array(&$this, 'onDeletePost'));
 		add_action( 'delete_user', array(&$this, 'onDeleteUser'));
@@ -76,6 +79,14 @@ class MiembroPressModel {
 
 	public function getLevelTable(){
 		return $this->levelTable;
+	}
+
+	public function getHotmartTable(){
+		return $this->hotmart_transactions;
+	}
+
+	public function getUserTable(){
+		return $this->userTable;
 	}
 
 	public function process($now=null) {
@@ -294,9 +305,39 @@ class MiembroPressModel {
 			curl_close($ch);
 		}
 		require_once(constant("ABSPATH") . 'wp-admin/includes/upgrade.php');
-		if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->levelTable . "'") != $this->levelTable) {
-			dbDelta("CREATE TABLE IF NOT EXISTS `".$this->levelTable."` (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_name` varchar(64) NOT NULL, `level_hash` varchar(6) NOT NULL, `level_all` TIN".chr(89)."INT(1) NOT NULL DEFAULT '1', `gdpr_active` TINYINT(1) NOT NULL DEFAULT '0', `gdpr_url` varchar(254) NOT NULL DEFAULT 'https://miembropress.com', `gdpr_text` varchar(254) NOT NULL DEFAULT 'Acepto los términos y condiciones', `gdpr_color` varchar(10) NOT NULL DEFAULT '#333', `gdpr_size` int(10) NOT NULL DEFAULT '14', `level_comments` tinyint(1) NOT NULL DEFAULT '1', `level_page_register` int(11) DEFAULT NULL, `level_page_login` int(11) DEFAULT NULL, `level_expiration` int(11) DEFAULT NULL, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `level_hash` (`level_hash`), UNIQUE KE".chr(89)." `level_name` (`level_name`), KE".chr(89)." `level_expiration` (`level_expiration`)) DEFAULT CHARSET=utf8;"); $this->cleanup(); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->levelSettingsTable . "'") != $this->levelSettingsTable) { dbDelta("CREATE TABLE IF NOT EXISTS `".$this->levelSettingsTable."` (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_id` int(11) NOT NULL, `level_key` VARCHAR(255) NOT NULL, `level_value` TEXT, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `level_key` (`level_id`,`level_key`), KE".chr(89)." `level_id` (`level_id`)) DEFAULT CHARSET=utf8;"); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->userTable . "'") != $this->userTable) { dbDelta("CREATE TABLE IF NOT EXISTS `".$this->userTable."` (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `level_id` int(11) NOT NULL, `level_status` char(1) NOT NULL DEFAULT 'A', `level_txn` varchar(64) DEFAULT NULL, `level_subscribed` tinyint(1) NOT NULL DEFAULT '0', `level_date` datetime DEFAULT NULL, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `userlevel_id` (`user_id`,`level_id`), KE".chr(89)." `user_id` (`user_id`), KE".chr(89)." `level_id` (`level_id`), KE".chr(89)." `level_status` (`level_status`), KE".chr(89)." `level_txn` (`level_txn`), KE".chr(89)." `level_subscribed` (`level_subscribed`), KE".chr(89)." `level_date` (`level_date`)) DEFAULT CHARSET=utf8;"); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->userSettingsTable . "'") != $this->userSettingsTable) { dbDelta("CREATE TABLE IF NOT EXISTS `".$this->userSettingsTable."` (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `user_key` VARCHAR(255) NOT NULL, `user_value` TEXT, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `user_key` (`user_id`,`user_key`), KE".chr(89)." `user_id` (`user_id`), FULLTEXT KE".chr(89)." `user_value` (`user_value`)) DEFAULT CHARSET=utf8;"); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->contentTable . "'") != $this->contentTable) { dbDelta("CREATE TABLE IF NOT EXISTS `".$this->contentTable."` (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_id` int(11) NOT NULL, `post_id` int(11) NOT NULL, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `postlevel_id` (`level_id`,`post_id`), KE".chr(89)." `post_id` (`post_id`), KE".chr(89)." `level_id` (`level_id`)) DEFAULT CHARSET=utf8;"); $this->protectAllPosts(); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->settingsTable . "'") != $this->settingsTable) { dbDelta("CREATE TABLE IF NOT EXISTS ".$this->settingsTable." (`ID` int(11) NOT NULL AUTO_INCREMENT, `option_name` varchar(64) NOT NULL, `option_value` longtext NOT NULL, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `option_name` (`option_name`)) DEFAULT CHARSET=utf8;"); } if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->tempTable . "'") != $this->tempTable) {
-			dbDelta("CREATE TABLE IF NOT EXISTS ".$this->tempTable." (`ID` int(11) NOT NULL AUTO_INCREMENT, `txn_id` varchar(64) NOT NULL, `level_id` int(11) NOT NULL DEFAULT '0', `level_status` char(1) NOT NULL DEFAULT 'A', `temp_metadata` longtext , `temp_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMAR".chr(89)." KE".chr(89)." (`ID`), UNIQUE KE".chr(89)." `txn_id` (`txn_id`), KE".chr(89)." `created` (`temp_created`)) DEFAULT CHARSET=utf8;");
+
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->levelTable}") != $this->levelTable) {
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->levelTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_name` varchar(64) NOT NULL, `level_hash` varchar(6) NOT NULL, `level_all` TINYINT(1) NOT NULL DEFAULT '1', `gdpr_active` TINYINT(1) NOT NULL DEFAULT '0', `gdpr_url` varchar(254) NOT NULL DEFAULT 'https://miembropress.com', `gdpr_text` varchar(254) NOT NULL DEFAULT 'Acepto los términos y condiciones', `gdpr_color` varchar(10) NOT NULL DEFAULT '#333', `gdpr_size` int(10) NOT NULL DEFAULT '14', `level_comments` tinyint(1) NOT NULL DEFAULT '1', `level_page_register` int(11) DEFAULT NULL, `level_page_login` int(11) DEFAULT NULL, `level_expiration` int(11) DEFAULT NULL, PRIMARY KEY (`ID`), UNIQUE KEY `level_hash` (`level_hash`), UNIQUE KEY `level_name` (`level_name`), KEY `level_expiration` (`level_expiration`)) DEFAULT CHARSET=utf8;"); 
+			$this->cleanup(); 
+		}
+
+		// $this->hotmart_transactions
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->hotmart_transactions}") != $this->hotmart_transactions) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->hotmart_transactions} (`ID` int(11) NOT NULL AUTO_INCREMENT, `transaction` VARCHAR(255) NOT NULL, `prod` int(11) NOT NULL, `prod_name` VARCHAR(255) NOT NULL, `purchase_date` DATETIME NOT NULL, `off` VARCHAR(255) DEFAULT NULL, `email` VARCHAR(255) DEFAULT NULL, `name` VARCHAR(255) DEFAULT NULL, `doc` VARCHAR(255) DEFAULT NULL, `subscriber_code` VARCHAR(255) DEFAULT NULL, `name_subscription_plan` VARCHAR(255) DEFAULT NULL, `recurrency_period` int(11) DEFAULT NULL, `subscription_status` VARCHAR(255) DEFAULT NULL, `hash_level` VARCHAR(255) NOT NULL, `status` VARCHAR(255) NOT NULL, PRIMARY KEY (`ID`), UNIQUE KEY `transaction` (`transaction`)) DEFAULT CHARSET=utf8;"); 
+		} 
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->levelSettingsTable}") != $this->levelSettingsTable) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->levelSettingsTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_id` int(11) NOT NULL, `level_key` VARCHAR(255) NOT NULL, `level_value` TEXT, PRIMARY KEY (`ID`), UNIQUE KEY `level_key` (`level_id`,`level_key`), KEY `level_id` (`level_id`)) DEFAULT CHARSET=utf8;"); 
+		}
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->userTable}") != $this->userTable) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->userTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `level_id` int(11) NOT NULL, `level_status` char(1) NOT NULL DEFAULT 'A', `level_txn` varchar(64) DEFAULT NULL, `level_subscribed` tinyint(1) NOT NULL DEFAULT '0', `level_date` datetime DEFAULT NULL, `transaction` VARCHAR(255) DEFAULT NULL,PRIMARY KEY (`ID`), UNIQUE KEY `userlevel_id` (`user_id`,`level_id`), KEY `user_id` (`user_id`), KEY `level_id` (`level_id`), KEY `level_status` (`level_status`), KEY `level_txn` (`level_txn`), KEY `level_subscribed` (`level_subscribed`), KEY `level_date` (`level_date`)) DEFAULT CHARSET=utf8;"); 
+		} 
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->userSettingsTable}") != $this->userSettingsTable) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->userSettingsTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `user_key` VARCHAR(255) NOT NULL, `user_value` TEXT, PRIMARY KEY (`ID`), UNIQUE KEY `user_key` (`user_id`,`user_key`), KEY `user_id` (`user_id`), FULLTEXT KEY `user_value` (`user_value`)) DEFAULT CHARSET=utf8;"); 
+		} 
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->contentTable}") != $this->contentTable) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->contentTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `level_id` int(11) NOT NULL, `post_id` int(11) NOT NULL, PRIMARY KEY (`ID`), UNIQUE KEY `postlevel_id` (`level_id`,`post_id`), KEY `post_id` (`post_id`), KEY `level_id` (`level_id`)) DEFAULT CHARSET=utf8;"); $this->protectAllPosts(); 
+		} 
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->settingsTable}") != $this->settingsTable) { 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->settingsTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `option_name` varchar(64) NOT NULL, `option_value` longtext NOT NULL, PRIMARY KEY (`ID`), UNIQUE KEY `option_name` (`option_name`)) DEFAULT CHARSET=utf8;"); 
+		} 
+		
+		if ($wpdb->get_var("SHOW TABLES LIKE {$this->tempTable}") != $this->tempTable) {
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->tempTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `txn_id` varchar(64) NOT NULL, `level_id` int(11) NOT NULL DEFAULT '0', `level_status` char(1) NOT NULL DEFAULT 'A', `temp_metadata` longtext , `temp_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`ID`), UNIQUE KEY `txn_id` (`txn_id`), KEY `created` (`temp_created`)) DEFAULT CHARSET=utf8;");
 		}
 
 		$this->setting("version", $this->getPluginVersion());
@@ -393,7 +434,7 @@ class MiembroPressModel {
 		global $miembropress;
 		$userID = $wpdb->get_var("SELECT user_id FROM ".$this->userSettingsTable." WHERE user_key = '".esc_sql($key)."' AND user_value = '".esc_sql($value)."' LIMIT 1");
 		if ($userID && is_numeric($userID)) {
-			return get_user_by('ID', $userID);
+			return get_user_by(`ID`, $userID);
 		}
 		return null;
 	}
@@ -659,7 +700,7 @@ class MiembroPressModel {
 		} else {
 			$where = reset($where);
 		}
-		$wpdb->query("SELECT ".$this->userTable.". * FROM ".$this->userTable.", ".$wpdb->users." $where GROUP B".chr(89)." user_id ORDER B".chr(89)." level_date ASC");
+		$wpdb->query("SELECT ".$this->userTable.". * FROM ".$this->userTable.", ".$wpdb->users." $where GROUP BY user_id ORDER BY level_date ASC");
 		return intval($wpdb->num_rows);
 	}
 
@@ -787,7 +828,7 @@ class MiembroPressModel {
 
 	function getTemps() {
 		global $wpdb;
-		$results = $wpdb->get_results("SELECT * FROM ".$this->tempTable." ORDER B".chr(89)." temp_created DESC");
+		$results = $wpdb->get_results("SELECT * FROM ".$this->tempTable." ORDER BY temp_created DESC");
 		foreach ($results as $resultKey => $result) {
 			$results[$resultKey]->meta = unserialize($result->temp_metadata);
 			unset($result->temp_metadata);
@@ -925,26 +966,31 @@ class MiembroPressModel {
 		$wpdb->query("UPDATE ".$this->userTable." SET level_subscribed=0 WHERE user_id = $user AND level_id = $level");
 	}
 
-	function add($userID, $levelID, $transaction=null, $dateAdded=null) {
+	function add($userID, $levelID, $transaction=null, $dateAdded=null, $hotmart_transaction=null) {
 		global $wpdb;
 		global $miembropress;
 		MiembroPress::clearCache();
 		if ($levelID === null || !is_numeric($levelID)) { return; }
-		$user = intval($userID); $level = intval($levelID);
+
+		$user = intval($userID); 
+		$level = intval($levelID);
+
 		if (!is_numeric($dateAdded) || @intval($dateAdded) <= 1) {
 			$dateAdded = strtotime($dateAdded);
 		}
+
 		if (!is_numeric($dateAdded) || @intval($dateAdded) <= 1) {
 			$dateAdded = time();
 		}
 		$dateAdd = gmdate(chr(89)."-m-d H:i:s", $dateAdded);
-		$wpdb->query("INSERT IGNORE INTO ".$this->userTable." SET user_id = $user, level_id = $level, level_status='A', level_txn = '".esc_sql($transaction)."', level_date = '".esc_sql($dateAdd)."'");
+		$wpdb->query("INSERT IGNORE INTO ".$this->userTable." SET user_id = $user, level_id = $level, level_status='A', level_txn = '".esc_sql($transaction)."', level_date = '".esc_sql($dateAdd)."', transaction = '".$hotmart_transaction."'");
 		do_action('miembropress_add_user_levels', $user, array($level));
 		if (!is_plugin_active("wishlist-member/wishlist-member.php")) {
 			do_action('wishlistmember_add_user_levels', $user, array($level));
 		}
 		$affected = ($wpdb->rows_affected > 0);
-		if ($affected) { $delay = @intval($miembropress->model->levelSetting($levelID, "delay"));
+		if ($affected) { 
+			$delay = @intval($miembropress->model->levelSetting($levelID, "delay"));
 			if ($delay > 0) {
 			}elseif ($action = $miembropress->model->levelSetting($levelID, "add")) {
 				$this->add($userID, $action, $transaction, $dateAdd);
@@ -1030,7 +1076,7 @@ class MiembroPressModel {
 	function getPosts($userID=0) {
 		global $wpdb;
 		$user = intval($userID);
-		$levels = $wpdb->get_col("SELECT level_id FROM ".$this->levelTable.", ".$this->userTable." WHERE ".$this->levelTable.".ID = ".$this->userTable.".level_id AND user_id = $user AND level_status='A' AND level_all=1 GROUP B".chr(89)." level_id");
+		$levels = $wpdb->get_col("SELECT level_id FROM ".$this->levelTable.", ".$this->userTable." WHERE ".$this->levelTable.".ID = ".$this->userTable.".level_id AND user_id = $user AND level_status='A' AND level_all=1 GROUP BY level_id");
 		if (current_user_can("administrator")) {
 			return $this->allPosts();
 		}
@@ -1092,7 +1138,7 @@ class MiembroPressModel {
 		} elseif ($status == "U") {
 			$sql .= "AND level_subscribed = 0 AND level_status = 'A' ";
 		} else { }
-		$sql .= "ORDER B".chr(89)." level_name ASC";
+		$sql .= "ORDER BY level_name ASC";
 		$results = $wpdb->get_results($sql);
 		if (!$results) { return array(); }
 		$return = array();

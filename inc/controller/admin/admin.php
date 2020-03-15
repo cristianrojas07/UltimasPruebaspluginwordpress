@@ -1238,6 +1238,7 @@ class MiembroPressAdmin {
 		}
 		extract(MiembroPress::extract($vars));
 		$validate = MiembroPress::validate($vars);
+		
 		$level = null;
 		if (isset($vars["miembropress_level"])) {
 			$level = intval($vars["miembropress_level"]);
@@ -1253,6 +1254,12 @@ class MiembroPressAdmin {
 				$level = $registerLevel->ID;
 			}
 		}
+
+		$transaction = null;
+		if(isset($vars["hotmart_transaction"])){
+			$transaction = $vars["hotmart_transaction"];
+		}
+
 		$existing = (isset($_GET["existing"]) && $_GET["existing"] == 1);
 		if (!$existing && $validate["pass"] == false) {
 			if ($validate["passwordCorrect"] == false) {
@@ -1340,31 +1347,15 @@ class MiembroPressAdmin {
 			}
 
 			//ESTO VA SI O SI
-			$miembropress->model->add($newUser, $level, $txn);
+			// miembropress_hotmart_transaction
+			$miembropress->model->add($newUser, $level, $txn, null, $transaction);
 			if (isset($temp) && isset($temp->level_status) && $temp->level_status == "C") {
 				$miembropress->model->cancel($newUser, $level);
 			}
+
 			$userID = intval($newUser);
 			$levelInfo = $miembropress->model->getLevel($level);
 			$nameLevel = $miembropress->model->getLevelName($level);
-			$licenciaKey = $wpdb->get_var("SELECT licencias FROM wpop_licencias ORDER BY id LIMIT 1");
-			$idLicencia = $wpdb->get_var("SELECT id FROM wpop_licencias ORDER BY id LIMIT 1");
-			if ($nameLevel == "Full") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id) VALUES ($idLicencia, '$licenciaKey', '0', 'Full', $userID)");
-				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
-			}
-			if ($nameLevel == "Personal") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 1)");
-				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
-			}
-			if ($nameLevel == "Profesional") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 3)");
-				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
-			}
-			if ($nameLevel == "Agencia") {
-				$wpdb->query("INSERT INTO wpop_licencias_member (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 10)");
-				$wpdb->query("DELETE FROM wpop_licencias WHERE licencias = '$licenciaKey'");
-			}
 			$miembropress->model->removeTemp($txn);
 			$headers = 'From: '.get_option("blogname").' < '.get_option("admin_email") .' > ' . "";
 			$home = home_url("/login");
@@ -1508,6 +1499,9 @@ class MiembroPressAdmin {
 			<?php endif; ?>
 			<?php if (isset($miembropress->registerLevel->ID)): ?>
 				<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
+			<?php endif; ?>
+			<?php if (isset($_GET['transaction'])): ?>
+				<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['transaction']; ?>">
 			<?php endif; ?>
 			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
 				<h3 style="margin:0;">Acceso a cuenta existente</h3>
@@ -1819,7 +1813,7 @@ class MiembroPressAdmin {
 		$thisPage = (isset($_REQUEST["page"]) ? $_REQUEST["page"] : "");
 		?>
 		<!-- table of users -->
-		<table class="widefat" style="width:800px;">
+		<table class="widefat" style="width:900px;">
 			<thead>
 				<tr>
 					<th nowrap="" scope="col" class="check-column" style="white-space:nowrap"><input type="checkbox" /></th>
@@ -1837,7 +1831,7 @@ class MiembroPressAdmin {
 				<?php
 				$firstname = get_user_meta($user->ID,'first_name', true);
 				$lastname = get_user_meta($user->ID,'last_name', true);
-				$fullname = $firstname . "" . $lastname;
+				$fullname = $firstname . " " . $lastname;
 				$userLevels = $miembropress->model->getLevelInfo($user->ID);
 				if (!$userLevels || !is_array($userLevels)) { $userLevels = array(); } ?>
 				<tr>
@@ -1973,7 +1967,8 @@ class MiembroPressAdmin {
 				</thead>
 				<tbody>
 					<?php foreach ($miembropress->model->getTemps() as $temp): ?>
-					<?php $level = $miembropress->model->getLevel($temp->level_id); $link = $miembropress->model->signupURL($level->level_hash) . "&complete=".$temp->txn_id; ?>
+					<?php $level = $miembropress->model->getLevel($temp->level_id); 
+					$link = $miembropress->model->signupURL($level->level_hash) . "&complete=".$temp->txn_id; ?>
 					<tr>
 						<th scope="row" class="check-column"><input type="checkbox" name="miembropress_temps[<?php echo intval($temp->ID); ?>]" /></td>
 							<td style="vertical-align:middle;"><a href="<?php echo $link; ?>"><b><?php echo htmlentities($temp->txn_id); ?></b></a>
@@ -2428,13 +2423,13 @@ class MiembroPressAdmin {
 	function add_root_menu($name, $id, $href = FALSE) {
 		global $wp_admin_bar;
 		if ( !is_super_admin() || !is_admin_bar_showing() ) return;
-		$wp_admin_bar->add_menu( array( 'id' => $id, 'meta' => array(), 'title' => $name, 'href' => $href ) );
+		$wp_admin_bar->add_menu( array( `ID` => $id, 'meta' => array(), 'title' => $name, 'href' => $href ) );
 	}
 
 	function add_sub_menu($name, $link, $root_menu, $id, $meta = FALSE) {
 		global $wp_admin_bar;
 		if ( ! is_super_admin() || ! is_admin_bar_showing() ) return;
-		$wp_admin_bar->add_menu( array( 'parent' => $root_menu, 'id' => $id, 'title' => $name, 'href' => $link, 'meta' => $meta ) );
+		$wp_admin_bar->add_menu( array( 'parent' => $root_menu, `ID` => $id, 'title' => $name, 'href' => $link, 'meta' => $meta ) );
 	}
 
 	public function tabLink($name="") {

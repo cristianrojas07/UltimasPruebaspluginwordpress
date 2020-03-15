@@ -205,8 +205,8 @@ class Mailin {
 		@options data {Integer} send_now: Flag to send campaign now. Possible values = 0 (default) & 1. send_now = 0 means campaign can’t be send now, & send_now = 1 means campaign ready to send now [Optional]
 	*/
 	public function update_campaign( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'campaign/' . $id, json_encode( $data ) );
 	}
 
@@ -216,7 +216,7 @@ class Mailin {
 		@options data {Integer} id: Id of campaign to be deleted [Mandatory]
 	*/
 	public function delete_campaign( $data ) {
-		return $this->delete( 'campaign/' . $data['id'], '' );
+		return $this->delete( 'campaign/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -232,8 +232,8 @@ class Mailin {
 		@options data {String} email_body: Body of the message [Mandatory]
 	*/
 	public function campaign_report_email( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->post( 'campaign/' . $id . '/report', json_encode( $data ) );
 	}
 
@@ -245,8 +245,8 @@ class Mailin {
 		@options data {String} type: Type of recipients. Possible values – all, non_clicker, non_opener, clicker, opener, soft_bounces, hard_bounces & unsubscribes [Mandatory]
 	*/
 	public function campaign_recipients_export( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->post( 'campaign/' . $id . '/recipients', json_encode( $data ) );
 	}
 
@@ -267,8 +267,8 @@ class Mailin {
 		@options data {Array} emails: Email address of recipient(s) existing in the one of the lists & should not be blacklisted. Example: "test@example.net". You can use commas to separate multiple recipients [Mandatory]
 	*/
 	public function send_bat_email( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->post( 'campaign/' . $id . '/test', json_encode( $data ) );
 	}
 
@@ -279,8 +279,8 @@ class Mailin {
 		@options data {String} status: Types of status. Possible values – suspended, archive, darchive, sent, queued, replicate and replicate_template ( case sensitive ) [Mandatory]
 	*/
 	public function update_campaign_status( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'campaign/' . $id . '/updatecampstatus', json_encode( $data ) );
 	}
 
@@ -334,8 +334,8 @@ class Mailin {
 		@options data {Integer} send_now: Flag to send campaign now. Possible values = 0 (default) & 1. send_now = 0 means campaign can’t be send now, & send_now = 1 means campaign ready to send now [Optional]
 	*/
 	public function update_trigger_campaign( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'campaign/' . $id, json_encode( $data ) );
 	}
 
@@ -355,7 +355,7 @@ class Mailin {
 		@options data {Integer} id: Id of folder to get details [Mandatory]
 	*/
 	public function get_folder( $data ) {
-		return $this->get( 'folder/' . $data['id'], '' );
+		return $this->get( 'folder/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -373,7 +373,7 @@ class Mailin {
 		@options data {Integer} id: Id of folder to be deleted [Mandatory]
 	*/
 	public function delete_folder( $data ) {
-		return $this->delete( 'folder/' . $data['id'], '' );
+		return $this->delete( 'folder/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -383,8 +383,8 @@ class Mailin {
 		@options data {String} name: Desired name of the folder to be modified [Mandatory]
 	*/
 	public function update_folder( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'folder/' . $id, json_encode( $data ) );
 	}
 
@@ -405,7 +405,7 @@ class Mailin {
 		@options data {Integer} id: Id of list to get details [Mandatory]
 	*/
 	public function get_list( $data ) {
-		return $this->get( 'list/' . $data['id'], '' );
+		return $this->get( 'list/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -426,8 +426,8 @@ class Mailin {
 		@options data {Integer} list_parent: Folder ID [Mandatory]
 	*/
 	public function update_list( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'list/' . $id, json_encode( $data ) );
 	}
 
@@ -437,7 +437,7 @@ class Mailin {
 		@options data {Integer} id: Id of list to be deleted [Mandatory]
 	*/
 	public function delete_list( $data ) {
-		return $this->delete( 'list/' . $data['id'], '' );
+		return $this->delete( 'list/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -460,8 +460,8 @@ class Mailin {
 	*/
 
 	public function add_users_list( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->post( 'list/' . $id . '/users', json_encode( $data ) );
 	}
 
@@ -472,8 +472,8 @@ class Mailin {
 		@options data {Array} users: Email address of the already existing user(s) in the SendinBlue contacts to be modified. Example: "test@example.net". You can use commas to separate multiple users [Mandatory]
 	*/
 	public function delete_users_list( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->delete( 'list/' . $id . '/delusers', json_encode( $data ) );
 	}
 
@@ -589,7 +589,7 @@ class Mailin {
 		@options data {Integer} id: Id of process to get details [Mandatory]
 	*/
 	public function get_process( $data ) {
-		return $this->get( 'process/' . $data['id'], '' );
+		return $this->get( 'process/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -607,7 +607,7 @@ class Mailin {
 		@options data {Integer} id: Id of webhook to get details [Mandatory]
 	*/
 	public function get_webhook( $data ) {
-		return $this->get( 'webhook/' . $data['id'], '' );
+		return $this->get( 'webhook/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -628,7 +628,7 @@ class Mailin {
 		@options data {Integer} id: Id of webhook to be deleted [Mandatory]
 	*/
 	public function delete_webhook( $data ) {
-		return $this->delete( 'webhook/' . $data['id'], '' );
+		return $this->delete( 'webhook/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -640,8 +640,8 @@ class Mailin {
 		@options data {Array} events: Set of events. You can use commas to separate multiple events. Possible values for Transcational webhook – request, delivered, hard_bounce, soft_bounce, blocked, spam, invalid_email, deferred, click, & opened and Possible Values for Marketing webhook – spam, opened, click, hard_bounce, unsubscribe, soft_bounce & list_addition ( case sensitive ) [Mandatory]
 	*/
 	public function update_webhook( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'webhook/' . $id, json_encode( $data ) );
 	}
 
@@ -673,8 +673,8 @@ class Mailin {
 		@options data {Array} ip_domain: Pass pipe ( | ) separated Dedicated IP and its associated Domain. Example: "1.2.3.4|mydomain.com". You can use commas to separate multiple ip_domain’s [Mandatory: Only for Dedicated IP clients, for Shared IP clients, it should be kept blank]
 	*/
 	public function update_sender( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'advanced/' . $id, json_encode( $data ) );
 	}
 
@@ -684,7 +684,7 @@ class Mailin {
 		@options data {Integer} id: Id of sender to be deleted [Mandatory]
 	*/
 	public function delete_sender( $data ) {
-		return $this->delete( 'advanced/' . $data['id'], '' );
+		return $this->delete( 'advanced/' . $data[`ID`], '' );
 	}
 
 	/*
@@ -757,8 +757,8 @@ class Mailin {
 		@options data {Array} attachment: To send attachment/s generated on the fly you have to pass your attachment/s filename & its base64 encoded chunk data as an associative array [Optional]
 	*/
 	public function send_transactional_template( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'template/' . $id, json_encode( $data ) );
 	}
 
@@ -798,8 +798,8 @@ class Mailin {
 		@options data {Integer} attachment: Status of attachment. Possible values = 0 (default) & 1. attach = 0 means an attachment can’t be sent, & attach = 1 means an attachment can be sent, in the email [Optional]
 	*/
 	public function update_template( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'template/' . $id, json_encode( $data ) );
 	}
 
@@ -847,8 +847,8 @@ class Mailin {
 		@options data {Integer} send_now: Flag to send campaign now. Possible values = 0 (default) & 1. send_now = 0 means campaign can’t be send now, & send_now = 1 means campaign ready to send now [Optional]
 	*/
 	public function update_sms_campaign( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->put( 'sms/' . $id, json_encode( $data ) );
 	}
 
@@ -859,8 +859,8 @@ class Mailin {
 		@options data {String} to: Mobile number with the country code to send test SMS. The mobile number defined here should belong to one of your contacts in SendinBlue account and should not be blacklisted [Mandatory]
 	*/
 	public function send_bat_sms( $data ) {
-		$id = $data['id'];
-		unset( $data['id'] );
+		$id = $data[`ID`];
+		unset( $data[`ID`] );
 		return $this->get( 'sms/' . $id, json_encode( $data ) );
 	}
 

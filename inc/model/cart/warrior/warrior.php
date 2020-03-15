@@ -85,8 +85,8 @@ class MiembroPressCartWarrior extends MiembroPressCart {
 		if (!isset($_POST["RECEIVERBUSINESS"])) { return; }
 		$token = $miembropress->model->setting("warriorplus_token");
 		if (!$token) { return; }
-		if (!isset($_POST["WP_ACTION"]) || !isset($_POST["WP_SECURIT".chr(89)."KE".chr(89)]) || !isset($_POST["WP_ITEM_NUMBER"]) || !isset($_POST["WP_ITEM_NUMBER"]) || !isset($_POST["WP_SECURIT".chr(89)."KE".chr(89)])) { return; }
-		if ($_POST["WP_SECURIT".chr(89)."KE".chr(89)] != $token) { return; }
+		if (!isset($_POST["WP_ACTION"]) || !isset($_POST["WP_SECURITYKEY"]) || !isset($_POST["WP_ITEM_NUMBER"]) || !isset($_POST["WP_ITEM_NUMBER"]) || !isset($_POST["WP_SECURITYKEY"])) { return; }
+		if ($_POST["WP_SECURITYKEY"] != $token) { return; }
 		$item = $_POST["WP_ITEM_NUMBER"];
 		$items = $miembropress->model->setting("warriorplus_items");
 		$level = array_search($item, $items);
