@@ -118,6 +118,15 @@ class HotmartTransaction{
             }
 			
             $this->hash_level = $this->consulta_items($prod);
+            if(!empty($this->hash_level)){
+                $hashlink = $this->obtener_hash($this->hash_level);
+                if (!empty($hashlink)){
+                    $redirectLink = $this->generar_enlace($hashlink) . "&trs={$this->transaction}";
+                    $this->save_transaction();
+                    header("Location: $redirectLink");
+                }
+            }
+            /*
             if(!$existOffert){
                 if(!empty($this->hash_level)){
                     $hashlink = $this->obtener_hash_por_offert($name_subscription_plan);
@@ -135,7 +144,7 @@ class HotmartTransaction{
                         header("Location: $redirectLink");
                     }
                 }
-            }
+            }*/
         }else{
 			var_dump($_POST);
 		}

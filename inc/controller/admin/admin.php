@@ -1217,7 +1217,9 @@ class MiembroPressAdmin {
 	public function create($vars=null, $api=false) {
 		global $miembropress;
 		global $wpdb;
-
+		$tablaLicencias = $wpdb->prefix . "licencias";
+		$tablaLicenciasMember = $wpdb->prefix . "licencias_member";
+		$userTable = $miembropress->model->getUserTable();
 		$notify = true;
 		$redirect = true;
 		if ($api) { $redirect = false; }
@@ -1259,6 +1261,8 @@ class MiembroPressAdmin {
 		if(isset($vars["hotmart_transaction"])){
 			$transaction = $vars["hotmart_transaction"];
 		}
+
+		$ipUser = $this->getRealIP();
 
 		$existing = (isset($_GET["existing"]) && $_GET["existing"] == 1);
 		if (!$existing && $validate["pass"] == false) {
@@ -1348,7 +1352,7 @@ class MiembroPressAdmin {
 
 			//ESTO VA SI O SI
 			// miembropress_hotmart_transaction
-			$miembropress->model->add($newUser, $level, $txn, null, $transaction);
+			$miembropress->model->add($newUser, $level, $txn, null, $transaction, $ipUser);
 			if (isset($temp) && isset($temp->level_status) && $temp->level_status == "C") {
 				$miembropress->model->cancel($newUser, $level);
 			}
@@ -1356,6 +1360,26 @@ class MiembroPressAdmin {
 			$userID = intval($newUser);
 			$levelInfo = $miembropress->model->getLevel($level);
 			$nameLevel = $miembropress->model->getLevelName($level);
+
+			$licenciaKey = $wpdb->get_var("SELECT licencias FROM $tablaLicencias ORDER BY id LIMIT 1");
+			$idLicencia = $wpdb->get_var("SELECT id FROM $tablaLicencias ORDER BY id LIMIT 1");
+			if ($nameLevel == "Full") {
+				$wpdb->query("INSERT INTO $tablaLicenciasMember (id, licencia, activado, type, user_id) VALUES ($idLicencia, '$licenciaKey', '0', 'Full', $userID)");
+				$wpdb->query("DELETE FROM $tablaLicencias WHERE licencias = '$licenciaKey'");
+			}
+			if ($nameLevel == "Personal") {
+				$wpdb->query("INSERT INTO $tablaLicenciasMember (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Personal', $userID, 3)");
+				$wpdb->query("DELETE FROM $tablaLicencias WHERE licencias = '$licenciaKey'");
+			}
+			if ($nameLevel == "Profesional") {
+				$wpdb->query("INSERT INTO $tablaLicenciasMember (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Profesional', $userID, 9)");
+				$wpdb->query("DELETE FROM $tablaLicencias WHERE licencias = '$licenciaKey'");
+			}
+			if ($nameLevel == "Agencia") {
+				$wpdb->query("INSERT INTO $tablaLicenciasMember (id, licencia, activado, type, user_id, maxsitio) VALUES ($idLicencia, '$licenciaKey', '0', 'Agencia', $userID, 30)");
+				$wpdb->query("DELETE FROM $tablaLicencias WHERE licencias = '$licenciaKey'");
+			}
+
 			$miembropress->model->removeTemp($txn);
 			$headers = 'From: '.get_option("blogname").' < '.get_option("admin_email") .' > ' . "";
 			$home = home_url("/login");
@@ -1434,6 +1458,16 @@ class MiembroPressAdmin {
 		return $text;
 	}
 
+	function getRealIP() {
+		if (!empty($_SERVER['HTTP_CLIENT_IP']))
+			return $_SERVER['HTTP_CLIENT_IP'];
+		   
+		if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+			return $_SERVER['HTTP_X_FORWARDED_FOR'];
+	   
+		return $_SERVER['REMOTE_ADDR'];
+	}
+
 	function register($blank=false) {
 		global $wpdb;
 		global $miembropress;
@@ -1500,8 +1534,8 @@ class MiembroPressAdmin {
 			<?php if (isset($miembropress->registerLevel->ID)): ?>
 				<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
 			<?php endif; ?>
-			<?php if (isset($_GET['transaction'])): ?>
-				<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['transaction']; ?>">
+			<?php if (isset($_GET['trs'])): ?>
+				<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
 			<?php endif; ?>
 			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
 				<h3 style="margin:0;">Acceso a cuenta existente</h3>

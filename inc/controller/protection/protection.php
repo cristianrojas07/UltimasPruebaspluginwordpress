@@ -320,12 +320,46 @@ class MiembroPressProtection {
 
 	public function title($buffer) {
 		global $miembropress;
+		global $wpdb;
+		$userTable = $miembropress->model->getUserTable();
+		$hotmartTable = $miembropress->model->getHotmartTable();
+		if(isset($_GET['trs'])){
+			$transaction = $_GET['trs'];
+			$existTransaction = $wpdb->get_var( "SELECT ID FROM $hotmartTable WHERE transaction = '$transaction'" );
+			$existTransactionUser = $wpdb->get_var( "SELECT ID FROM $userTable WHERE transaction = '$transaction'" );
+
+			if(is_null($existTransaction)){
+				die("<h3>404 Página No Encontrada</h3>");
+			}
+			if(!is_null($existTransactionUser)){
+				die("<h2>Usted ya se ha creado una cuenta, los datos se enviaron a su correo.</h2>");
+			}
+			$this->verificatedUserIp($userTable);
+		}
+		
+		$this->verificatedUserIp($userTable);
+		
 		if (isset($miembropress->registerLevel->level_name)) {
 			return $miembropress->registerLevel->level_name . " Registro";
 		}
 		return $this->protectedTitle;
 	}
 
+	public function verificatedUserIp($userTable){
+		global $miembropress;
+		global $wpdb;
+		$uri = urldecode($_SERVER["REQUEST_URI"]);
+		$ipUser = $miembropress->admin->getRealIP();
+		$existIp = $wpdb->get_row( "SELECT ID, level_id FROM $userTable WHERE ip_user = '$ipUser'" );
+		if(!is_null($existIp->ID)){
+			$levelId = $existIp->level_id;
+			$levelHash = $miembropress->model->getLevelHash($levelId);
+			if(strstr($uri, $levelHash)){
+				die("<h2>Usted ya se ha creado una cuenta, los datos se enviaron a su correo.</h2>");
+			}
+		}
+	}
+	
 	public function comments($posts) {
 		global $miembropress;
 		if (current_user_can("manage_options")) { return $posts; }

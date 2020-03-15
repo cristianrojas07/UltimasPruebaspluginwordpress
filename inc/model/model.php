@@ -321,7 +321,7 @@ class MiembroPressModel {
 		}
 		
 		if ($wpdb->get_var("SHOW TABLES LIKE {$this->userTable}") != $this->userTable) { 
-			dbDelta("CREATE TABLE IF NOT EXISTS {$this->userTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `level_id` int(11) NOT NULL, `level_status` char(1) NOT NULL DEFAULT 'A', `level_txn` varchar(64) DEFAULT NULL, `level_subscribed` tinyint(1) NOT NULL DEFAULT '0', `level_date` datetime DEFAULT NULL, `transaction` VARCHAR(255) DEFAULT NULL,PRIMARY KEY (`ID`), UNIQUE KEY `userlevel_id` (`user_id`,`level_id`), KEY `user_id` (`user_id`), KEY `level_id` (`level_id`), KEY `level_status` (`level_status`), KEY `level_txn` (`level_txn`), KEY `level_subscribed` (`level_subscribed`), KEY `level_date` (`level_date`)) DEFAULT CHARSET=utf8;"); 
+			dbDelta("CREATE TABLE IF NOT EXISTS {$this->userTable} (`ID` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `level_id` int(11) NOT NULL, `level_status` char(1) NOT NULL DEFAULT 'A', `level_txn` varchar(64) DEFAULT NULL, `level_subscribed` tinyint(1) NOT NULL DEFAULT '0', `level_date` datetime DEFAULT NULL, `transaction` VARCHAR(255) DEFAULT NULL, `ip_user` VARCHAR(255) DEFAULT NULL, PRIMARY KEY (`ID`), UNIQUE KEY `userlevel_id` (`user_id`,`level_id`), KEY `user_id` (`user_id`), KEY `level_id` (`level_id`), KEY `level_status` (`level_status`), KEY `level_txn` (`level_txn`), KEY `level_subscribed` (`level_subscribed`), KEY `level_date` (`level_date`)) DEFAULT CHARSET=utf8;"); 
 		} 
 		
 		if ($wpdb->get_var("SHOW TABLES LIKE {$this->userSettingsTable}") != $this->userSettingsTable) { 
@@ -966,7 +966,7 @@ class MiembroPressModel {
 		$wpdb->query("UPDATE ".$this->userTable." SET level_subscribed=0 WHERE user_id = $user AND level_id = $level");
 	}
 
-	function add($userID, $levelID, $transaction=null, $dateAdded=null, $hotmart_transaction=null) {
+	function add($userID, $levelID, $transaction=null, $dateAdded=null, $hotmart_transaction=null, $ipUser=null) {
 		global $wpdb;
 		global $miembropress;
 		MiembroPress::clearCache();
@@ -983,7 +983,7 @@ class MiembroPressModel {
 			$dateAdded = time();
 		}
 		$dateAdd = gmdate(chr(89)."-m-d H:i:s", $dateAdded);
-		$wpdb->query("INSERT IGNORE INTO ".$this->userTable." SET user_id = $user, level_id = $level, level_status='A', level_txn = '".esc_sql($transaction)."', level_date = '".esc_sql($dateAdd)."', transaction = '".$hotmart_transaction."'");
+		$wpdb->query("INSERT IGNORE INTO ".$this->userTable." SET user_id = $user, level_id = $level, level_status='A', level_txn = '".esc_sql($transaction)."', level_date = '".esc_sql($dateAdd)."', transaction = '".$hotmart_transaction."', ip_user = '".$ipUser."'");
 		do_action('miembropress_add_user_levels', $user, array($level));
 		if (!is_plugin_active("wishlist-member/wishlist-member.php")) {
 			do_action('wishlistmember_add_user_levels', $user, array($level));
@@ -1202,6 +1202,12 @@ class MiembroPressModel {
 		global $wpdb;
 		$levelID = intval($levelID);
 		return $wpdb->get_var("SELECT level_name FROM ".$this->levelTable." WHERE ID = $levelID LIMIT 1");
+	}
+
+	function getLevelHash($levelID) {
+		global $wpdb;
+		$levelID = intval($levelID);
+		return $wpdb->get_var("SELECT level_hash FROM ".$this->levelTable." WHERE ID = $levelID LIMIT 1");
 	}
 
 	function hasAccess($userID, $levelID, $includeCanceled=false) {
