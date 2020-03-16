@@ -2,9 +2,9 @@
 * Menu Tabular solo Con CSS
 *---------------------------*/
 html {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box!important;
+	-moz-box-sizing: border-box!important;
+	box-sizing: border-box!important;
 }
 
 .tabla-width{
@@ -16,141 +16,113 @@ html {
 }
 
 .fondo-steps{
-	background: yellow;
+	background: yellow!important;
 }
 
 .espacio-steps{
-	margin-bottom: 30px;
+	margin-bottom: 30px!important;
 }
 
 .step2-popup{
-	color: #23282d;
-    font-size: 1.3em;
-    margin: 1em 0;
-	font-weight: 600;
+	color: #23282d!important;
+    font-size: 1.3em!important;
+    margin: 1em 0!important;
+	font-weight: 600!important;
 }
 
 .ventana_flotante {
-    border-radius: 6px 6px 6px 6px;
-    left: auto;
-    padding: 10px 0 0;
-    position: fixed;
-    text-align: center;
-    z-index: 15;
-	display: none;
+    border-radius: 6px 6px 6px 6px!important;
+    left: auto!important;
+    padding: 10px 0 0!important;
+    position: fixed!important;
+    text-align: center!important;
+    z-index: 15!important;
+	display: none!important;
 }
 
 .derecha{
-	right: 0px;
-	bottom: -15px;
+	right: 0px!important;
+	bottom: -15px!important;
 	padding-right: 10px!important;
 }
 
 .izquierda{
-	left: 0px;
-	bottom: -15px;
+	left: 0px!important;
+	bottom: -15px!important;
 	padding-left: 10px!important;
-}
-
-.boton-registrarse{
-	text-align: center;
-    color: #555;
-    border-color: #ccc;
-    background: #f7f7f7;
-    box-shadow: 0 1px 0 #ccc;
-    vertical-align: top;
-    display: inline-block;
-    text-decoration: none;
-    font-size: 13px;
-    line-height: 26px;
-    height: 28px;
-    margin: 0;
-    padding: 0 10px 1px;
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    -webkit-appearance: none;
-    border-radius: 3px;
-    white-space: nowrap;
-    box-sizing: border-box;
-}
-
-.boton-registrarse:hover{
-	background: #fafafa;
-    border-color: #999;
-    color: #23282d;
 }
 /*--------------------------
 * MENU TABS
 ---------------------------*/
 .menu__tabs {
-	list-style: none;
-	overflow: hidden;
-	width: 1000px;
+	list-style: none!important;
+	overflow: hidden!important;
+	width: 1000px!important;
 }
 
 .menu-tabs-wrapper{
-	list-style: none;
-	overflow: hidden;
-	width: 1000px;
+	list-style: none!important;
+	overflow: hidden!important;
+	width: 1000px!important;
 }
 
 .menu__tabs a {
-	background: #333b48;
-	display: inline-block;
-	color: #FFF;
-	text-decoration: none;
-	-webkit-border-radius: 4px 4px 0 0;
-	-moz-border-radius: 4px 4px 0 0;
-	border-radius: 4px 4px 0 0;
-	-webkit-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-	-webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
-	-moz-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
-	box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+	background: #333b48!important;
+	display: inline-block!important;
+	color: #FFF!important;
+	text-decoration: none!important;
+	-webkit-border-radius: 4px 4px 0 0!important;
+	-moz-border-radius: 4px 4px 0 0!important;
+	border-radius: 4px 4px 0 0!important;
+	-webkit-transition: all 0.3s ease!important;
+	-o-transition: all 0.3s ease!important;
+	transition: all 0.3s ease!important;
+	-webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
+	-moz-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
+	box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
 }
 
 .button-activate{
-	background: #333b48;
-	display: inline-block;
-	color: #FFF;
-	text-decoration: none;
-	-webkit-border-radius: 4px 4px 0 0;
-	-moz-border-radius: 4px 4px 0 0;
-	border-radius: 4px 4px 0 0;
-	-webkit-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	transition: all 0.3s ease;
-	-webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
-	-moz-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
-	box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2);
+	background: #333b48!important;
+	border-color: #333b48!important;
+	display: inline-block!important;
+	color: #FFF!important;
+	text-decoration: none!important;
+	-webkit-border-radius: 4px 4px 0 0!important;
+	-moz-border-radius: 4px 4px 0 0!important;
+	border-radius: 4px!important;
+	-webkit-transition: all 0.3s ease!important;
+	-o-transition: all 0.3s ease!important;
+	transition: all 0.3s ease!important;
+	-webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
+	-moz-box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
+	box-shadow: inset 0 -2px 5px rgba(0,0,0,0.2)!important;
 }
 
 .button-activate:hover{
-  background: #515a68;
-	color: #fff;
+	background: #515a68!important;
+	color: #fff!important;
 }
 
 .nav-tab{
-	border-radius: 4px 4px 0 0;
+	border-radius: 4px 4px 0 0!important;
 }
 
 .nav-tab-active{
-	border-radius: 4px 4px 0 0;
+	border-radius: 4px 4px 0 0!important;
 }
 
 .menu__tabs a:hover {
-	background: #515a68;
-	color: #fff;
+	background: #515a68!important;
+	color: #fff!important;
 }
 
 .menu__tabs a.active {
-	color: #333b48;
-	background: #FFF;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
+	color: #333b48!important;
+	background: #FFF!important;
+	-webkit-box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	box-shadow: none!important;
 }
 
 
@@ -159,119 +131,119 @@ CSS Maximizer
 */
 
 .btn {
-    display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
+    display: inline-block!important;
+    padding: 6px 12px!important;
+    margin-bottom: 0!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+    line-height: 1.42857143!important;
+    text-align: center!important;
+    white-space: nowrap!important;
+    vertical-align: middle!important;
+    -ms-touch-action: manipulation!important;
+    touch-action: manipulation!important;
+    cursor: pointer!important;
+    -webkit-user-select: none!important;
+    -moz-user-select: none!important;
+    -ms-user-select: none!important;
+    user-select: none!important;
+    background-image: none!important;
+    border: 1px solid transparent!important;
+    border-radius: 4px!important;
 }
 
 .btn-danger {
-    color: #fff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
+    color: #fff!important;
+    background-color: #d9534f!important;
+    border-color: #d43f3a!important;
 }
 
 .close {
-    float: right;
-    font-size: 21px;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    filter: alpha(opacity=20);
-    opacity: .2;
+    float: right!important;
+    font-size: 21px!important;
+    font-weight: 700!important;
+    line-height: 1!important;
+    color: #000!important;
+    text-shadow: 0 1px 0 #fff!important;
+    filter: alpha(opacity=20)!important;
+    opacity: .2!important;
 }
 
 .close:focus, .close:hover {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-    filter: alpha(opacity=50);
-    opacity: .5;
-	background: transparent;
+    color: #000!important;
+    text-decoration: none!important;
+    cursor: pointer!important;
+    filter: alpha(opacity=50)!important;
+    opacity: .5!important;
+	background: transparent!important;
 }
 
 button.close {
-    -webkit-appearance: none;
-    padding: 0;
-    cursor: pointer;
-    background: 0 0;
-    border: 0;
+    -webkit-appearance: none!important;
+    padding: 0!important;
+    cursor: pointer!important;
+    background: 0 0!important;
+    border: 0!important;
 }
 
 .modal.fade .modal-dialog {
-  -webkit-transform: translate(0, -25%);
-  -ms-transform: translate(0, -25%);
-  -o-transform: translate(0, -25%);
-  transform: translate(0, -25%);
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -o-transition: -o-transform 0.3s ease-out;
-  transition: transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%)!important;
+  -ms-transform: translate(0, -25%)!important;
+  -o-transform: translate(0, -25%)!important;
+  transform: translate(0, -25%)!important;
+  -webkit-transition: -webkit-transform 0.3s ease-out!important;
+  -o-transition: -o-transform 0.3s ease-out!important;
+  transition: transform 0.3s ease-out!important;
 }
 .modal.in .modal-dialog {
-  -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-  -o-transform: translate(0, 0);
-  transform: translate(0, 0);
+  -webkit-transform: translate(0, 0)!important;
+  -ms-transform: translate(0, 0)!important;
+  -o-transform: translate(0, 0)!important;
+  transform: translate(0, 0)!important;
 }
 
 .modal-open .modal {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow-x: hidden!important;
+  overflow-y: auto!important;
 }
 .modal-dialog {
-  position: relative;
-  width: auto;
-  margin: 10px;
+  position: relative!important;
+  width: auto!important;
+  margin: 10px!important;
 }
 .modal-content {
-    position: relative;
-    background-color: #ffffff;
-    border: 1px solid #999999;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    outline: 0;
+    position: relative!important;
+    background-color: #ffffff!important;
+    border: 1px solid #999999!important;
+    border: 1px solid rgba(0, 0, 0, 0.2)!important;
+    border-radius: 6px!important;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5)!important;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5)!important;
+    -webkit-background-clip: padding-box!important;
+    background-clip: padding-box!important;
+    outline: 0!important;
 }
 .modal-backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1040;
-  background-color: #000000;
+  position: fixed!important;
+  top: 0!important;
+  right: 0!important;
+  bottom: 0!important;
+  left: 0!important;
+  z-index: 1040!important;
+  background-color: #000000!important;
 }
 .modal-backdrop.fade {
-  opacity: 0;
-  filter: alpha(opacity=0);
+  opacity: 0!important;
+  filter: alpha(opacity=0)!important;
 }
 .modal-backdrop.in {
-  opacity: 0.5;
-  filter: alpha(opacity=50);
+  opacity: 0.5!important;
+  filter: alpha(opacity=50)!important;
 }
 
 .modal-header {
-  padding: 15px;
-  border-bottom: 1px solid #e5e5e5;
+  padding: 15px!important;
+  border-bottom: 1px solid #e5e5e5!important;
 }
 
 .modal-header>h1,
@@ -283,25 +255,25 @@ button.close {
   padding: 0px!important;
   font-weight: 500!important;
   font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif!important;
-  font-size: 20px;
-  clear: both;
-  line-height: 1.4;
-  margin: 0 0 0.75em;
-  padding: 1.5em 0 0;
+  font-size: 20px!important;
+  clear: both!important;
+  line-height: 1.4!important;
+  margin: 0 0 0.75em!important;
+  padding: 1.5em 0 0!important;
 }
 
 .modal-header .close {
-  margin-top: -2px;
+  margin-top: -2px!important;
 }
 .modal-title {
-  margin: 0;
-  line-height: 1.42857143;
+  margin: 0!important;
+  line-height: 1.42857143!important;
 }
 .modal-body {
-  position: relative;
-  padding: 15px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  position: relative!important;
+  padding: 15px!important;
+  margin-top: 20px!important;
+  margin-bottom: 10px!important;
 }
 .modal-body>h1,
 .modal-body>h2,
@@ -312,66 +284,66 @@ button.close {
   padding: 0px!important;
   font-weight: 500!important;
   font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif!important;
-  font-size: 20px;
-  clear: both;
-  line-height: 1.4;
-  margin: 0 0 0.75em;
-  padding: 1.5em 0 0;
+  font-size: 20px!important;
+  clear: both!important;
+  line-height: 1.4!important;
+  margin: 0 0 0.75em!important;
+  padding: 1.5em 0 0!important;
 }
 .modal-body>a{
-  text-decoration: underline;
+  text-decoration: underline!important;
 }
 .modal-footer {
-  padding: 15px;
-  text-align: right;
-  border-top: 1px solid #e5e5e5;
+  padding: 15px!important;
+  text-align: right!important;
+  border-top: 1px solid #e5e5e5!important;
 }
 .modal-footer .btn + .btn {
-  margin-left: 5px;
-  margin-bottom: 0;
+  margin-left: 5px!important;
+  margin-bottom: 0!important;
 }
 .modal-footer .btn-group .btn + .btn {
-  margin-left: -1px;
+  margin-left: -1px!important;
 }
 .modal-footer .btn-block + .btn-block {
-  margin-left: 0;
+  margin-left: 0!important;
 }
 .modal-scrollbar-measure {
-  position: absolute;
-  top: -9999px;
-  width: 50px;
-  height: 50px;
-  overflow: scroll;
+  position: absolute!important;
+  top: -9999px!important;
+  width: 50px!important;
+  height: 50px!important;
+  overflow: scroll!important;
 }
 .clickable {
-  cursor:pointer;
+  cursor:pointer!important;
 }
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
-    margin: 30px auto;
+    width: 600px!important;
+    margin: 30px auto!important;
   }
   .modal-content {
-    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5)!important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5)!important;
   }
   .modal-sm {
-    width: 300px;
+    width: 300px!important;
   }
 }
 @media (min-width: 992px) {
   .modal-lg {
-    width: 900px;
+    width: 900px!important;
   }
 }
 .clearfix:before,
 .clearfix:after,
 .modal-footer:before,
 .modal-footer:after {
-  content: " ";
-  display: table;
+  content: " "!important;
+  display: table!important;
 }
 .clearfix:after,
 .modal-footer:after {
-  clear: both;
+  clear: both!important;
 }

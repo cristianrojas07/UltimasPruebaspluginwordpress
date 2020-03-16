@@ -67,7 +67,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
       </label>
       </blockquote></p>
 
-      <p><input type="submit" class="button" value="Save Account Settings" /></p>
+      <p><input type="submit" class="button-primary button-activate" value="Save Account Settings" /></p>
 
       <h3><b style="background-color:yellow;">Step 2:</b> Set Clickbank &quot;Instant Payment Notification&quot; Settings</h3>
 
@@ -151,7 +151,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
          </table></p>
       </blockquote>
 
-      <p><input type="submit" class="button" value="Save Clickbank ID's" /></p>
+      <p><input type="submit" class="button-primary button-activate" value="Save Clickbank ID's" /></p>
 
       <h3><b style="background-color:yellow;">Step 5:</b> Test Your Payment Button</h3>
 
@@ -167,7 +167,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
       <p>Grab the HTML code to place on your web pages. We use <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to present sales letters to customers.</p>
       </blockquote>
 
-      <p><input type="submit" class="button-primary" value="Save Settings" /></p>
+      <p><input type="submit" class="button-primary button-activate" value="Save Settings" /></p>
       </div>
       <?php
  }

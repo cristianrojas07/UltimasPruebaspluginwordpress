@@ -440,9 +440,21 @@ if (!function_exists("class_alias")) {
 	}
 }
 
-wp_register_style( 'miembro-press-css', base_url . '/assets/css/estilo.css');
-wp_enqueue_style( 'miembro-press-css' );
 wp_register_style( 'bootstrap-font-css', "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css");
 wp_enqueue_style( 'bootstrap-font-css' );
+
+// Incluir css estilo.css
+wp_register_style( 'miembropress_css', base_url . 'assets/css/estilo.css', array(), '4.5.5');
+wp_enqueue_style( 'miembropress_css' ); 
+
+
+// Incluir Bootstrap CSS
+wp_register_style( 'bootstrap_css', base_url . 'assets/css/bootstrap.css', array(), '4.4.5');
+wp_enqueue_style( 'bootstrap_css' ); 
+
+
+// Incluir Bootstrap JS
+wp_register_script('bootstrap_js', base_url . 'assets/js/bootstrap.js', array('jquery'), '4.4.1', true);
+wp_enqueue_script( 'bootstrap_js' ); 
 
 ?>
