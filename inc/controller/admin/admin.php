@@ -446,10 +446,10 @@ class MiembroPressAdmin {
 		?>
 		<div class="wrap" style="clear:both;">
 			<?php $this->menu_header("Levels"); ?>
-			<h3 class="nav-tab-wrapper menu-tabs-wrapper">
-				<a class="nav-tab<?php if ($action == "levels"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=levels">Manage Levels</a>
-				<a class="nav-tab<?php if ($action == "registration"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=registration">Registration Page</a>
-				<a class="nav-tab<?php if ($action == "upgrade"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=upgrade">Sequential Upgrade</a>
+			<h3 class="nav-tab-wrapper menu__tabs">
+				<a class="nav-tab<?php if ($action == "levels"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=levels">Manage Levels</a>
+				<a class="nav-tab<?php if ($action == "registration"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=registration">Registration Page</a>
+				<a class="nav-tab<?php if ($action == "upgrade"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-levels&miembropress_action=upgrade">Sequential Upgrade</a>
 			</h3>
 			<?php
 
@@ -1037,9 +1037,9 @@ class MiembroPressAdmin {
 		?>
 		<div class="wrap" style="clear:both;">
 			<?php $this->menu_header("Content"); ?>
-			<h3 class="nav-tab-wrapper menu-tabs-wrapper">
-				<a class="nav-tab<?php if ($action == "posts"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-content&miembropress_action=posts&miembropress_level=<?php echo $currentLevel; ?>">Posts</a>
-				<a class="nav-tab<?php if ($action == "pages"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-content&miembropress_action=pages&miembropress_level=<?php echo $currentLevel; ?>">Pages</a>
+			<h3 class="nav-tab-wrapper menu__tabs">
+				<a class="nav-tab<?php if ($action == "posts"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-content&miembropress_action=posts&miembropress_level=<?php echo $currentLevel; ?>">Posts</a>
+				<a class="nav-tab<?php if ($action == "pages"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-content&miembropress_action=pages&miembropress_level=<?php echo $currentLevel; ?>">Pages</a>
 			</h3>
 			<?php if ($action == "posts"): ?><h3>Manage Posts</h3><?php endif; ?>
 			<?php if ($action == "pages"): ?><h3>Manage Pages</h3><?php endif; ?>
@@ -1191,10 +1191,10 @@ class MiembroPressAdmin {
 		<div class="wrap" style="clear:both; width:900px;">
 			<?php $this->menu_header("Members"); ?>
 
-			<h3 class="nav-tab-wrapper menu-tabs-wrapper">
-				<a class="nav-tab<?php if ($action == "members"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=members">Manage Members (<?php echo $miembropress->model->getMemberCount(); ?>)</a>
-				<a class="nav-tab<?php if ($action == "incomplete"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=incomplete">Incomplete Registrations (<?php echo $miembropress->model->getTempCount(); ?>)</a>
-				<a class="nav-tab<?php if ($action == "export"): ?> nav-tab-active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=export">Export</a>
+			<h3 class="nav-tab-wrapper menu__tabs">
+				<a class="nav-tab<?php if ($action == "members"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=members">Manage Members (<?php echo $miembropress->model->getMemberCount(); ?>)</a>
+				<a class="nav-tab<?php if ($action == "incomplete"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=incomplete">Incomplete Registrations (<?php echo $miembropress->model->getTempCount(); ?>)</a>
+				<a class="nav-tab<?php if ($action == "export"): ?> nav-tab-active active<?php endif; ?>" href="?page=<?php echo plugin_basename('miembro-press/miembro-press.php'); ?>-members&miembropress_action=export">Export</a>
 			</h3>
 
 			<?php
@@ -3002,7 +3002,7 @@ class MiembroPressAdmin {
 		<table class="form-table" width="100%" cellspacing="10" cellpadding="10">
 			<caption style="background: #111; border-top-left-radius: 10px; border-top-right-radius: 10px;"><img style="margin: 20px 0px 20px 0px;" src="<?php echo base_url . '/assets/images/logomiembropress.png' ?>"></caption>
 			<tbody>
-				<th colspan="2" style="padding: 20px;background: #ffffff;border: 1px outset white;">Create your membership sites in minutes and get instant payments. With just a few clicks. Integrated with Hotmart, PayPal, ClickBank, JVZoo and WarriorPlus.</th>
+				<th colspan="2" style="padding: 20px;background: #ffffff;border: 1px outset white;">Create your membership sites in minutes and get instant payments, with just a few clicks. Integrated with Hotmart, PayPal, ClickBank, JVZoo and WarriorPlus.</th>
 			</tbody>
 		</table>
 		<h2 class="nav-tab-wrapper menu__tabs">

@@ -288,7 +288,7 @@ class MiembroPressActivation {
 				<table class="form-table" width="100%" cellspacing="10" cellpadding="10">
 					<caption style="background: #111; border-top-left-radius: 10px; border-top-right-radius: 10px;"><img style="margin: 20px 0px 20px 0px;" src="<?php echo base_url . '/assets/images/logomiembropress.png'?>"></caption>
 					<tbody>
-						<th colspan="2" style="padding: 20px;background: #ffffff;border: 1px outset white;">Create your membership sites in minutes and get instant payments. With just a few clicks. Integrated with Hotmart, PayPal, ClickBank, JVZoo and WarriorPlus.</th>
+						<th colspan="2" style="padding: 20px;background: #ffffff;border: 1px outset white;">Create your membership sites in minutes and get instant payments, with just a few clicks. Integrated with Hotmart, PayPal, ClickBank, JVZoo and WarriorPlus.</th>
 					</tbody>
 					<tfoot>
 						<tr>

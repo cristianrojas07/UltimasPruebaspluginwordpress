@@ -7,6 +7,28 @@ html {
 	box-sizing: border-box!important;
 }
 
+.prueba-boton{
+  padding: 0 10px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 2.15384615;
+  display: inline-block;
+  margin: 4px 2px;
+  font-size: 13px;
+  transition-duration: 0.4s;  
+  cursor: pointer;
+  border-radius: 4px!important;
+  background-color: #e5e5e5;
+  color: black;
+  border: 2px solid #755575;
+  transition: all 0.3s ease!important;
+}
+
+.prueba-boton:hover {
+  background-color: #333b48;
+  color: white;
+}
+
 .tabla-width{
 	width: 1000px!important;
 }
