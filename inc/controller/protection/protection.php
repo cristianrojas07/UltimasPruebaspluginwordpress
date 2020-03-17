@@ -269,7 +269,7 @@ class MiembroPressProtection {
 		$file = null;
 		$theme = get_template_directory();
 		if (basename($theme) == "nirvana") {
-			$file = trailingslashit($theme) . 'templates / template - onecolumn . php';
+			$file = trailingslashit($theme) . 'templates/template-onecolumn.php';
 		}
 
 		if ($file && file_exists($file)) { return $file; }

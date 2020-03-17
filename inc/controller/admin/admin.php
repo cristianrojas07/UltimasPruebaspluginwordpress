@@ -1531,211 +1531,221 @@ class MiembroPressAdmin {
 				</p>
 			<?php endif; ?><br />
 		<?php endif; ?>
-		<form method="post" class="form-horizontal">
-			<input type="hidden" name="action" value="miembropress_register">
-			<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
-				<input type="hidden" name="wp_http_referer" value="miembropress" />
-			<?php endif; ?>
-			<?php if (isset($miembropress->registerTemp)): ?><input type="hidden" name="miembropress_temp" value="<?php echo htmlentities($miembropress->registerTemp); ?>">
-			<?php elseif (isset($miembropress->registerLevel->level_hash)): ?><input type="hidden" name="miembropress_hash" value="<?php echo htmlentities($miembropress->registerLevel->level_hash); ?>">
-			<?php endif; ?>
-			<?php if (isset($miembropress->registerLevel->ID)): ?>
-				<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
-			<?php endif; ?>
-			<?php if (isset($_GET['trs'])): ?>
-				<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
-			<?php endif; ?>
-			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-				<h3 style="margin:0;">Acceso a cuenta existente</h3>
-				<?php if (isset($_GET["passwordSent"])): ?>
-					<blockquote>
-						<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
-					</blockquote>
-				<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
-					<blockquote>
-						<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
-					</blockquote>
-				<?php elseif (isset($_POST["miembropress_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
-					<blockquote>
-						<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
-						Abre en una nueva ventana, asegúrese de volver a esta página.</p>
-					</blockquote>
+		<div id="iv-form3" class="col-md-12">
+			<form method="post" class="form-horizontal">
+				<input type="hidden" name="action" value="miembropress_register">
+				<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
+					<input type="hidden" name="wp_http_referer" value="miembropress" />
 				<?php endif; ?>
-				<table cellpadding="0" cellspacing="0">
-					<tbody>
-						<tr>
-							<td style="vertical-align:top; width:200px;"><label for="miembropress_username"><b>Nombre de usuario:</b></label></td>
-							<td style="vertical-align:top;"><input type="text" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>"></td>
-						</tr>
-						<tr>
-							<td style="vertical-align:top;"><label for="miembropress_password"><b>Contraseña:</b></label></td>
-							<td style="vertical-align:top;"><input type="password" name="miembropress_password1" id="miembropress_password" size="10"></td>
-						</tr>
-						<tr>
-							<td style="vertical-align:top;">&nbsp;</td>
-							<td style="vertical-align:top;">
-								<input type="submit" class="button-primary menus_buttons button-activate " value="   Ingresar a la cuenta existente   "> &nbsp;&nbsp;&nbsp;
-								<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-			<?php else: ?>
-				<?php if (!is_admin()): ?>
-						<div id="miembropress_registration">
-							<div class="row">
-								<div class="col-md-1"></div>
-								<div class="col-md-10">
-									<h2 class="header-profile"><div>Registro de Nueva Cuenta</div></h2>
+				<?php if (isset($miembropress->registerTemp)): ?><input type="hidden" name="miembropress_temp" value="<?php echo htmlentities($miembropress->registerTemp); ?>">
+				<?php elseif (isset($miembropress->registerLevel->level_hash)): ?><input type="hidden" name="miembropress_hash" value="<?php echo htmlentities($miembropress->registerLevel->level_hash); ?>">
+				<?php endif; ?>
+				<?php if (isset($miembropress->registerLevel->ID)): ?>
+					<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
+				<?php endif; ?>
+				<?php if (isset($_GET['trs'])): ?>
+					<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
+				<?php endif; ?>
+				<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10">
+							<h2 class="header-profile"><div>Acceso a cuenta existente</div></h2>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-1 "></div>
+						<div class="col-md-10 "> <div>
+							<?php if (isset($_GET["passwordSent"])): ?>
+								<blockquote>
+									<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
+								</blockquote>
+							<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
+								<blockquote>
+									<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
+								</blockquote>
+							<?php elseif (isset($_POST["miembropress_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
+								<blockquote>
+									<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
+									Abre en una nueva ventana, asegúrese de volver a esta página.</p>
+								</blockquote>
+							<?php endif; ?>
+							<div class="form-group row">
+								<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de usuario:</b></label>
+								<div class="col-md-8 has-success">
+									<input type="text" placeholder="Introduce tu nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="miembropress_password" class="col-md-4 control-label"><b>Contraseña:</b></label>
+								<div class="col-md-8 has-success">
+									<input type="password" placeholder="Introduce tu contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password" size="10">
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-1 "></div>
-								<div class="col-md-10 "> <div>
-							<?php $miembropress->social->registration(); ?>
-				<?php endif; ?>
-										<div class="form-group row">
-											<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de Usuario:</b></label>
-											<div class="col-md-8 has-success">
-												<input type="text" placeholder="Introduce un nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
-												<div class="desc">
-													<?php if (!$validate["empty"] && !$validate["username"]): ?>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br />
-													<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?>ERROR: Nombre de usuario existente, por favor intente con otro.<br />
-													<?php else: ?>Ingrese su nombre de usuario deseado. <br /> Debe tener al menos 4 caracteres (letras y números) de largo.<?php endif; ?>
-												</div>
-											</div>
-										</div>
-										
-									
-										<div class="form-group row">
-											<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombres:</b></label>
-											<div class="col-md-8 has-success">
-												<input type="text" placeholder="Introduce tu nombre" class="form-control ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
-												<div class="desc">
-													<?php if (!$validate["empty"] && !$validate["firstname"]): ?>ERROR: Su nombre debe tener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
-												</div>
-											</div>
-										</div>
-									
-										<div class="form-group row">
-											<label for="miembropress_lastname" class="col-md-4 control-label"><b>Apellidos:</b></label>
-											<div class="col-md-8 has-success">
-												<input type="text" placeholder="Introduce tu apellido" class="form-control ctrl-textbox valid" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
-												<div class="desc">
-													<?php if (!$validate["empty"] && !$validate["lastname"]): ?>ERROR: Su apellido debe contener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
-												</div>
-											</div>
-										</div>
-									
-										<div class="form-group row">
-											<label for="miembropress_email" class="col-md-4 control-label"><b>Email:</b></label>
-											<div class="col-md-8 has-success">
-												<input type="email" placeholder="Introduce tu email" class="form-control ctrl-textbox valid" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
-												<div class="desc">
-													<?php if (!$validate["empty"] && !$validate["email"]): ?>ERROR: Por favor, introduzca una dirección de correo electrónico válida.<br />
-													<?php elseif (!$validate["empty"] && !$validate["emailAvailable"]): ?>ERROR: Email existente, por favor intente con otro.
-													<?php endif; ?>
-												</div>
-											</div>
-										</div>
-									
-										<div class="form-group row">
-											<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña (dos veces):</b></label>
-											<div class="col-md-8 has-success">
-												<?php if (is_admin()): ?>
-													<input type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('miembropress_password2').style.display=((this.value=='')?'none':'block');"/><br />
-													<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" placeholder="(Ingrese de nuevo la contraseña)" />
-												<?php else: ?>
-													<input type="password" placeholder="Introduce una contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/><br />
-													<input type="password" placeholder="Repita la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
-											<?php endif; ?>
-												<div class="desc">
-													<?php if (!$validate["empty"] && !$validate["password"]): ?>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br />
-													<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br />
-													<?php else: ?>Introduzca su contraseña deseada dos veces. <br /> Debe tener al menos 6 caracteres (letras y números) de longitud.<?php endif; ?>
-												</div>
-											</div>
-										</div>
-										<?php
-										$levelTable = $miembropress->model->getLevelTable();
-										$hashLevel = $miembropress->registerLevel->level_hash;
-										$result = $wpdb->get_var("SELECT `gdpr_active` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'");
-										?>
-										<?php if ($result){ ?>
+								<div class="col-md-4 col-xs-4 col-sm-4 "></div>
+								<div class="col-md-8 col-xs-8 col-sm-8 ">
+									<input type="submit" class="button-primary button-activate" value="   Ingresar a la cuenta existente   ">
+									<br /><br/>
+									<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
+								</div>
+							</div>
+				<?php else: ?>
+					<?php if (!is_admin()): ?>
+							<div id="miembropress_registration">
+								<div class="row">
+									<div class="col-md-1"></div>
+									<div class="col-md-10">
+										<h2 class="header-profile"><div>Registro de Nueva Cuenta</div></h2>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-1 "></div>
+									<div class="col-md-10 "> <div>
+								<?php $miembropress->social->registration(); ?>
+					<?php endif; ?>
 											<div class="form-group row">
-												<label class="col-md-4 control-label"></label>
-												<?php
-												$valoresGDPR = $wpdb->get_results("SELECT `gdpr_label`, `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'", ARRAY_A);
-												foreach ($valoresGDPR as $key => $valores) {
-													$gdpr_label = $valores['gdpr_label'];
-													$gdpr_url = $valores['gdpr_url'];
-													$gdpr_text = $valores['gdpr_text'];
-													$gdpr_color = $valores['gdpr_color'];
-													$gdpr_size = $valores['gdpr_size'];
-												}
-
-												?>
+												<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de Usuario:</b></label>
 												<div class="col-md-8 has-success">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="checkedGdpr" required /><label class="custom-control-label" for="checkedGdpr"><?php echo $gdpr_label; ?>
-														<a href="<?php echo $gdpr_url; ?>" target="_blank" style="color:<?php echo $gdpr_color; ?>; font-size:<?php echo $gdpr_size; ?>; text-decoration: underline;"><?php echo $gdpr_text; ?></a></label>
+													<input type="text" placeholder="Introduce un nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
+													<div class="desc">
+														<?php if (!$validate["empty"] && !$validate["username"]): ?><small>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br /></small>
+														<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?><small>ERROR: Nombre de usuario existente, por favor intente con otro.<br /></small>
+														<?php else: ?><small>Ingrese su nombre de usuario deseado. <br /> Debe tener al menos 4 caracteres (letras y números) de largo.</small><?php endif; ?>
+													</div>
+												</div>
+											</div>
+											
+										
+											<div class="form-group row">
+												<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombres:</b></label>
+												<div class="col-md-8 has-success">
+													<input type="text" placeholder="Introduce tu nombre" class="form-control ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
+													<div class="desc">
+														<?php if (!$validate["empty"] && !$validate["firstname"]): ?><small>ERROR: Su nombre debe tener al menos 2 caracteres (letras y números).<br /></small><?php endif; ?>
+													</div>
+												</div>
+											</div>
+										
+											<div class="form-group row">
+												<label for="miembropress_lastname" class="col-md-4 control-label"><b>Apellidos:</b></label>
+												<div class="col-md-8 has-success">
+													<input type="text" placeholder="Introduce tu apellido" class="form-control ctrl-textbox valid" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
+													<div class="desc">
+														<?php if (!$validate["empty"] && !$validate["lastname"]): ?><small>ERROR: Su apellido debe contener al menos 2 caracteres (letras y números).<br /></small><?php endif; ?>
+													</div>
+												</div>
+											</div>
+										
+											<div class="form-group row">
+												<label for="miembropress_email" class="col-md-4 control-label"><b>Email:</b></label>
+												<div class="col-md-8 has-success">
+													<input type="email" placeholder="Introduce tu email" class="form-control ctrl-textbox valid" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
+													<div class="desc">
+														<?php if (!$validate["empty"] && !$validate["email"]): ?><small>ERROR: Por favor, introduzca una dirección de correo electrónico válida.<br /></small>
+														<?php elseif (!$validate["empty"] && !$validate["emailAvailable"]): ?><small>ERROR: Email existente, por favor intente con otro.</small>
+														<?php endif; ?>
+													</div>
+												</div>
+											</div>
+										
+											<div class="form-group row">
+												<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña (dos veces):</b></label>
+												<div class="col-md-8 has-success">
+													<?php if (is_admin()): ?>
+														<input type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('miembropress_password2').style.display=((this.value=='')?'none':'block');"/>
+														<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" placeholder="(Ingrese de nuevo la contraseña)" />
+													<?php else: ?>
+														<input type="password" placeholder="Introduce una contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/>
+														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+												<?php endif; ?>
+													<div class="desc">
+														<?php if (!$validate["empty"] && !$validate["password"]): ?><small>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br /></small>
+														<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?><small>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br /></small>
+														<?php else: ?><small>Introduzca su contraseña deseada dos veces. <br /> Debe tener al menos 6 caracteres (letras y números) de longitud.</small><?php endif; ?>
 													</div>
 												</div>
 											</div>
 											<?php
-										}
-										?>
-									
-									<?php if (is_admin()): ?>
-									
-										<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label>
-										<td style="vertical-align:middle;">
-											<select name="miembropress_level">
-												<?php foreach ($miembropress->model->getLevels() as $level): ?>
-												<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
-												<?php endforeach; ?>
-											</select>
+											$levelTable = $miembropress->model->getLevelTable();
+											$hashLevel = $miembropress->registerLevel->level_hash;
+											$result = $wpdb->get_var("SELECT `gdpr_active` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'");
+											?>
+											<?php if ($result){ ?>
+												<div class="form-group row">
+													<label class="col-md-4 control-label"></label>
+													<?php
+													$valoresGDPR = $wpdb->get_results("SELECT `gdpr_label`, `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'", ARRAY_A);
+													foreach ($valoresGDPR as $key => $valores) {
+														$gdpr_label = $valores['gdpr_label'];
+														$gdpr_url = $valores['gdpr_url'];
+														$gdpr_text = $valores['gdpr_text'];
+														$gdpr_color = $valores['gdpr_color'];
+														$gdpr_size = $valores['gdpr_size'];
+													}
+
+													?>
+													<div class="col-md-8 has-success">
+														<div class="custom-control custom-checkbox">
+															<input type="checkbox" class="custom-control-input" id="checkedGdpr" required /><label class="custom-control-label" for="checkedGdpr"><?php echo $gdpr_label; ?>
+															<a href="<?php echo $gdpr_url; ?>" target="_blank" style="color:<?php echo $gdpr_color; ?>!important; font-size:<?php echo $gdpr_size; ?>!important; text-decoration: underline!important;"><?php echo $gdpr_text; ?></a></label>
+														</div>
+													</div>
+												</div>
+												<?php
+											}
+											?>
 										
-									
-									<?php endif; ?>
+										<?php if (is_admin()): ?>
+										
+											<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label>
+											<td style="vertical-align:middle;">
+												<select name="miembropress_level">
+													<?php foreach ($miembropress->model->getLevels() as $level): ?>
+													<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
+													<?php endforeach; ?>
+												</select>
+											
+										
+										<?php endif; ?>
 
-									<div class="row">
-										<div class="col-md-4 col-xs-4 col-sm-4 "></div>
-										<div class="col-md-8 col-xs-8 col-sm-8 ">
-											<input type="submit" class="btn btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+										<div class="row">
+											<div class="col-md-4 col-xs-4 col-sm-4 "></div>
+											<div class="col-md-8 col-xs-8 col-sm-8 ">
+												<input type="submit" class="btn btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+											</div>
 										</div>
-									</div>
-							<?php
-							if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
+								<?php
+								if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
+									<script type="text/javascript">
+										//document.getElementById("miembropress_registration").style.display="none";
+									</script>
+								<?php endif; ?>
 								<script type="text/javascript">
-									//document.getElementById("miembropress_registration").style.display="none";
-								</script>
-							<?php endif; ?>
-							<script type="text/javascript">
-								<?php if (is_admin()): ?>document.getElementById("miembropress_password2").style.display="none";<?php endif; ?>
+									<?php if (is_admin()): ?>document.getElementById("miembropress_password2").style.display="none";<?php endif; ?>
 
-								function miembropress_suggest() {
-									var username = document.getElementById("miembropress_username");
-									var firstname = document.getElementById("miembropress_firstname");
-									var lastname = document.getElementById("miembropress_lastname");
+									function miembropress_suggest() {
+										var username = document.getElementById("miembropress_username");
+										var firstname = document.getElementById("miembropress_firstname");
+										var lastname = document.getElementById("miembropress_lastname");
 
-									if (!username || username.value == undefined || !firstname || firstname.value == undefined || !lastname || lastname.value == undefined) {
-										return;
+										if (!username || username.value == undefined || !firstname || firstname.value == undefined || !lastname || lastname.value == undefined) {
+											return;
+										}
+
+										var matches = username.value.split(" ");
+										if (!matches || !matches.length || matches.length != 2) { return; }
+										if (!matches[0].match(/^[A-Z]+$/i) || !matches[1].match(/^[A-Z]+$/i)) { return; }
+										if (firstname.value != "" || lastname.value != "") { return; }
+
+										firstname.value = matches[0];
+										lastname.value = matches[1];
 									}
-
-									var matches = username.value.split(" ");
-									if (!matches || !matches.length || matches.length != 2) { return; }
-									if (!matches[0].match(/^[A-Z]+$/i) || !matches[1].match(/^[A-Z]+$/i)) { return; }
-									if (firstname.value != "" || lastname.value != "") { return; }
-
-									firstname.value = matches[0];
-									lastname.value = matches[1];
-								}
-							</script>
-						</div>
-			<?php endif; ?>
-		</form>
+								</script>
+							</div>
+				<?php endif; ?>
+			</form>
+		</div>
 		<?php if (!is_admin()) { 
 			if ($globalFooter = $miembropress->model->levelSetting(-1, "footer")) { 
 				eval( ' ?> '.stripslashes($globalFooter).' <?php ' ); 
