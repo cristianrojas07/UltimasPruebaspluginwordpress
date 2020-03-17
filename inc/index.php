@@ -444,12 +444,12 @@ wp_register_style( 'bootstrap-font-css', "https://maxcdn.bootstrapcdn.com/font-a
 wp_enqueue_style( 'bootstrap-font-css' );
 
 // Incluir css estilo.css
-wp_register_style( 'miembropress_css', base_url . 'assets/css/estilo.css', array(), '4.5.7');
+wp_register_style( 'miembropress_css', base_url . 'assets/css/estilo.css', array(), '4.6.6');
 wp_enqueue_style( 'miembropress_css' ); 
 
 
 // Incluir Bootstrap CSS
-wp_register_style( 'bootstrap_css', base_url . 'assets/css/bootstrap.css', array(), '4.4.5');
+wp_register_style( 'bootstrap_css', base_url . 'assets/css/bootstrap.css', array(), '4.4.8');
 wp_enqueue_style( 'bootstrap_css' ); 
 
 

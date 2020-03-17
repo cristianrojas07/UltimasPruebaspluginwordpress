@@ -87,7 +87,7 @@ class MiembroPressAdmin {
 						<option <?php selected($cartName == $currentCart); ?> value="<?php echo htmlentities($cartName); ?>"><?php echo htmlentities($cartName); ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 					<?php endforeach; ?>
 					</select></label>
-					<input type="submit" value="Select Shopping Cart" class="button-primary button-activate" />
+					<input type="submit" value="Select Shopping Cart" class="button-primary menus_buttons button-activate " />
 				</p>
 				<?php if ($cartClass != null) { $cart = new $cartClass; $cart->instructions(); } ?>
 			</form>
@@ -116,7 +116,7 @@ class MiembroPressAdmin {
 						<option value="facebook" <?php selected($social_selection == "facebook"); ?>>Facebook<?php if ($facebook_enabled): ?> (enabled)<?php endif; ?></option>
 						<option value="google" <?php selected($social_selection == "google"); ?>>Google<?php if ($google_enabled): ?> (enabled)<?php endif; ?></option>
 					</select>
-					<input type="submit" class="button-primary button-activate" value="Select Social Network" />
+					<input type="submit" class="button-primary menus_buttons button-activate " value="Select Social Network" />
 					</label>
 				</p>
 			<?php if ($social_selection == "facebook") { $this->menu_social_facebook(); } elseif ($social_selection == "google") { $this->menu_social_google(); } ?>
@@ -180,7 +180,7 @@ class MiembroPressAdmin {
 				<li>Finally, in your Facebook Developer tab, go to App Review, and switch <code>Make <?php echo htmlentities(get_option("name")); ?> Public?</code> Choose <code>Yes.</code></li>
 			</ol>
 		</blockquote>
-		<p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+		<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 		<?php
 	}
 
@@ -228,7 +228,7 @@ class MiembroPressAdmin {
 			<li>Click <code>Create</code>. Copy the <code>Client ID</code> and <code>Client Secret</code> onto this page and click <code>Save All Changes</code></li>
 		</ol>
 		</blockquote>
-        <p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+        <p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 		<?php
 	}
 
@@ -287,7 +287,7 @@ class MiembroPressAdmin {
 				<?php foreach ($levels as $level): ?>
 					<option <?php if ($level->ID == $currentLevel): ?>selected="selected"<?php endif; ?> value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
 				<?php endforeach; ?>
-				</select><input class="button-primary button-activate" type="submit" value="Setup Autoresponder for Level" /></p>
+				</select><input class="button-primary menus_buttons button-activate " type="submit" value="Setup Autoresponder for Level" /></p>
 
 				<?php if ($currentLevel > - 1): ?>
 					<p>Paste in Autoresponder Signup Code: <span style="background-color:yellow; font-weight:bold;">(HTML code only, do not enter JavaScript code)</span></p>
@@ -304,7 +304,7 @@ class MiembroPressAdmin {
 						</select>
 					</p>
 
-					<p><input class="button-primary button-activate" type="submit" value="Save All Changes" /></p>
+					<p><input class="button-primary menus_buttons button-activate " type="submit" value="Save All Changes" /></p>
 				<?php endif; ?>
 
         	</form>
@@ -473,8 +473,9 @@ class MiembroPressAdmin {
 		$levelTable = $miembropress->model->getLevelTable();
 		if (isset($_REQUEST["l"])) {
 			$currentLevel = intval($_REQUEST["l"]);
-			$valoresGDPR = $wpdb->get_results("SELECT `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `ID` = $currentLevel", ARRAY_A);
+			$valoresGDPR = $wpdb->get_results("SELECT `gdpr_label`, `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `ID` = $currentLevel", ARRAY_A);
 			foreach ($valoresGDPR as $clave) {
+				$gdpr_label = $clave["gdpr_label"];
 				$gdpr_url = $clave["gdpr_url"];
 				$gdpr_text = $clave["gdpr_text"];
 				$gdpr_color = $clave["gdpr_color"];
@@ -513,6 +514,10 @@ class MiembroPressAdmin {
 			if (isset($_POST["miembropress_gdpr_size"])){
 				$gdprSize = $_POST["miembropress_gdpr_size"];
 				$wpdb->query("UPDATE `$levelTable` SET `gdpr_size` = '$gdprSize' WHERE `ID` = $currentLevel");
+			}
+			if (isset($_POST["miembropress_gdpr_label"])){
+				$gdprLabel = $_POST["miembropress_gdpr_label"];
+				$wpdb->query("UPDATE `$levelTable` SET `gdpr_label` = '$gdprLabel' WHERE `ID` = $currentLevel");
 			}
 			$currentLevel = -1;
 		}
@@ -621,7 +626,7 @@ class MiembroPressAdmin {
 										</label>
 									</p>
 									<p>
-										<label>
+										<label style="display: unset;">
 											<?php if ($level->level_page_login && ($login = get_permalink(intval($level->level_page_login)))): ?>
 											<a target="_blank" href="<?php echo $login; ?>"><strong>After Login:</strong></a>
 											<?php else: ?>
@@ -646,8 +651,8 @@ class MiembroPressAdmin {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<p><input class="button-primary button-activate" type="submit" value="Save All Changes" onclick="return miembropress_confirmLevels();"/> 
-			<input class="button-primary button-activate" type="submit" value="Delete Selected Levels" onclick="return miembropress_confirmLevels();"/></p>
+			<p><input class="button-primary menus_buttons button-activate " type="submit" value="Save All Changes" onclick="return miembropress_confirmLevels();"/> 
+			<input class="button-primary menus_buttons button-activate " type="submit" value="Delete Selected Levels" onclick="return miembropress_confirmLevels();"/></p>
 		</form>
 	    <script type="text/javascript">
 			jQuery(function() {
@@ -691,29 +696,32 @@ class MiembroPressAdmin {
 					</tr>
 				</tbody>
 			</table>
-			<p><input class="button-primary button-activate" type="submit" value="Add New Level" /></p>
+			<p><input class="button-primary menus_buttons button-activate " type="submit" value="Add New Level" /></p>
 		</form>
 		<br />
 		<h3>Modify GDPR by Levels</h3>
 		<form method="post">
-			<p>Select LevelHash: <select name="l" onchange="this.form.submit()">
+			<p>Select Level: <select name="l" onchange="this.form.submit()">
 				<option value="-1" <?php if ($currentLevel === null || $currentLevel == - 1): ?>selected="selected"<?php endif; ?>>Levels...</option>
 				<?php foreach ($levels as $level): ?>
 					<option <?php if ($level->ID == $currentLevel): ?>selected="selected"<?php endif; ?> value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
 				<?php endforeach; ?>
-				</select><input class="button-primary button-activate" type="submit" value="Select Level" /></p>
+				</select><input class="button-primary menus_buttons button-activate " type="submit" value="Select Level" /></p>
 			<?php if ($currentLevel > - 1): ?>
-				<div><p><?php echo __('<a href="javascript:void" title="Enter URL Privacy Policy" class="tooltip"><span title="Tip">URL Privacy Policy (full URL)</span></a>:', 'kingdomresponse')?>
-					<input required type="text" name="miembropress_gdpr_url" value="<?php echo $gdpr_url?>"></p>
+				<div>
+					<p><?php echo __('<a href="javascript:void" title="Enter Text Without Privacy Policy Link" class="tooltip"><span title="Tip">Text Without Privacy Policy Link</span></a>:', 'kingdomresponse')?>
+					<input required type="text" name="miembropress_gdpr_label" value="<?php echo $gdpr_label?>"></p>
 					<p><?php echo __('<a href="javascript:void" title="Enter Text Privacy Policy" class="tooltip"><span title="Tip">Text Privacy Policy</span></a>:', 'kingdomresponse')?>
-						<input required type="text" name="miembropress_gdpr_text" value="<?php echo $gdpr_text?>"></p>
+					<input required type="text" name="miembropress_gdpr_text" value="<?php echo $gdpr_text?>"></p>
+					<p><?php echo __('<a href="javascript:void" title="Enter URL Privacy Policy" class="tooltip"><span title="Tip">URL Privacy Policy (full URL)</span></a>:', 'kingdomresponse')?>
+					<input required type="text" name="miembropress_gdpr_url" value="<?php echo $gdpr_url?>"></p>
 					<p><?php echo __('<a href="javascript:void" title="Enter Color Text Privacy Policy" class="tooltip"><span title="Tip">Color Privacy Policy</span></a>:', 'kingdomresponse')?>
 						<input type="color" name="miembropress_gdpr_color" value="<?php echo $gdpr_color?>"></p>
 					<p><?php echo __('<a href="javascript:void" title="Enter Size Text Privacy Policy" class="tooltip"><span title="Tip">Size Text Privacy Policy</span></a>:', 'kingdomresponse')?>
 						<input required type="number" name="miembropress_gdpr_size" min="1" max="70" value="<?php echo $gdpr_size?>"></p>
 				</div>
 
-				<p><input class="button-primary button-activate" type="submit" value="Save All Changes" /></p>
+				<p><input class="button-primary menus_buttons button-activate " type="submit" value="Save All Changes" /></p>
 			<?php endif; ?>
 		</form>
 		<?php
@@ -772,7 +780,7 @@ class MiembroPressAdmin {
 			<textarea name="miembropress_registration_header" class="code" cols="120" rows="8" style="font-size:10px;"><?php echo htmlentities($header); ?></textarea></p>
 			<p><b>Registration Page Footer for <?php echo $forLevel; ?>:</b><br >
 			<textarea name="miembropress_registration_footer" class="code" cols="120" rows="8" style="font-size:10px;"><?php echo htmlentities($footer); ?></textarea></p>
-			<p><input type="submit" class="button-primary button-activate" value="Save All Changes"></p>
+			<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes"></p>
 		</form>
 		<?php
 	}
@@ -915,7 +923,7 @@ class MiembroPressAdmin {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<p><input class="button-primary button-activate" type="submit" value="Save All Changes" /> <input class="button-primary button-activate" type="submit" value="Delete Selected Levels" /></p>
+			<p><input class="button-primary menus_buttons button-activate " type="submit" value="Save All Changes" /> <input class="button-primary menus_buttons button-activate " type="submit" value="Delete Selected Levels" /></p>
 		</form>
 		<script type="text/javascript">
 
@@ -1061,7 +1069,7 @@ class MiembroPressAdmin {
 					<?php endforeach; ?>
 				</p>
 
-				<?php if ($currentLevelName): ?><p><a href="<?php echo admin_url("post-new.php?post_type=" . (($action == "posts") ? "post" : "page") . "&miembropress_new=" . $currentLevel); ?>" class="button-primary button-activate" style="top:0px;">Add New <?php echo (($action == "posts") ? 'Post' : 'Page'); ?> on &quot;<?php echo $currentLevelName; ?>&quot; Level</a></p><?php endif; ?>
+				<?php if ($currentLevelName): ?><p><a href="<?php echo admin_url("post-new.php?post_type=" . (($action == "posts") ? "post" : "page") . "&miembropress_new=" . $currentLevel); ?>" class="button-primary menus_buttons button-activate " style="top:0px;">Add New <?php echo (($action == "posts") ? 'Post' : 'Page'); ?> on &quot;<?php echo $currentLevelName; ?>&quot; Level</a></p><?php endif; ?>
 				<table class="widefat" style="width:500px;">
 					<thead>
 						<tr>
@@ -1121,7 +1129,7 @@ class MiembroPressAdmin {
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+				<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 			</form>
 		</div>
 		<?php
@@ -1523,7 +1531,7 @@ class MiembroPressAdmin {
 				</p>
 			<?php endif; ?><br />
 		<?php endif; ?>
-		<form method="post">
+		<form method="post" class="form-horizontal">
 			<input type="hidden" name="action" value="miembropress_register">
 			<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
 				<input type="hidden" name="wp_http_referer" value="miembropress" />
@@ -1566,7 +1574,7 @@ class MiembroPressAdmin {
 						<tr>
 							<td style="vertical-align:top;">&nbsp;</td>
 							<td style="vertical-align:top;">
-								<input type="submit" class="button-primary button-activate" value="   Ingresar a la cuenta existente   "> &nbsp;&nbsp;&nbsp;
+								<input type="submit" class="button-primary menus_buttons button-activate " value="   Ingresar a la cuenta existente   "> &nbsp;&nbsp;&nbsp;
 								<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
 							</td>
 						</tr>
@@ -1575,79 +1583,92 @@ class MiembroPressAdmin {
 
 			<?php else: ?>
 				<?php if (!is_admin()): ?>
-					<div class="row">
 						<div id="miembropress_registration">
-							<h3 style="margin:0;">Registro de Nueva Cuenta</h3>
+							<div class="row">
+								<div class="col-md-1"></div>
+								<div class="col-md-10">
+									<h2 class="header-profile"><div>Registro de Nueva Cuenta</div></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-1 "></div>
+								<div class="col-md-10 "> <div>
 							<?php $miembropress->social->registration(); ?>
 				<?php endif; ?>
-
-							<table cellpadding="0" cellspacing="0">
-								<tbody>
-									<tr>
-										<td style="vertical-align:top; width:200px;"><label for="miembropress_username"><b>Nombre de Usuario:</b></label></td>
-										<td style="vertical-align:top;"><input type="text" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
-											<div class="desc">
-												<?php if (!$validate["empty"] && !$validate["username"]): ?>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br />
-												<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?>ERROR: Nombre de usuario existente, por favor intente con otro.<br />
-												<?php else: ?>Ingrese su nombre de usuario deseado. <br /> Debe tener al menos 4 caracteres (letras y números) de largo.<?php endif; ?>
+										<div class="form-group row">
+											<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de Usuario:</b></label>
+											<div class="col-md-8 has-success">
+												<input type="text" placeholder="Introduce un nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
+												<div class="desc">
+													<?php if (!$validate["empty"] && !$validate["username"]): ?>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br />
+													<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?>ERROR: Nombre de usuario existente, por favor intente con otro.<br />
+													<?php else: ?>Ingrese su nombre de usuario deseado. <br /> Debe tener al menos 4 caracteres (letras y números) de largo.<?php endif; ?>
+												</div>
 											</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:top;"><label for="miembropress_firstname"><b>Nombres:</b></label></td>
-										<td style="vertical-align:top;">
-										<input type="text" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
-										<div class="desc">
-											<?php if (!$validate["empty"] && !$validate["firstname"]): ?>ERROR: Su nombre debe tener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
 										</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:top;"><label for="miembropress_lastname"><b>Apellidos:</b></label></td>
-										<td style="vertical-align:top;"><input type="text" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
-										<div class="desc">
-											<?php if (!$validate["empty"] && !$validate["lastname"]): ?>ERROR: Su apellido debe contener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
-										</div>
-									</tr>
-									<tr>
-										<td style="vertical-align:top;"><label for="miembropress_email"><b>Email:</b></label></td>
-										<td style="vertical-align:top;"><input type="email" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
-										<div class="desc">
-											<?php if (!$validate["empty"] && !$validate["email"]): ?>ERROR: Por favor, introduzca una dirección de correo electrónico válida.<br />
-											<?php elseif (!$validate["empty"] && !$validate["emailAvailable"]): ?>ERROR: Email existente, por favor intente con otro.
-											<?php endif; ?>
-										</div>
-										</td>
-									</tr>
-									<tr>
-										<td style="vertical-align:top;"><label for="miembropress_password1"><b>Contraseña (dos veces):</b></label></td>
-										<td style="vertical-align:top;">
-											<?php if (is_admin()): ?>
-												<input type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('miembropress_password2').style.display=((this.value=='')?'none':'block');"/><br />
-												<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" placeholder="(Ingrese de nuevo la contraseña)" />
-											<?php else: ?>
-												<input type="password" name="miembropress_password1" id="miembropress_password1" size="25"/><br />
-												<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" />
-											<?php endif; ?>
-											<div class="desc">
-												<?php if (!$validate["empty"] && !$validate["password"]): ?>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br />
-												<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br />
-												<?php else: ?>Introduzca su contraseña deseada dos veces. <br /> Debe tener al menos 6 caracteres (letras y números) de longitud.<?php endif; ?>
+										
+									
+										<div class="form-group row">
+											<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombres:</b></label>
+											<div class="col-md-8 has-success">
+												<input type="text" placeholder="Introduce tu nombre" class="form-control ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
+												<div class="desc">
+													<?php if (!$validate["empty"] && !$validate["firstname"]): ?>ERROR: Su nombre debe tener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
+												</div>
 											</div>
-										</td>
-									</tr>
-									<tr>
+										</div>
+									
+										<div class="form-group row">
+											<label for="miembropress_lastname" class="col-md-4 control-label"><b>Apellidos:</b></label>
+											<div class="col-md-8 has-success">
+												<input type="text" placeholder="Introduce tu apellido" class="form-control ctrl-textbox valid" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
+												<div class="desc">
+													<?php if (!$validate["empty"] && !$validate["lastname"]): ?>ERROR: Su apellido debe contener al menos 2 caracteres (letras y números).<br /><?php endif; ?>
+												</div>
+											</div>
+										</div>
+									
+										<div class="form-group row">
+											<label for="miembropress_email" class="col-md-4 control-label"><b>Email:</b></label>
+											<div class="col-md-8 has-success">
+												<input type="email" placeholder="Introduce tu email" class="form-control ctrl-textbox valid" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
+												<div class="desc">
+													<?php if (!$validate["empty"] && !$validate["email"]): ?>ERROR: Por favor, introduzca una dirección de correo electrónico válida.<br />
+													<?php elseif (!$validate["empty"] && !$validate["emailAvailable"]): ?>ERROR: Email existente, por favor intente con otro.
+													<?php endif; ?>
+												</div>
+											</div>
+										</div>
+									
+										<div class="form-group row">
+											<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña (dos veces):</b></label>
+											<div class="col-md-8 has-success">
+												<?php if (is_admin()): ?>
+													<input type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('miembropress_password2').style.display=((this.value=='')?'none':'block');"/><br />
+													<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" placeholder="(Ingrese de nuevo la contraseña)" />
+												<?php else: ?>
+													<input type="password" placeholder="Introduce una contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/><br />
+													<input type="password" placeholder="Repita la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+											<?php endif; ?>
+												<div class="desc">
+													<?php if (!$validate["empty"] && !$validate["password"]): ?>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br />
+													<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br />
+													<?php else: ?>Introduzca su contraseña deseada dos veces. <br /> Debe tener al menos 6 caracteres (letras y números) de longitud.<?php endif; ?>
+												</div>
+											</div>
+										</div>
 										<?php
 										$levelTable = $miembropress->model->getLevelTable();
 										$hashLevel = $miembropress->registerLevel->level_hash;
 										$result = $wpdb->get_var("SELECT `gdpr_active` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'");
 										?>
 										<?php if ($result){ ?>
-											<td style="vertical-align:top;"><label><b></b></label></td>
-											<td>
+											<div class="form-group row">
+												<label class="col-md-4 control-label"></label>
 												<?php
-												$valoresGDPR = $wpdb->get_results("SELECT `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'", ARRAY_A);
+												$valoresGDPR = $wpdb->get_results("SELECT `gdpr_label`, `gdpr_url`, `gdpr_text`, `gdpr_color`, `gdpr_size` FROM `$levelTable` WHERE `level_hash` = '$hashLevel'", ARRAY_A);
 												foreach ($valoresGDPR as $key => $valores) {
+													$gdpr_label = $valores['gdpr_label'];
 													$gdpr_url = $valores['gdpr_url'];
 													$gdpr_text = $valores['gdpr_text'];
 													$gdpr_color = $valores['gdpr_color'];
@@ -1655,31 +1676,36 @@ class MiembroPressAdmin {
 												}
 
 												?>
-												<input type="checkbox" required /> <a href="<?php echo $gdpr_url; ?>" target="_blank" style="color:<?php echo $gdpr_color; ?>; font-size:<?php echo $gdpr_size; ?>; text-decoration: underline;"><?php echo $gdpr_text; ?></a>
-											</td>
+												<div class="col-md-8 has-success">
+													<div class="custom-control custom-checkbox">
+														<input type="checkbox" class="custom-control-input" id="checkedGdpr" required /><label class="custom-control-label" for="checkedGdpr"><?php echo $gdpr_label; ?>
+														<a href="<?php echo $gdpr_url; ?>" target="_blank" style="color:<?php echo $gdpr_color; ?>; font-size:<?php echo $gdpr_size; ?>; text-decoration: underline;"><?php echo $gdpr_text; ?></a></label>
+													</div>
+												</div>
+											</div>
 											<?php
 										}
 										?>
-									</tr>
+									
 									<?php if (is_admin()): ?>
-									<tr>
-										<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label></td>
+									
+										<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label>
 										<td style="vertical-align:middle;">
 											<select name="miembropress_level">
 												<?php foreach ($miembropress->model->getLevels() as $level): ?>
 												<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
 												<?php endforeach; ?>
 											</select>
-										</td>
-									</tr>
+										
+									
 									<?php endif; ?>
 
-									<tr>
-										<td style="vertical-align:top;">&nbsp;</td>
-										<td style="vertical-align:top;"><input type="submit" class="button-primary button-activate" value="   Registrarse   "></td>
-									</tr>
-								</tbody>
-							</table>
+									<div class="row">
+										<div class="col-md-4 col-xs-4 col-sm-4 "></div>
+										<div class="col-md-8 col-xs-8 col-sm-8 ">
+											<input type="submit" class="btn btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+										</div>
+									</div>
 							<?php
 							if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
 								<script type="text/javascript">
@@ -1708,7 +1734,6 @@ class MiembroPressAdmin {
 								}
 							</script>
 						</div>
-					</div>
 			<?php endif; ?>
 		</form>
 		<?php if (!is_admin()) { 
@@ -1795,8 +1820,8 @@ class MiembroPressAdmin {
 				<?php else: ?>
 				<input type="search" value="<?php echo htmlentities($search); ?>" name="s" placeholder="Search Members" ondblclick="miembropress_multisearch(this);" />
 				<?php endif; ?>
-				<input type="submit" class="button-primary button-activate" value="Search">
-				<a title="Add New Member" href="#TB_inline?height=450&amp;width=500&amp;inlineId=miembropress_newmember" class="button-primary button-activate" style="top:-1px;">Add New Member</a>
+				<input type="submit" class="button-primary menus_buttons button-activate " value="Search">
+				<a title="Add New Member" href="#TB_inline?height=450&amp;width=500&amp;inlineId=miembropress_newmember" class="thickbox button-primary menus_buttons button-activate ">Add New Member</a>
 			</p>
 			<p>
 				<b>Browse Level:</b>
@@ -1814,12 +1839,12 @@ class MiembroPressAdmin {
 					<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
 					<?php endforeach; ?>
 				</select>
-				<input name="miembropress_action_add" type="submit" class="button-primary button-activate" value="Add to Level" />
-				<input name="miembropress_action_move" type="submit" class="button-primary button-activate" value="Move to Level" />
-				<input name="miembropress_action_remove" type="submit" class="button-primary button-activate" value="Remove from Level" />
-				<input name="miembropress_action_cancel" type="submit" class="button-primary button-activate" value="Cancel from Level" />
-				<input name="miembropress_action_uncancel" type="submit" class="button-primary button-activate" value="Uncancel from Level" />
-				<input name="miembropress_action_delete" type="submit" class="button-primary button-activate" value="Delete Members" onclick="return miembropress_confirm();" />
+				<input name="miembropress_action_add" type="submit" class="button-primary menus_buttons button-activate " value="Add to Level" />
+				<input name="miembropress_action_move" type="submit" class="button-primary menus_buttons button-activate " value="Move to Level" />
+				<input name="miembropress_action_remove" type="submit" class="button-primary menus_buttons button-activate " value="Remove from Level" />
+				<input name="miembropress_action_cancel" type="submit" class="button-primary menus_buttons button-activate " value="Cancel from Level" />
+				<input name="miembropress_action_uncancel" type="submit" class="button-primary menus_buttons button-activate " value="Uncancel from Level" />
+				<input name="miembropress_action_delete" type="submit" class="button-primary menus_buttons button-activate " value="Delete Members" onclick="return miembropress_confirm();" />
 				</nobr>
 			</p>
 			<?php endif; ?>
@@ -2028,8 +2053,8 @@ class MiembroPressAdmin {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<p><input name="miembropress_temps_complete" type="submit" class="button-primary button-activate" value="Complete Selected Registrations" />
-			<input name="miembropress_temps_delete" type="submit" class="button-primary button-activate" value="Delete Selected Registrations" onclick="return confirm('Are You SURE You Want to Delete the Selected Incomplete Registrations? Click OK to delete, Cancel to stop.');" /></p>
+			<p><input name="miembropress_temps_complete" type="submit" class="button-primary menus_buttons button-activate " value="Complete Selected Registrations" />
+			<input name="miembropress_temps_delete" type="submit" class="button-primary menus_buttons button-activate " value="Delete Selected Registrations" onclick="return confirm('Are You SURE You Want to Delete the Selected Incomplete Registrations? Click OK to delete, Cancel to stop.');" /></p>
 		</form>
 		<?php
 	}
@@ -2052,7 +2077,7 @@ class MiembroPressAdmin {
 				<li><label><input type="radio" name="miembropress_status" value="all" /> Active &amp; Canceled Members</label></li>
 			</ul>
 			<p>When you click the &quot;Export Members&quot; button, a file will download which you can save to your desktop.</p>
-			<input type="submit" class="button-primary button-activate" value="Export Members" />
+			<input type="submit" class="button-primary menus_buttons button-activate " value="Export Members" />
 		</form>
 		<?php
 	}
@@ -2122,7 +2147,7 @@ class MiembroPressAdmin {
 				<h3><span class="fondo-steps">Step 3:</span> Generate Popup Maximizer.<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Just click on the button below and a window with more instructions will open.
 				</h3>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="button-primary button-activate">Generate Popup</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="button-primary menus_buttons button-activate ">Generate Popup</button>
 			</form>
 
 			<br /><br /><hr /><br />
@@ -2138,7 +2163,7 @@ class MiembroPressAdmin {
 					<textarea name="miembropress_settings_header" class="code" cols="90" rows="7" style="font-size:11px;"><?php echo htmlentities($header); ?></textarea></p>
 					<textarea name="miembropress_settings_footer" class="code" cols="90" rows="7" style="font-size:11px;"><?php echo htmlentities($footer); ?></textarea></style>
 				</blockquote>
-				<p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+				<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 			</form>
 		</div>
       <?php
@@ -2327,7 +2352,7 @@ class MiembroPressAdmin {
 						<?php endif; ?>
 					</p>
 				</blockquote> <!-- h3 front page -->
-				<p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+				<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 				<h3>Post Sort Order</h3>
 				<blockquote>
 					<p>If you want to change the order that posts are shown (such as oldest to newest or newest to oldest), change that here.</p>
@@ -2347,7 +2372,7 @@ class MiembroPressAdmin {
 					<p> Affiliate URL (optional): <label><input type="text" name="miembropress_settings_affiliate" size="35" value="<?php echo htmlentities($affiliate); ?>" /></label><br /></p>
 					<label><input type="checkbox" name="miembropress_settings_attribution" <?php checked($attribution); ?> /> Show Link in Site Footer</label> <label><input type="checkbox" name="miembropress_settings_emailattribution" <?php checked($emailattribution); ?> /> Send Link in Email Notifications</label>
 				</blockquote>
-				<p><input type="submit" class="button-primary button-activate" value="Save All Changes" /></p>
+				<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save All Changes" /></p>
 			</form>
 		</div>
 		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -2772,8 +2797,8 @@ class MiembroPressAdmin {
 
 						<tr>
 							<td colspan="4" align="center">
-								<input name="miembropress_action_password" type="submit" class="button-primary button-activate" value="Send Reset Password Link to Member" />
-								<input type="submit" name="submit" id="submit" class="button button-primary button-activate" value="Update User">
+								<input name="miembropress_action_password" type="submit" class="button-primary menus_buttons button-activate " value="Send Reset Password Link to Member" />
+								<input type="submit" name="submit" id="submit" class="button button-primary menus_buttons button-activate " value="Update User">
 
 								<br /><br />
 
@@ -2784,12 +2809,12 @@ class MiembroPressAdmin {
 									<?php endforeach; ?>
 								</select>
 
-								<input name="miembropress_action_add" type="submit" class="button-primary button-activate" value="Add to Level" />
-								<input name="miembropress_action_move" type="submit" class="button-primary button-activate" value="Move to Level" />
-								<input name="miembropress_action_remove" type="submit" class="button-primary button-activate" value="Remove from Level" />
-								<input name="miembropress_action_cancel" type="submit" class="button-primary button-activate" value="Cancel from Level" />
-								<input name="miembropress_action_uncancel" type="submit" class="button-primary button-activate" value="Uncancel from Level" />
-								<input name="miembropress_action_delete" type="submit" class="button-primary button-activate" style="background-color:red !important;" value="Delete Member" onclick="return confirm('Are you SURE you want to delete this member? This action cannot be undone. Press OK to continue, Cancel to stop.');" /><br /><br />
+								<input name="miembropress_action_add" type="submit" class="button-primary menus_buttons button-activate " value="Add to Level" />
+								<input name="miembropress_action_move" type="submit" class="button-primary menus_buttons button-activate " value="Move to Level" />
+								<input name="miembropress_action_remove" type="submit" class="button-primary menus_buttons button-activate " value="Remove from Level" />
+								<input name="miembropress_action_cancel" type="submit" class="button-primary menus_buttons button-activate " value="Cancel from Level" />
+								<input name="miembropress_action_uncancel" type="submit" class="button-primary menus_buttons button-activate " value="Uncancel from Level" />
+								<input name="miembropress_action_delete" type="submit" class="button-primary menus_buttons button-activate " style="background-color:red !important;" value="Delete Member" onclick="return confirm('Are you SURE you want to delete this member? This action cannot be undone. Press OK to continue, Cancel to stop.');" /><br /><br />
 
 								<?php
 									if ($user->first_name) {
@@ -2798,7 +2823,7 @@ class MiembroPressAdmin {
 										$loginAs = $user->user_login;
 									}
 								?>
-								<input name="miembropress_action_impersonate" type="submit" class="button-primary button-activate" value="Login As <?php echo htmlentities($loginAs); ?>" onmouseover="this.value='Login As <?php echo htmlentities($loginAs); ?> (will log you out of this account)'" onmouseout="this.value='Login As <?php echo htmlentities($loginAs); ?>'" />
+								<input name="miembropress_action_impersonate" type="submit" class="button-primary menus_buttons button-activate " value="Login As <?php echo htmlentities($loginAs); ?>" onmouseover="this.value='Login As <?php echo htmlentities($loginAs); ?> (will log you out of this account)'" onmouseout="this.value='Login As <?php echo htmlentities($loginAs); ?>'" />
 							</td>
 						<tr>
 					</tbody>
@@ -3054,7 +3079,7 @@ class MiembroPressAdmin {
 		<form method="post" action="<?php echo $this->menu; ?>-members">
 			<p>
 				<input type="search" value="" name="s" placeholder="Search Members" ondblclick="miembropress_multisearch(this);">
-				<input type="submit" class="button-primary button-activate" value="Search">
+				<input type="submit" class="button-primary menus_buttons button-activate " value="Search">
 			</p>
 
 			<table class="widefat" style="width:100%;" id="miembropress_dashboard">

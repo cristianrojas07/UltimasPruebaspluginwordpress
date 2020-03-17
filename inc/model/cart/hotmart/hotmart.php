@@ -141,9 +141,9 @@ class MiembroPressCartHotmart extends MiembroPressCart {
 				<td style="text-align:center;"><input type="text" size="10" name="miembropress_hotmart_item[<?php echo htmlentities($level->ID); ?>]" value="<?php echo $item; ?>" /> </td>
 				<?php endforeach; ?>
 				</table></p>
-				<p><input type="submit" class="button-primary button-activate" value="Save Hotmart Product IDs" /></p>
+				<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save Hotmart Product IDs" /></p>
 			</blockquote>
-		<p><input type="submit" class="button-primary button-activate" value="Save Settings" /></p>
+		<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save Settings" /></p>
 	<?php
 	}
 

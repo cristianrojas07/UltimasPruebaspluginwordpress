@@ -87,7 +87,7 @@ class MiembroPressActivation {
 	}
     
     function deactivation_button() {
-		echo '<input type="submit" class="button-primary button-activate" name="'.$this->slug.'_deactivate" value="Deactivate License for This Site" onclick="return confirm(\'Are you SURE you want to deactivate your license for this site?\');" />';
+		echo '<input type="submit" class="button-primary menus_buttons button-activate " name="'.$this->slug.'_deactivate" value="Deactivate License for This Site" onclick="return confirm(\'Are you SURE you want to deactivate your license for this site?\');" />';
     }
 
     function call() {

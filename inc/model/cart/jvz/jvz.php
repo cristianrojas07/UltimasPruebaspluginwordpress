@@ -119,7 +119,7 @@ class MiembroPressCartJVZ extends MiembroPressCart {
 					<td style="text-align:center;"><input type="text" size="10" name="miembropress_jvz_item[<?php echo htmlentities($level->ID); ?>]" value="<?php echo $item; ?>" /> </td>
 					<?php endforeach; ?>
 					</table></p>
-					<p><input type="submit" class="button-primary button-activate" value="Save JVZoo Product IDs" /></p>
+					<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save JVZoo Product IDs" /></p>
 				</blockquote>
 			</blockquote>
 			<h3>Step 6: Create Your Test Button in JVZoo</h3>
@@ -136,7 +136,7 @@ class MiembroPressCartJVZ extends MiembroPressCart {
 				<p><input type="checkbox" /> Go to <code>Seller, Seller's Dashboard</code>, find the product you just created, and click <code>Buy Buttons</code>. This will take you to a new screen where you are presented with special code to place on your website to accept payments.</p>
 				<p>Grab the HTML code to place on your web pages. We use <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to present sales letters to customers.</p>
 			</blockquote>
-			<p><input type="submit" class="button-primary button-activate" value="Save Settings" /></p>
+			<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save Settings" /></p>
 		</div>
 		<?php
 	}

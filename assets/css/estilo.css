@@ -7,26 +7,12 @@ html {
 	box-sizing: border-box!important;
 }
 
-.prueba-boton{
-  padding: 0 10px;
-  text-align: center;
-  text-decoration: none;
-  line-height: 2.15384615;
-  display: inline-block;
-  margin: 4px 2px;
-  font-size: 13px;
-  transition-duration: 0.4s;  
-  cursor: pointer;
-  border-radius: 4px!important;
-  background-color: #e5e5e5;
-  color: black;
-  border: 2px solid #755575;
-  transition: all 0.3s ease!important;
+.menus_buttons{
+  background-image: linear-gradient(#eaa04d, #e04750e6)!important;
 }
 
-.prueba-boton:hover {
-  background-color: #333b48;
-  color: white;
+.menus_buttons:hover{
+  background-image: linear-gradient(#e6ad6d, #de5b63)!important;
 }
 
 .tabla-width{
@@ -105,7 +91,7 @@ html {
 }
 
 .button-activate{
-	background: #333b48!important;
+	background-color: #333b48!important;
 	border-color: #333b48!important;
 	display: inline-block!important;
 	color: #FFF!important;
@@ -122,7 +108,7 @@ html {
 }
 
 .button-activate:hover{
-	background: #515a68!important;
+	background-color: #515a68!important;
 	color: #fff!important;
 }
 

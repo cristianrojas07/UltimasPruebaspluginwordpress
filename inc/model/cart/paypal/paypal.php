@@ -114,7 +114,7 @@ class MiembroPressCartPayPal extends MiembroPressCart {
 				<p><input type="checkbox" /> Click <code>Create Button</code> and you should be taken to a new screen where you are presented with special code to place on your website to accept payments.</p>
 				<p>We highly suggest you click the <code>Email</code> tab to grab a simple link that you can place on your web pages. We use <a target="_blank" href="http://www.papertemplate.com">Paper Template</a> to present sales letters to customers.</p>
 			</blockquote>
-			<p><input type="submit" class="button-primary button-activate" value="Save Settings" /></p>
+			<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save Settings" /></p>
 		</div>
 		<?php
 	}

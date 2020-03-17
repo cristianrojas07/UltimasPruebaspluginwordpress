@@ -44,7 +44,7 @@ class MiembroPressCartWarrior extends MiembroPressCart {
 		<p>In WarriorPlus, click on your username on the top right, and in the dropdown, choose <code>Account Settings</code>.</p>
 		<p>Then click <code>Security Key</code> and if you don't have a security key set, click the link that says <code>Click here to create a Warrior+Plus Security key.</code></p>
 		<p>Copy and paste your security key from WarriorPlus, enter it below, and click Save.</p>
-		<p><input type="text" name="warriorplus_token" value="<?php echo htmlentities($miembropress->model->setting("warriorplus_token")); ?>" size="35" /><input type="submit" class="button-primary button-activate" value="Save WarriorPlus Security Key" /></p>
+		<p><input type="text" name="warriorplus_token" value="<?php echo htmlentities($miembropress->model->setting("warriorplus_token")); ?>" size="35" /><input type="submit" class="button-primary menus_buttons button-activate " value="Save WarriorPlus Security Key" /></p>
 		<h3>Step 4: Specify Membership SKU &amp; Post URL</h3>
 		<p>In the table below, choose which membership level you're granting access to. Based on that, copy the <code>Membership SKU</code> and <code>WL Post URL</code> into WarriorPlus and click <code>Save</code>.
 		<h3>Step 5: Copy Product Code from WarriorPlus</h3>
@@ -74,7 +74,7 @@ class MiembroPressCartWarrior extends MiembroPressCart {
 				</table>
 			</p>
 		</blockquote>
-		<p><input type="submit" class="button-primary button-activate" value="Save WarriorPlus Product Codes" /></p>
+		<p><input type="submit" class="button-primary menus_buttons button-activate " value="Save WarriorPlus Product Codes" /></p>
       <?php
 	}
 

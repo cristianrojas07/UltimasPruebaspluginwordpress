@@ -399,8 +399,8 @@ class MiembroPressProtection {
 			<?php
 			if (!get_option("wppp_username") || !get_option("wppp_password")) {
 				wp_login_form();
-			} elseif (file_exists(dirname('index . php')."/member-login.php")) {
-				require(dirname('index . php')."/member-login.php");
+			} elseif (file_exists(dirname('index.php')."/member-login.php")) {
+				require(dirname('index.php')."/member-login.php");
 			} else { ?>
 				<form method="POST">
 					<label>Username: <input type="text" name="wppp_username" size="10" /></label><br />
