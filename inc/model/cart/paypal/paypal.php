@@ -53,7 +53,7 @@ class MiembroPressCartPayPal extends MiembroPressCart {
 				<a href="#" onclick="jQuery('.paypal_token').show(); jQuery(this).hide(); return false;">Click to Show</a>
 				<?php endif; ?>
 				<input type="text" name="paypal_token" class="paypal_token" <?php if ($miembropress->model->setting("paypal_token")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("paypal_token")); ?>" size="80" />
-				</label> <input <?php if ($miembropress->model->setting("paypal_token")): ?>style="display:none;"<?php endif; ?> type="submit" class="button-secondary" value="Save PDT Identity Token" />
+				</label> <input <?php if ($miembropress->model->setting("paypal_token")): ?>style="display:none;"<?php endif; ?> type="submit" class="button-primary menus_buttons button-activate " value="Save PDT Identity Token" />
 			</blockquote>
 			<h3>Step 3: Create a Button in PayPal (Buy Now or Subscription)</h3>
 			<blockquote>
@@ -93,7 +93,7 @@ class MiembroPressCartPayPal extends MiembroPressCart {
 					<li><input type="checkbox" /> Copy that URL to your PayPal button creation screen by highlighting it (click and hold down), be sure not to highlight any spaces or blank areas, right click and Copy, then switch back to PayPal and Paste.</li>
 					<p align="center">
 					<textarea name="miembropress_checkout" id="miembropress_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold;"><?php echo htmlentities($checkout); ?></textarea><br />
-					<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
+					<input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
 					</p>
 				</ol>
 			</blockquote>
@@ -104,7 +104,7 @@ class MiembroPressCartPayPal extends MiembroPressCart {
 			</blockquote>
 			<p align="center" style="text-align:center;">
 				<textarea name="miembropress_variables" id="miembropress_variables"  cols="70" rows="3" class="code" style="font-size:18px; font-weight:bold;">rm=2<?php echo chr(10); ?>notify_url=<?php echo $checkout; ?><?php echo chr(10); ?>return=<?php echo $checkout; ?></textarea><br />
-				<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_variables').select(); return false;1" value="Select All" />
+				<input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_variables').select(); return false;1" value="Select All" />
 			</p>
 			<blockquote>
 				<p>Please make sure that you select, copy and paste all three lines above, into your PayPal button, with no extra spaces anywhere.</p>

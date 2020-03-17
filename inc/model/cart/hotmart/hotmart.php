@@ -52,50 +52,7 @@ class MiembroPressCartHotmart extends MiembroPressCart {
 		<h3>Hotmart Payment</h3>
 		<p>In order to accept payments using Hotmart, you must:</p>
 		<h3><b style="background-color:yellow;">Step 1:</b> Register a Hotmart SELLER account by registering at the Hotmart website </h3>
-		<h3><b style="background-color:yellow;">Step 2:</b> Set your "Hotmart Credentials" to match both this page and your "Tools" area in Hotmart <br />
-			Paste Hotmart ID, SecretID & Basic below:</h3>
-			<blockquote>
-				<blockquote>
-					<ul>
-						<li>
-							<h3>A) Go to: "HotConnect" -> "Credentials" to get or create your credentials.</h3>
-						</li>
-						<li>
-							<h3>B) Paste your Client ID, Client Secret &amp Basic below:</h3>
-						</li>
-					</ul>
-				</blockquote>
-				<ol style="list-style-type:upper-alpha;">
-					<p><blockquote>
-					<label><b>Client ID:</b>
-						<?php if ($miembropress->model->setting("hotmart_id")): ?>
-							<a href="#" onclick="jQuery('.hotmart_id').show(); jQuery(this).hide(); return false;">Click to Show</a>
-						<?php endif; ?>
-						<input type="text" name="hotmart_id" class="hotmart_id" <?php if ($miembropress->model->setting("hotmart_id")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("hotmart_id")); ?>" size="25" />
-					</label>
-					<input class="hotmart_id" type="submit" <?php if ($miembropress->model->setting("hotmart_id")): ?>style="display:none;"<?php endif; ?> class="button-secondary" value="Save Client ID" />
-					</blockquote></p>
-					<p><blockquote>
-					<label><b>Client Secret:</b>
-						<?php if ($miembropress->model->setting("hotmart_secretid")): ?>
-						<a href="#" onclick="jQuery('.hotmart_secretid').show(); jQuery(this).hide(); return false;">Click to Show</a>
-						<?php endif; ?>
-						<input type="text" name="hotmart_secretid" class="hotmart_secretid" <?php if ($miembropress->model->setting("hotmart_secretid")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("hotmart_secretid")); ?>" size="25" />
-					</label>
-					<input class="hotmart_secretid" type="submit" <?php if ($miembropress->model->setting("hotmart_secretid")): ?>style="display:none;"<?php endif; ?> class="button-secondary" value="Save Client Secret" />
-					</blockquote></p>
-					<p><blockquote>
-					<label><b>Basic:</b>
-						<?php if ($miembropress->model->setting("hotmart_basic")): ?>
-						<a href="#" onclick="jQuery('.hotmart_basic').show(); jQuery(this).hide(); return false;">Click to Show</a>
-						<?php endif; ?>
-						<input type="text" name="hotmart_basic" class="hotmart_basic" <?php if ($miembropress->model->setting("hotmart_basic")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("hotmart_basic")); ?>" size="25" />
-					</label>
-					<input class="hotmart_basic" type="submit" <?php if ($miembropress->model->setting("hotmart_basic")): ?>style="display:none;"<?php endif; ?> class="button-secondary" value="Save Basic" />
-					</blockquote></p>
-				</ol>
-			</blockquote><br />
-		<h3><b style="background-color:yellow;">Step 3:</b> Set Thank You Page</h3>
+		<h3><b style="background-color:yellow;">Step 2:</b> Set Thank You Page</h3>
 			<blockquote>
 				<blockquote>
 					<ul>
@@ -105,7 +62,7 @@ class MiembroPressCartHotmart extends MiembroPressCart {
 								<ol style="list-style-type:upper-alpha;">
 								<p align="center">
 									<textarea name="miembropress_checkout" id="miembropress_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo base_url_inc . "request.php" ?></textarea><br />
-									<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
+									<input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
 								</p>
 								</ol>
 							</blockquote>
@@ -117,7 +74,7 @@ class MiembroPressCartHotmart extends MiembroPressCart {
 					</ul>
 				</blockquote>
 			</blockquote><br />
-		<h3><b style="background-color:yellow;">Step 4:</b> Enter Product ID from Hotmart</h3>
+		<h3><b style="background-color:yellow;">Step 3:</b> Enter Product ID from Hotmart</h3>
 			<p>It should be a 6-digit number printed like this:<br />
 			<code>BASIC INFORMATION FOR PRODUCT ID: 111222</code></p>
 			<p>Enter that product ID in the table below corresponding to the level you want to grant access to.</p>

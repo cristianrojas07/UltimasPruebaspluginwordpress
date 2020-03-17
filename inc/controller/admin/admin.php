@@ -319,7 +319,10 @@ class MiembroPressAdmin {
 					<label>First Name: <input type="text" name="firstname" size="18" value="<?php echo htmlentities($userFirst); ?>" /></label><br />
 					<label>Last Name: <input type="text" name="lastname" size="18" value="<?php echo htmlentities($userLast); ?>" /></label><br />
 					<label>Email: <input type="text" name="email" size="40" value="<?php echo htmlentities($userEmail); ?>" /></label><br />
-					<input type="submit" value="Test Autoresponder" class="button-secondary" /> (popup opens in a new window)
+					<input type="submit" value="Test Autoresponder" class="button-primary menus_buttons button-activate " />
+					(popup opens in a new window)
+					<br /><br />
+					Note: The test will only work when the forms have normal fields. (without checkbox)
 				</form>
 			<?php endif; ?>
         </div>
@@ -1511,27 +1514,32 @@ class MiembroPressAdmin {
 			}
 		}
 		?>
-		<?php if (!is_admin()): ?>
-			<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-				<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-				<b>Rellene el siguiente formulario</b></p>
-				<p align="center"><b style="background-color:yellow;">Nueva Cuenta:</b> Si no tienes una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-				<b><a style="text-decoration:underline;" href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta</a></b></p>
-			<?php else: ?>
-				<p align="center"><b style="background-color:yellow;">Cuenta existente: </b> Si ya tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-				<b><a href="<?php echo $existingLink; ?>" style="text-decoration:underline;">Haga clic aquí para iniciar sesión &amp; agregue esta compra a su cuenta existente</a></b></p>
-				<p align="center"><b style="background-color:yellow;">Nueva cuenta: </b> Si no tiene una cuenta para <i><?php echo get_option("blogname"); ?></i>:<br />
-					<b>
-					<?php if ((isset($_GET["existing"]) && $_GET["existing"] == 0) || count($_POST) > 0): ?>
-						Rellene el siguiente formulario para crear una nueva cuenta
-					<?php else: ?>
-						<a style="text-decoration:underline;" href="#" onclick="document.getElementById('miembropress_registration').style.display='block'; this.innerHTML = 'Rellene el siguiente formulario para crear una nueva cuenta'; return false;">Haz clic aquí para crear una nueva cuenta</a>
-					<?php endif; ?>
-					</b>
-				</p>
-			<?php endif; ?><br />
-		<?php endif; ?>
+		<?php //if(!is_admin()): ?>
+			<!--<script>
+				document.getElementById("masthead").style.display = "none";
+			</script>-->
+		<?php //endif; ?>
 		<div id="iv-form3" class="col-md-12">
+			<?php if (!is_admin()): ?>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-10"> 	
+						<div><p>Si eres nuevo en <?php echo get_option("blogname"); ?>, dale clic en "Registrar" para crear tu cuenta.</p></div>
+						<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión" para agregar esta compra a tu cuenta existente.</p></div>
+					</div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="col-md-1"></div>
+					<div class="col col-md-10">
+						<div class="btn-group btn-group-block header-profile w-100">
+							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary" : "btn-danger" ?>"" href="<?php echo $nonExistingLink; ?>">Registrar</a>
+							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger" : "btn-secondary" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
+						</div>
+					</div>
+				</div>
+				<br />
+			<?php endif; ?>
 			<form method="post" class="form-horizontal">
 				<input type="hidden" name="action" value="miembropress_register">
 				<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
@@ -1547,12 +1555,6 @@ class MiembroPressAdmin {
 					<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
 				<?php endif; ?>
 				<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-					<div class="row">
-						<div class="col-md-1"></div>
-						<div class="col-md-10">
-							<h2 class="header-profile"><div>Acceso a cuenta existente</div></h2>
-						</div>
-					</div>
 					<div class="row">
 						<div class="col-md-1 "></div>
 						<div class="col-md-10 "> <div>
@@ -1585,7 +1587,7 @@ class MiembroPressAdmin {
 							<div class="row">
 								<div class="col-md-4 col-xs-4 col-sm-4 "></div>
 								<div class="col-md-8 col-xs-8 col-sm-8 ">
-									<input type="submit" class="button-primary button-activate" value="   Ingresar a la cuenta existente   ">
+									<input type="submit" class="button-primary button-activate" value="   Ingresar   ">
 									<br /><br/>
 									<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
 								</div>
@@ -1593,12 +1595,6 @@ class MiembroPressAdmin {
 				<?php else: ?>
 					<?php if (!is_admin()): ?>
 							<div id="miembropress_registration">
-								<div class="row">
-									<div class="col-md-1"></div>
-									<div class="col-md-10">
-										<h2 class="header-profile"><div>Registro de Nueva Cuenta</div></h2>
-									</div>
-								</div>
 								<div class="row">
 									<div class="col-md-1 "></div>
 									<div class="col-md-10 "> <div>
@@ -1611,14 +1607,14 @@ class MiembroPressAdmin {
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["username"]): ?><small>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br /></small>
 														<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?><small>ERROR: Nombre de usuario existente, por favor intente con otro.<br /></small>
-														<?php else: ?><small>Ingrese su nombre de usuario deseado. <br /> Debe tener al menos 4 caracteres (letras y números) de largo.</small><?php endif; ?>
+														<?php else: ?><small>El nombre de usuario debe tener al menos 4 caracteres (letras y números) de largo.</small><?php endif; ?>
 													</div>
 												</div>
 											</div>
 											
 										
 											<div class="form-group row">
-												<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombres:</b></label>
+												<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombre:</b></label>
 												<div class="col-md-8 has-success">
 													<input type="text" placeholder="Introduce tu nombre" class="form-control ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
 													<div class="desc">
@@ -1650,19 +1646,31 @@ class MiembroPressAdmin {
 											</div>
 										
 											<div class="form-group row">
-												<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña (dos veces):</b></label>
+												<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña:</b></label>
 												<div class="col-md-8 has-success">
 													<?php if (is_admin()): ?>
-														<input type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('miembropress_password2').style.display=((this.value=='')?'none':'block');"/>
-														<input type="password" name="miembropress_password2" id="miembropress_password2" size="25" placeholder="(Ingrese de nuevo la contraseña)" />
+														<input class="form-control ctrl-textbox valid" type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('label-password2').style.display=((this.value=='')?'none':'block'); document.getElementById('div-password2').style.display=((this.value=='')?'none':'block');"/><br />
 													<?php else: ?>
 														<input type="password" placeholder="Introduce una contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/>
-														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+													<?php endif; ?>
+													
+												</div>
+												<?php if (is_admin()): ?>
+													<label id="label-password2" style="display: none!important;" for="miembropress_password2" class="col-md-4 control-label"><b>Repetir contraseña:</b></label>
+													<div class="col-md-8 has-success" id="div-password2" style="display: none!important;">
+												<?php else: ?>
+													<label for="miembropress_password2" class="col-md-4 control-label"><b>Repetir contraseña:</b></label>
+													<div class="col-md-8 has-success" id="div-password2">
 												<?php endif; ?>
+													<?php if (is_admin()): ?>
+														<input type="password" name="miembropress_password2" class="form-control ctrl-textbox valid" id="miembropress_password2" size="25" placeholder="(Repetir contraseña)" />
+													<?php else: ?>
+														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+													<?php endif; ?>
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["password"]): ?><small>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br /></small>
 														<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?><small>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br /></small>
-														<?php else: ?><small>Introduzca su contraseña deseada dos veces. <br /> Debe tener al menos 6 caracteres (letras y números) de longitud.</small><?php endif; ?>
+														<?php else: ?><small>La contraseña debe tener al menos 6 caracteres (letras y números) de longitud.</small><?php endif; ?>
 													</div>
 												</div>
 											</div>

@@ -51,7 +51,7 @@ class MiembroPressCartJVZ extends MiembroPressCart {
 						<?php endif; ?>
 						<input type="text" name="jvz_token" class="jvz_token" <?php if ($miembropress->model->setting("jvz_token")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("jvz_token")); ?>" size="25" />
 					</label>
-					<input class="jvz_token" type="submit" <?php if ($miembropress->model->setting("jvz_token")): ?>style="display:none;"<?php endif; ?> class="button-secondary" value="Save JVZoo Secret Key" />
+					<input class="jvz_token" type="submit" <?php if ($miembropress->model->setting("jvz_token")): ?>style="display:none;"<?php endif; ?> class="button-primary menus_buttons button-activate " value="Save JVZoo Secret Key" />
 					</blockquote></p>
 					<li><input type="checkbox" /> Be sure to click the <code>Save</code> button to apply this change to your account.</li>
 				</ol>
@@ -72,7 +72,7 @@ class MiembroPressCartJVZ extends MiembroPressCart {
 				<p><input type="checkbox" /> Set the <code>Thank You / Download Page</code> to the URL below:</p>
 				<p align="center">
 					<textarea name="miembropress_checkout" id="miembropress_checkout" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo htmlentities($checkout); ?></textarea><br />
-					<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
+					<input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_checkout').select(); return false;" value="Select All" />
 				</p>
 				</ol>
 			</blockquote>
@@ -86,7 +86,7 @@ class MiembroPressCartJVZ extends MiembroPressCart {
 					<blockquote>
 						<p align="center">
 						<textarea name="miembropress_notify" id="miembropress_notify" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo htmlentities($checkout); ?></textarea><br />
-						<input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_notify').select(); return false;" value="Select All" />
+						<input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_notify').select(); return false;" value="Select All" />
 						</p>
 					</blockquote>
 

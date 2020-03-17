@@ -338,11 +338,12 @@ class MiembroPressProtection {
 		}
 		
 		$this->verificatedUserIp($userTable);
-		
+		return;
+		/*
 		if (isset($miembropress->registerLevel->level_name)) {
 			return $miembropress->registerLevel->level_name . " Registro";
 		}
-		return $this->protectedTitle;
+		return $this->protectedTitle;*/
 	}
 
 	public function verificatedUserIp($userTable){

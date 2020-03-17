@@ -4,7 +4,7 @@
         <title>Codigo Popup</title>
         <link rel="stylesheet" href="../assets/css/estilo.css" type="text/css">
         <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script>var cerraranuncio = anuncio => {document.getElementById(anuncio).style.display = "none";}</script>
         <script>var pathname = jQuery(location).attr('href');var verificar = pathname.indexOf("miembropress") > -1;jQuery(function() {if (!verificar) {document.getElementById('maximizer').style.display = "block";}});</script>
     </head>
@@ -50,18 +50,18 @@
 
         ?>
         <div class="ventana_flotante <?php echo $posicion; ?>" id="maximizer">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
+            <div class="modal-dialog-maximizer">
+                <div class="modal-content-maximizer">
+                    <div class="modal-header-maximizer">
                         <button type="button" onclick="cerraranuncio('maximizer')" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <?php echo $titulo; ?>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body-maximizer">
                         <?php echo $contenido; ?>
                         <?php echo $contenido_link; ?>
                     </div>
-                    <div class="modal-footer">
-                        <button data-dismiss="modal" onclick="cerraranuncio('maximizer')" class="btn btn-danger">Cerrar</button>
+                    <div class="modal-footer-maximizer">
+                        <button data-dismiss="modal" onclick="cerraranuncio('maximizer')" class="btn-maximizer btn-danger-maximizer">Cerrar</button>
                     </div>
                 </div>
             </div>

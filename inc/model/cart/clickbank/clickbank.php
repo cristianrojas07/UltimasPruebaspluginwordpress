@@ -58,7 +58,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
       <?php endif; ?>
 
       <input type="text" name="clickbank_token" class="clickbank_token" <?php if ($miembropress->model->setting("clickbank_token")): ?>style="display:none;"<?php endif; ?> value="<?php echo htmlentities($miembropress->model->setting("clickbank_token")); ?>" size="25" />
-         </label> <input class="clickbank_token" type="submit" <?php if ($miembropress->model->setting("clickbank_token")): ?>style="display:none;"<?php endif; ?> class="button-secondary" value="Save Clickbank Secret Key" />
+         </label> <input class="clickbank_token" type="submit" <?php if ($miembropress->model->setting("clickbank_token")): ?>style="display:none;"<?php endif; ?> class="button-primary menus_buttons button-activate " value="Save Clickbank Secret Key" />
       </blockquote>
 
       <blockquote>
@@ -76,7 +76,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
       <blockquote>
          <p align="center">
          <textarea name="miembropress_notify" id="miembropress_notify" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo htmlentities($checkout); ?></textarea><br />
-         <input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_notify').select(); return false;" value="Select All" />
+         <input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_notify').select(); return false;" value="Select All" />
          </p>
       </blockquote>
 
@@ -97,7 +97,7 @@ class MiembroPressCartClickbank extends MiembroPressCart {
       <blockquote>
          <p align="center">
          <textarea name="miembropress_notify" id="miembropress_thankyou" cols="60" rows="2" class="code" style="font-size:18px; font-weight:bold; background-color:white;" readonly="readonly"><?php echo htmlentities($checkout); ?></textarea><br />
-         <input style="text-align:center;" type="submit" class="button-secondary" onclick="document.getElementById('miembropress_thankyou').select(); return false;" value="Select All" />
+         <input style="text-align:center;" type="submit" class="button-primary menus_buttons button-activate " onclick="document.getElementById('miembropress_thankyou').select(); return false;" value="Select All" />
          </p>
       </blockquote>
 
