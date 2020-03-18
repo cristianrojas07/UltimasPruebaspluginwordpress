@@ -1533,7 +1533,7 @@ class MiembroPressAdmin {
 					<div class="col-md-1"></div>
 					<div class="col col-md-10">
 						<div class="btn-group btn-group-block header-profile w-100">
-							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary" : "btn-danger" ?>"" href="<?php echo $nonExistingLink; ?>">Registrar</a>
+							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary" : "btn-danger" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
 							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger" : "btn-secondary" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
 						</div>
 					</div>
