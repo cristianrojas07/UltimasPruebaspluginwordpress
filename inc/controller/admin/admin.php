@@ -1514,16 +1514,17 @@ class MiembroPressAdmin {
 			}
 		}
 		?>
-		<?php //if(!is_admin()): ?>
-			<!--<script>
+		<?php if(!is_admin()): ?>
+			<script>
 				document.getElementById("masthead").style.display = "none";
-			</script>-->
-		<?php //endif; ?>
+			</script>
+		<?php endif; ?>
 		<div id="iv-form3" class="col-md-12">
 			<?php if (!is_admin()): ?>
+				<br />
 				<div class="row">
 					<div class="col-md-1"></div>
-					<div class="col-md-10"> 	
+					<div class="col-md-10">
 						<div><p>Si eres nuevo en <?php echo get_option("blogname"); ?>, dale clic en "Registrar" para crear tu cuenta.</p></div>
 						<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión" para agregar esta compra a tu cuenta existente.</p></div>
 					</div>
@@ -2786,7 +2787,7 @@ class MiembroPressAdmin {
 								<input type="text" name="miembropress_transaction[<?php echo intval($level->level_id); ?>]" size="20" value="<?php echo htmlentities($level->level_txn); ?>" />
 								<input type="hidden" name="miembropress_transaction_original[<?php echo intval($level->level_id); ?>]" value="<?php echo htmlentities($level->level_txn); ?>" />
 							</td>
-							<td style="text-align:left;"><label><input type="checkbox" name="miembropress_subscribed[<?php echo intval($level->level_id); ?>]" <?php checked($level->level_subscribed == 1); ?> class="miembropress_subscribed" /> <span class="miembropress_subscribed_label"><?php echo ($level->level_subscribed == 1) ? chr(89) . "es" : "No"; ?></span></label></td>
+							<td style="text-align:left;"><label><input type="checkbox" name="miembropress_subscribed[<?php echo intval($level->level_id); ?>]" <?php checked($level->level_subscribed == 1); ?> class="miembropress_subscribed" /> <span class="miembropress_subscribed_label"><?php echo ($level->level_subscribed == 1) ? "Yes" : "No"; ?></span></label></td>
 								<td style="text-align:left;">
 								<nobr><input type="text" name="miembropress_date[<?php echo intval($level->level_id); ?>]" value="<?php echo htmlentities($level->level_date); ?>" size="20" /></nobr>
 								<input type="hidden" name="miembropress_date_original[<?php echo intval($level->level_id); ?>]" value="<?php echo htmlentities($level->level_date); ?>" />

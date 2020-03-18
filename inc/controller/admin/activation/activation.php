@@ -83,6 +83,7 @@ class MiembroPressActivation {
 		unset($this->settings["lastcheck"]);
 		unset($this->settings["lasthash"]);
 		unset($this->settings["lastversion"]);
+		unset($this->settings["valid"]);
 		update_option($this->slug, $this->settings);
 	}
     
@@ -197,6 +198,7 @@ class MiembroPressActivation {
 					$settings["lastversion"] = $version;
 					$settings["lastcheck"] = $time;
 					$settings["lastversioncheck"] = $time;
+					$settings["valid"] = true;
 					update_option($this->slug, $settings);
 	
 					$this->call = $lastversion;
@@ -237,6 +239,7 @@ class MiembroPressActivation {
 				if(!$noExist){
 					$this->settings = get_option($this->slug);
 					unset($this->settings["lastversion"]);
+					$this->settings["valid"] = false;
 					update_option($this->slug, $this->settings);
 				}
 				if($call){
@@ -247,6 +250,7 @@ class MiembroPressActivation {
 				if($noExist){
 					$this->settings = get_option($this->slug);
 					$this->settings["lastversion"] = $lastversion;
+					$this->settings["valid"] = true;
 					update_option($this->slug, $this->settings);
 				}
 				return $lastversion;
