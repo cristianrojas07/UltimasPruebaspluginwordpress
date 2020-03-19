@@ -444,17 +444,6 @@ wp_register_style( 'bootstrap-font-css', "https://maxcdn.bootstrapcdn.com/font-a
 wp_enqueue_style( 'bootstrap-font-css' );
 
 // Incluir css estilo.css
-wp_register_style( 'miembropress_css', base_url . 'assets/css/estilo.css', array(), '4.6.6');
+wp_register_style( 'miembropress_css', base_url . 'assets/css/estilo.css', array(), '6.3.3.7');
 wp_enqueue_style( 'miembropress_css' ); 
-
-
-// Incluir Bootstrap CSS
-wp_register_style( 'bootstrap_css', base_url . 'assets/css/bootstrap.css', array(), '4.5.9');
-wp_enqueue_style( 'bootstrap_css' ); 
-
-
-// Incluir Bootstrap JS
-wp_register_script('bootstrap_js', base_url . 'assets/js/bootstrap.js', array('jquery'), '4.4.1', true);
-wp_enqueue_script( 'bootstrap_js' ); 
-
 ?>

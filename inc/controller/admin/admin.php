@@ -1533,9 +1533,9 @@ class MiembroPressAdmin {
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col col-md-10">
-						<div class="btn-group btn-group-block header-profile w-100">
-							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary" : "btn-danger" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
-							<a style="text-decoration:none" class="btn btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger" : "btn-secondary" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
+						<div class="btn-group-miembropress btn-group-block header-profile w-100">
+							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary-miembropress" : "btn-danger-register" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
+							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger-register" : "btn-secondary-miembropress" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
 						</div>
 					</div>
 				</div>
@@ -1576,13 +1576,13 @@ class MiembroPressAdmin {
 							<div class="form-group row">
 								<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de usuario:</b></label>
 								<div class="col-md-8 has-success">
-									<input type="text" placeholder="Introduce tu nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>">
+									<input type="text" placeholder="Introduce tu nombre de usuario" class="form-control-miembropress ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>">
 								</div>
 							</div>
 							<div class="form-group row">
 								<label for="miembropress_password" class="col-md-4 control-label"><b>Contraseña:</b></label>
 								<div class="col-md-8 has-success">
-									<input type="password" placeholder="Introduce tu contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password" size="10">
+									<input type="password" placeholder="Introduce tu contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password1" id="miembropress_password" size="10">
 								</div>
 							</div>
 							<div class="row">
@@ -1604,7 +1604,7 @@ class MiembroPressAdmin {
 											<div class="form-group row">
 												<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de Usuario:</b></label>
 												<div class="col-md-8 has-success">
-													<input type="text" placeholder="Introduce un nombre de usuario" class="form-control ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
+													<input type="text" placeholder="Introduce un nombre de usuario" class="form-control-miembropress ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>" onblur="miembropress_suggest()" />
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["username"]): ?><small>ERROR: El nombre de usuario deseado debe tener al menos 4 caracteres (letras y números).<br /></small>
 														<?php elseif (!$validate["empty"] && !$validate["userAvailable"]): ?><small>ERROR: Nombre de usuario existente, por favor intente con otro.<br /></small>
@@ -1617,7 +1617,7 @@ class MiembroPressAdmin {
 											<div class="form-group row">
 												<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombre:</b></label>
 												<div class="col-md-8 has-success">
-													<input type="text" placeholder="Introduce tu nombre" class="form-control ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
+													<input type="text" placeholder="Introduce tu nombre" class="form-control-miembropress ctrl-textbox valid" name="miembropress_firstname" id="miembropress_firstname" size="15" value="<?php echo htmlentities($firstname); ?>" />
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["firstname"]): ?><small>ERROR: Su nombre debe tener al menos 2 caracteres (letras y números).<br /></small><?php endif; ?>
 													</div>
@@ -1627,7 +1627,7 @@ class MiembroPressAdmin {
 											<div class="form-group row">
 												<label for="miembropress_lastname" class="col-md-4 control-label"><b>Apellidos:</b></label>
 												<div class="col-md-8 has-success">
-													<input type="text" placeholder="Introduce tu apellido" class="form-control ctrl-textbox valid" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
+													<input type="text" placeholder="Introduce tu apellido" class="form-control-miembropress ctrl-textbox valid" name="miembropress_lastname" id="miembropress_lastname" size="15" value="<?php echo htmlentities($lastname); ?>">
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["lastname"]): ?><small>ERROR: Su apellido debe contener al menos 2 caracteres (letras y números).<br /></small><?php endif; ?>
 													</div>
@@ -1637,7 +1637,7 @@ class MiembroPressAdmin {
 											<div class="form-group row">
 												<label for="miembropress_email" class="col-md-4 control-label"><b>Email:</b></label>
 												<div class="col-md-8 has-success">
-													<input type="email" placeholder="Introduce tu email" class="form-control ctrl-textbox valid" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
+													<input type="email" placeholder="Introduce tu email" class="form-control-miembropress ctrl-textbox valid" name="miembropress_email" id="miembropress_email" size="25" value="<?php echo htmlentities($email); ?>">
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["email"]): ?><small>ERROR: Por favor, introduzca una dirección de correo electrónico válida.<br /></small>
 														<?php elseif (!$validate["empty"] && !$validate["emailAvailable"]): ?><small>ERROR: Email existente, por favor intente con otro.</small>
@@ -1650,9 +1650,9 @@ class MiembroPressAdmin {
 												<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña:</b></label>
 												<div class="col-md-8 has-success">
 													<?php if (is_admin()): ?>
-														<input class="form-control ctrl-textbox valid" type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('label-password2').style.display=((this.value=='')?'none':'block'); document.getElementById('div-password2').style.display=((this.value=='')?'none':'block');"/><br />
+														<input class="form-control-miembropress ctrl-textbox valid" type="password" name="miembropress_password1" id="miembropress_password1" size="25" placeholder="(Deje en blanco para generar automáticamente)" onkeyup="document.getElementById('label-password2').style.display=((this.value=='')?'none':'block'); document.getElementById('div-password2').style.display=((this.value=='')?'none':'block');"/><br />
 													<?php else: ?>
-														<input type="password" placeholder="Introduce una contraseña" class="form-control ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/>
+														<input type="password" placeholder="Introduce una contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password1" id="miembropress_password1" size="25"/>
 													<?php endif; ?>
 													
 												</div>
@@ -1664,9 +1664,9 @@ class MiembroPressAdmin {
 													<div class="col-md-8 has-success" id="div-password2">
 												<?php endif; ?>
 													<?php if (is_admin()): ?>
-														<input type="password" name="miembropress_password2" class="form-control ctrl-textbox valid" id="miembropress_password2" size="25" placeholder="(Repetir contraseña)" />
+														<input type="password" name="miembropress_password2" class="form-control-miembropress ctrl-textbox valid" id="miembropress_password2" size="25" placeholder="(Repetir contraseña)" />
 													<?php else: ?>
-														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
 													<?php endif; ?>
 													<div class="desc">
 														<?php if (!$validate["empty"] && !$validate["password"]): ?><small>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br /></small>
@@ -1721,7 +1721,7 @@ class MiembroPressAdmin {
 										<div class="row">
 											<div class="col-md-4 col-xs-4 col-sm-4 "></div>
 											<div class="col-md-8 col-xs-8 col-sm-8 ">
-												<input type="submit" class="btn btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+												<input type="submit" class="btn-miembropress btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
 											</div>
 										</div>
 								<?php

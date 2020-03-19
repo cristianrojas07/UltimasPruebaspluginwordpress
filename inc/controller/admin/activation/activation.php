@@ -298,7 +298,7 @@ class MiembroPressActivation {
 						<tr>
 							<th colspan="2" style="padding: 20px;background: #d4d4d4;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">Enter your license:
 								<input type="text" id="licenciaMember" name="licenciaMember" value="<?php echo $_POST["licenciaMember"]?>" placeholder="Please enter your license" size="32"/>
-								<input type="submit" class="button-primary button-activate btn" value="Validate MiembroPress" name="Enviar" />
+								<input type="submit" class="button-primary button-activate btn-miembropress" value="Validate MiembroPress" name="Enviar" />
 							</th>
 						</tr>
 					</tfoot>
