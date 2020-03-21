@@ -1846,7 +1846,7 @@ class MiembroPressAdmin {
 				<b>Browse Level:</b>
 				<a <?php if (-1 == $currentLevel): ?>style="font-weight:bold;"<?php endif; ?>href="<?php echo $this->tabLink("members") . "&l=-1"; ?><?php if (isset($_GET["o"])): ?>&o=<?php echo htmlentities($_GET["o"]); ?><?php endif; ?>">All Members (<?php echo $miembropress->model->getMemberCount(); ?>)</a> &nbsp;&nbsp;
 				<?php foreach ($levels as $level): ?>
-				<a <?php if (is_numeric($currentLevel) && $level->ID == $currentLevel): ?>style="font-weight:bold;"<?php endif; ?> href="<?php echo $this->tabLink("members") . "&l=" . intval($level->ID); ?><?php if (isset($_GET["o"])): ?>&o=<?php echo htmlentities($_GET["o"]); ?><?php endif; ?>"><?php echo htmlentities($level->level_name); ?> (<?php echo intval($level->active); ?>)</a> &nbsp;&nbsp;
+					<a <?php if (is_numeric($currentLevel) && $level->ID == $currentLevel): ?>style="font-weight:bold;"<?php endif; ?> href="<?php echo $this->tabLink("members") . "&l=" . intval($level->ID); ?><?php if (isset($_GET["o"])): ?>&o=<?php echo htmlentities($_GET["o"]); ?><?php endif; ?>"><?php echo htmlentities($level->level_name); ?> (<?php echo intval($level->active); ?>)</a> &nbsp;&nbsp;
 				<?php endforeach; ?>
 			</p>
 			<?php if (is_numeric($currentLevel)): ?>
@@ -1912,108 +1912,120 @@ class MiembroPressAdmin {
 			</thead>
 			<tbody>
 				<?php foreach ($users as $user): ?>
-				<?php
-				$firstname = get_user_meta($user->ID,'first_name', true);
-				$lastname = get_user_meta($user->ID,'last_name', true);
-				$fullname = $firstname . " " . $lastname;
-				$userLevels = $miembropress->model->getLevelInfo($user->ID);
-				if (!$userLevels || !is_array($userLevels)) { $userLevels = array(); } ?>
-				<tr>
-					<th scope="row" class="check-column">
-					<input type="checkbox" name="miembropress_users[<?php echo intval($user->ID); ?>]" id="miembropress_users[<?php echo intval($user->ID); ?>]" value="<?php echo intval($user->ID); ?>">
-					</th>
-					<td><label style="vertical-align:top;" for="miembropress_users[<?php echo intval($user->ID); ?>]"><?php echo htmlentities($fullname); ?></label></td>
-					<td><strong><a href="user-edit.php?user_id=<?php echo intval($user->ID); ?>&amp;wp_http_referer=miembropress"><?php echo htmlentities($user->user_login); ?></a></strong></td>
-					<td><a href="mailto:<?php echo htmlentities($user->user_email); ?>"><?php echo htmlentities($user->user_email); ?></a></td>
-					<td style="text-align:center;">
-						<ul style="margin:0;">
-							<?php foreach ($userLevels as $level): ?>
-							<?php $registered = strtotime($user->user_registered); ?>
-							<li><nobr
-								<?php if ($level->level_status == "C"): ?>style="color:red;"<?php endif; ?>>
-								<?php $levelName = $level->level_name; ?>
-								<?php if ($level->level_status == "A"): ?><?php echo htmlentities($levelName); ?>
-								<?php else: ?><s><?php echo htmlentities($level->level_name); ?></s>
+					
+					<?php
+					$firstname = get_user_meta($user->ID,'first_name', true);
+					$lastname = get_user_meta($user->ID,'last_name', true);
+					$fullname = $firstname . " " . $lastname;
+					$userLevels = $miembropress->model->getLevelInfo($user->ID);
+					if (!$userLevels || !is_array($userLevels)) { 
+						$userLevels = array();
+					} 
+					?>
+					<?php if(!empty($userLevels)): ?>
+						<tr>
+							<th scope="row" class="check-column">
+							<input type="checkbox" name="miembropress_users[<?php echo intval($user->ID); ?>]" id="miembropress_users[<?php echo intval($user->ID); ?>]" value="<?php echo intval($user->ID); ?>">
+							</th>
+							<td><label style="vertical-align:top;" for="miembropress_users[<?php echo intval($user->ID); ?>]"><?php echo htmlentities($fullname); ?></label></td>
+							<td><strong><a href="user-edit.php?user_id=<?php echo intval($user->ID); ?>&amp;wp_http_referer=miembropress"><?php echo htmlentities($user->user_login); ?></a></strong></td>
+							<td><a href="mailto:<?php echo htmlentities($user->user_email); ?>"><?php echo htmlentities($user->user_email); ?></a></td>
+							<td style="text-align:center;">
+								<ul style="margin:0;">
+									<?php foreach ($userLevels as $level): ?>
+											<?php $registered = strtotime($user->user_registered); ?>
+											<li><nobr
+												<?php if ($level->level_status == "C"): ?>
+													style="color:red;"
+												<?php endif; ?>>
+												<?php $levelName = $level->level_name; ?>
+												<?php if ($level->level_status == "A"): ?>
+													<?php echo htmlentities($levelName); ?>
+												<?php else: ?>
+													<s><?php echo htmlentities($level->level_name); ?></s>
+												<?php endif; ?>
+												<?php if ($level->level_txn): ?> 
+													<i>(<?php echo htmlentities($level->level_txn); ?>)</i>
+												<?php endif; ?>
+											</nobr></li>
+									<?php endforeach; ?>
+								</ul>
+							</td>
+							<td style="text-align:center;">
+								<ul style="margin:0;">
+								<?php foreach ($userLevels as $level): ?>
+								<li><?php if ($level->level_subscribed == 1): ?>Yes<?php else: ?>No<?php endif; ?></li>
+								<?php endforeach; ?>
+								</ul>
+							</td>
+							<td class="num" style="text-align:left;"> <!-- registered -->
+								<?php if (count($userLevels) > 0): ?>
+								<ul style="margin:0;">
+									<?php foreach ($userLevels as $level): ?>
+									<li><nobr>
+									<?php
+									if ($level->level_timestamp) {
+										echo date("m/d/".chr(89), $level->level_timestamp);
+										echo " <small>(".$this->timesince($level->level_timestamp).")</small>";
+									} else {
+										echo date("m/d/".chr(89), $registered);
+										echo " <small>(".$this->timesince($registered).")</small>";
+									} ?>
+									</li>
+									<?php endforeach; ?>
+								</ul>
+								<?php else: ?>
+								<?php
+								echo date("m/d/".chr(89), strtotime($user->user_registered));
+								echo " <small>(".$this->timesince(strtotime($user->user_registered)).")</small>";
+								?>
 								<?php endif; ?>
-								<?php if ($level->level_txn): ?> <i>(<?php echo htmlentities($level->level_txn); ?>)</i><?php endif; ?>
-							</nobr></li>
-							<?php endforeach; ?>
-						</ul>
-					</td>
-					<td style="text-align:center;">
-						<ul style="margin:0;">
-						<?php foreach ($userLevels as $level): ?>
-						<li><?php if ($level->level_subscribed == 1): ?>Yes<?php else: ?>No<?php endif; ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</td>
-					<td class="num" style="text-align:left;"> <!-- registered -->
-						<?php if (count($userLevels) > 0): ?>
-						<ul style="margin:0;">
-							<?php foreach ($userLevels as $level): ?>
-							<li><nobr>
-							<?php
-							if ($level->level_timestamp) {
-								echo date("m/d/".chr(89), $level->level_timestamp);
-								echo " <small>(".$this->timesince($level->level_timestamp).")</small>";
-							} else {
-								echo date("m/d/".chr(89), $registered);
-								echo " <small>(".$this->timesince($registered).")</small>";
-							} ?>
-							</li>
-							<?php endforeach; ?>
-						</ul>
-						<?php else: ?>
-						<?php
-						echo date("m/d/".chr(89), strtotime($user->user_registered));
-						echo " <small>(".$this->timesince(strtotime($user->user_registered)).")</small>";
-						?>
-						<?php endif; ?>
-						</nobr>
-					</td>
-					<td class="num"> <!-- expires -->
-						<?php if (count($userLevels) > 0): ?>
-						<ul style="margin:0; color:#aaaaaa;">
-							<?php foreach ($userLevels as $level): ?>
-							<?php
-							$daysDisplay = 0;
-							$realCron = null;
-							$expiration = intval($level->level_expiration);
-							$expirationDate = $level->level_timestamp + ($expiration*86400);
-							if ($expiration > 0 && $expirationDate > time()) {
-								$scheduledCron = mktime(date("H", $expirationDate), date("i", $nextCron), date("s", $nextCron), date("n", $expirationDate), date("j", $expirationDate), date(chr(89), $expirationDate));
-								if ($scheduledCron > $expirationDate) {
-									$realCron = $scheduledCron;
-								} else {
-									$realCron = mktime(date("H", $expirationDate)+1, date("i", $nextCron), date("s", $nextCron), date("n", $expirationDate), date("j", $expirationDate), date(chr(89), $expirationDate));
-								}
-								$timeLeft = $realCron - time();
-								$daysLeft = floor($timeLeft/86400);
-								$hoursLeft = floor($timeLeft/3600) % 24;
-								$minutesLeft = floor($timeLeft/60) % 60;
-								$daysDisplay = "";
-								if ($daysLeft > 0) {
-									$daysDisplay .= $daysLeft . " days";
-								}
-								if ($hoursLeft > 0) {
-									$daysDisplay .= " ".$hoursLeft . " hours";
-								}
-								if ($minutesLeft > 0) {
-									$daysDisplay .= " ".$minutesLeft . " minutes";
-								}
-								$daysDisplay = trim($daysDisplay);
-							}
-							?>
-							<li>
-								<?php if ($expiration > 0 && $expirationDate > time()) { echo '<span title="' . htmlentities($daysDisplay) . '">' . date("m/d/" . chr(89), $realCron) . '</span>'; } else { echo '&nbsp;'; } ?>
-							</li>
-							<?php endforeach; ?>
-						</ul>
-						<?php else: ?>
-						<?php echo '&nbsp;'; ?>
-						<?php endif; ?>
-					</td>
-				</tr>
+								</nobr>
+							</td>
+							<td class="num"> <!-- expires -->
+								<?php if (count($userLevels) > 0): ?>
+								<ul style="margin:0; color:#aaaaaa;">
+									<?php foreach ($userLevels as $level): ?>
+									<?php
+									$daysDisplay = 0;
+									$realCron = null;
+									$expiration = intval($level->level_expiration);
+									$expirationDate = $level->level_timestamp + ($expiration*86400);
+									if ($expiration > 0 && $expirationDate > time()) {
+										$scheduledCron = mktime(date("H", $expirationDate), date("i", $nextCron), date("s", $nextCron), date("n", $expirationDate), date("j", $expirationDate), date(chr(89), $expirationDate));
+										if ($scheduledCron > $expirationDate) {
+											$realCron = $scheduledCron;
+										} else {
+											$realCron = mktime(date("H", $expirationDate)+1, date("i", $nextCron), date("s", $nextCron), date("n", $expirationDate), date("j", $expirationDate), date(chr(89), $expirationDate));
+										}
+										$timeLeft = $realCron - time();
+										$daysLeft = floor($timeLeft/86400);
+										$hoursLeft = floor($timeLeft/3600) % 24;
+										$minutesLeft = floor($timeLeft/60) % 60;
+										$daysDisplay = "";
+										if ($daysLeft > 0) {
+											$daysDisplay .= $daysLeft . " days";
+										}
+										if ($hoursLeft > 0) {
+											$daysDisplay .= " ".$hoursLeft . " hours";
+										}
+										if ($minutesLeft > 0) {
+											$daysDisplay .= " ".$minutesLeft . " minutes";
+										}
+										$daysDisplay = trim($daysDisplay);
+									}
+									?>
+									<li>
+										<?php if ($expiration > 0 && $expirationDate > time()) { echo '<span title="' . htmlentities($daysDisplay) . '">' . date("m/d/" . chr(89), $realCron) . '</span>'; } else { echo '&nbsp;'; } ?>
+									</li>
+									<?php endforeach; ?>
+								</ul>
+								<?php else: ?>
+								<?php echo '&nbsp;'; ?>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endif; ?>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
