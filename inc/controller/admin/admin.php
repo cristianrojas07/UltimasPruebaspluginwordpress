@@ -1526,14 +1526,15 @@ class MiembroPressAdmin {
 					<div class="col-md-1"></div>
 					<div class="col-md-10">
 						<div><p>Si eres nuevo en <?php echo get_option("blogname"); ?>, dale clic en "Registrar" para crear tu cuenta.</p></div>
-						<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión" para agregar esta compra a tu cuenta existente.</p></div>
+						<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión"</p></div>
+						<div><p>para agregar esta compra a tu cuenta existente.</p></div>
 					</div>
 				</div>
 				<br />
 				<div class="row">
 					<div class="col-md-1"></div>
 					<div class="col col-md-10">
-						<div class="btn-group-miembropress btn-group-block header-profile w-100">
+						<div class="btn-group-miembropress btn-group-block header-profile">
 							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary-miembropress" : "btn-danger-register" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
 							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger-register" : "btn-secondary-miembropress" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
 						</div>
@@ -1717,13 +1718,14 @@ class MiembroPressAdmin {
 											
 										
 										<?php endif; ?>
-
+										
 										<div class="row">
 											<div class="col-md-4 col-xs-4 col-sm-4 "></div>
 											<div class="col-md-8 col-xs-8 col-sm-8 ">
 												<input type="submit" class="btn-miembropress btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
 											</div>
 										</div>
+										<br /><br /><br /><br /><br /><br />
 								<?php
 								if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
 									<script type="text/javascript">
