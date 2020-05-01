@@ -1343,6 +1343,9 @@ class MiembroPressAdmin {
 								wp_redirect(home_url());
 								die();
 							}
+							if(class_exists('aiosc_Hooks')){
+								aiosc_Hooks::hook_save_user_miembropress($userID);
+							}
 							return intval($user->ID);
 						}
 					}
@@ -1369,6 +1372,10 @@ class MiembroPressAdmin {
 			}
 
 			$userID = intval($newUser);
+			
+			if(class_exists('aiosc_Hooks')){
+				aiosc_Hooks::hook_save_user_miembropress($userID);
+			}
 			$levelInfo = $miembropress->model->getLevel($level);
 			$nameLevel = $miembropress->model->getLevelName($level);
 
@@ -1514,94 +1521,105 @@ class MiembroPressAdmin {
 			}
 		}
 		?>
+		<!--
 		<?php if(!is_admin()): ?>
 			<script>
 				document.getElementById("masthead").style.display = "none";
 			</script>
-		<?php endif; ?>
+		<?php endif; ?>-->
+		<br><br>
 		<div id="iv-form3" class="col-md-12">
-			<?php if (!is_admin()): ?>
-				<br />
-				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-10">
-						<div><p>Si eres nuevo en <?php echo get_option("blogname"); ?>, dale clic en "Registrar" para crear tu cuenta.</p></div>
-						<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión"</p></div>
-						<div><p>para agregar esta compra a tu cuenta existente.</p></div>
-					</div>
-				</div>
-				<br />
-				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col col-md-10">
-						<div class="btn-group-miembropress btn-group-block header-profile">
-							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary-miembropress" : "btn-danger-register" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
-							<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger-register" : "btn-secondary-miembropress" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
-						</div>
-					</div>
-				</div>
-				<br />
-			<?php endif; ?>
-			<form method="post" class="form-horizontal">
-				<input type="hidden" name="action" value="miembropress_register">
-				<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
-					<input type="hidden" name="wp_http_referer" value="miembropress" />
-				<?php endif; ?>
-				<?php if (isset($miembropress->registerTemp)): ?><input type="hidden" name="miembropress_temp" value="<?php echo htmlentities($miembropress->registerTemp); ?>">
-				<?php elseif (isset($miembropress->registerLevel->level_hash)): ?><input type="hidden" name="miembropress_hash" value="<?php echo htmlentities($miembropress->registerLevel->level_hash); ?>">
-				<?php endif; ?>
-				<?php if (isset($miembropress->registerLevel->ID)): ?>
-					<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
-				<?php endif; ?>
-				<?php if (isset($_GET['trs'])): ?>
-					<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
-				<?php endif; ?>
-				<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
-					<div class="row">
-						<div class="col-md-1 "></div>
-						<div class="col-md-10 "> <div>
-							<?php if (isset($_GET["passwordSent"])): ?>
-								<blockquote>
-									<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
-								</blockquote>
-							<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
-								<blockquote>
-									<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
-								</blockquote>
-							<?php elseif (isset($_POST["miembropress_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
-								<blockquote>
-									<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
-									Abre en una nueva ventana, asegúrese de volver a esta página.</p>
-								</blockquote>
-							<?php endif; ?>
-							<div class="form-group row">
-								<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de usuario:</b></label>
-								<div class="col-md-8 has-success">
-									<input type="text" placeholder="Introduce tu nombre de usuario" class="form-control-miembropress ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="miembropress_password" class="col-md-4 control-label"><b>Contraseña:</b></label>
-								<div class="col-md-8 has-success">
-									<input type="password" placeholder="Introduce tu contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password1" id="miembropress_password" size="10">
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 col-xs-4 col-sm-4 "></div>
-								<div class="col-md-8 col-xs-8 col-sm-8 ">
-									<input type="submit" class="button-primary button-activate" value="   Ingresar   ">
-									<br /><br/>
-									<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
-								</div>
-							</div>
-				<?php else: ?>
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8">
 					<?php if (!is_admin()): ?>
-							<div id="miembropress_registration">
-								<div class="row">
-									<div class="col-md-1 "></div>
-									<div class="col-md-10 "> <div>
-								<?php $miembropress->social->registration(); ?>
+						<br />
+						<div class="row">
+							<div class="col-md-2"></div>
+							<div class="col-md-8">
+								<div><p>Si eres nuevo en <?php echo get_option("blogname"); ?>, dale clic en "Registrar" para crear tu cuenta.</p></div>
+								<div><p>Si ya tienes una cuenta en <?php echo get_option("blogname"); ?>, dale clic en "Iniciar Sesión" para agregar esta compra a tu cuenta existente.</p></div>
+							</div>
+							<div class="col-md-2"></div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col-md-2"></div>
+							<div class="col-md-8">
+								<div>
+									<div class="btn-group-miembropress btn-group-block header-profile w-100">
+										<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-secondary-miembropress" : "btn-danger-register" ?>"" href="<?php echo $nonExistingLink; ?>">Registrarse</a>
+										<a style="text-decoration:none" class="btn-miembropress btn-register <?php echo (isset($_GET["existing"]) && $_GET["existing"] == 1) ? "btn-danger-register" : "btn-secondary-miembropress" ?>" href="<?php echo $existingLink; ?>">Iniciar Sesión</a>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-2"></div>
+						</div>
+						<br />
 					<?php endif; ?>
+					<form method="post" class="form-horizontal">
+						<input type="hidden" name="action" value="miembropress_register">
+						<?php if (is_user_logged_in() && current_user_can("manage_options")): ?>
+							<input type="hidden" name="wp_http_referer" value="miembropress" />
+						<?php endif; ?>
+						<?php if (isset($miembropress->registerTemp)): ?><input type="hidden" name="miembropress_temp" value="<?php echo htmlentities($miembropress->registerTemp); ?>">
+						<?php elseif (isset($miembropress->registerLevel->level_hash)): ?><input type="hidden" name="miembropress_hash" value="<?php echo htmlentities($miembropress->registerLevel->level_hash); ?>">
+						<?php endif; ?>
+						<?php if (isset($miembropress->registerLevel->ID)): ?>
+						<input type="hidden" name="miembropress_register" value="<?php echo intval($miembropress->registerLevel->ID); ?>">
+						<?php endif; ?>
+						<?php if (isset($_GET['trs'])): ?>
+							<input type="hidden" name="hotmart_transaction" value="<?php echo $_GET['trs']; ?>">
+						<?php endif; ?>
+						<?php if (isset($_GET["existing"]) && $_GET["existing"] == 1): ?>
+							<div class="row">
+								<div class="col-md-2"></div>
+								<div class="col-md-8">
+									<?php if (isset($_GET["passwordSent"])): ?>
+										<blockquote>
+											<p>Nueva contraseña enviada. Por favor revise su correo electrónico y continúe llenando esta página.</p>
+										</blockquote>
+									<?php elseif (isset($validate["userAvailable"]) && $validate["userAvailable"] == true): ?>
+										<blockquote>
+											<p>El usuario no existe:<br /> <a href="<?php echo $nonExistingLink; ?>">Haz clic aquí para crear una nueva cuenta.</a></p>
+										</blockquote>
+									<?php elseif (isset($_POST["miembropress_password1"]) && isset($validate["passwordCorrect"]) && $validate["passwordCorrect"] == false): ?>
+										<blockquote>
+											<p>Contraseña incorrecta:<br /> <a href="<?php echo wp_lostpassword_url($lostPasswordLink); ?>">Haga clic aquí para recuperar su contraseña</a><br />
+											Abre en una nueva ventana, asegúrese de volver a esta página.</p>
+										</blockquote>
+									<?php endif; ?>
+									<div class="form-group row">
+										<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de usuario:</b></label>
+										<div class="col-md-8 has-success">
+											<input type="text" placeholder="Introduce tu nombre de usuario" class="form-control-miembropress ctrl-textbox valid" name="miembropress_username" id="miembropress_username" size="15" value="<?php echo htmlentities($username); ?>">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="miembropress_password" class="col-md-4 control-label"><b>Contraseña:</b></label>
+										<div class="col-md-8 has-success">
+											<input type="password" placeholder="Introduce tu contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password1" id="miembropress_password" size="10">
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 col-xs-4 col-sm-4 "></div>
+										<div class="col-md-8 col-xs-8 col-sm-8 ">
+											<input type="submit" class="btn-miembropress btn-info ctrl-btn button-primary button-activate" value="   Ingresar   ">
+											<br /><br/>
+											<a href="<?php echo wp_lostpassword_url(rawurlencode($lostPasswordLink)); ?>">¿Se te olvidó tu contraseña?</a>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2"></div>
+							</div>
+						<?php else: ?>
+							<?php if (!is_admin()): ?>
+								<div id="miembropress_registration">
+									<div class="row">
+										<div class="col-md-2"></div>
+										<div class="col-md-8">
+											<?php $miembropress->social->registration(); ?>
+											<?php endif; ?>
 											<div class="form-group row">
 												<label for="miembropress_username" class="col-md-4 control-label"><b>Nombre de Usuario:</b></label>
 												<div class="col-md-8 has-success">
@@ -1613,8 +1631,8 @@ class MiembroPressAdmin {
 													</div>
 												</div>
 											</div>
-											
-										
+													
+												
 											<div class="form-group row">
 												<label for="miembropress_firstname" class="col-md-4 control-label"><b>Nombre:</b></label>
 												<div class="col-md-8 has-success">
@@ -1624,7 +1642,7 @@ class MiembroPressAdmin {
 													</div>
 												</div>
 											</div>
-										
+												
 											<div class="form-group row">
 												<label for="miembropress_lastname" class="col-md-4 control-label"><b>Apellidos:</b></label>
 												<div class="col-md-8 has-success">
@@ -1634,7 +1652,7 @@ class MiembroPressAdmin {
 													</div>
 												</div>
 											</div>
-										
+												
 											<div class="form-group row">
 												<label for="miembropress_email" class="col-md-4 control-label"><b>Email:</b></label>
 												<div class="col-md-8 has-success">
@@ -1646,7 +1664,7 @@ class MiembroPressAdmin {
 													</div>
 												</div>
 											</div>
-										
+												
 											<div class="form-group row">
 												<label for="miembropress_password1" class="col-md-4 control-label"><b>Contraseña:</b></label>
 												<div class="col-md-8 has-success">
@@ -1664,17 +1682,17 @@ class MiembroPressAdmin {
 													<label for="miembropress_password2" class="col-md-4 control-label"><b>Repetir contraseña:</b></label>
 													<div class="col-md-8 has-success" id="div-password2">
 												<?php endif; ?>
-													<?php if (is_admin()): ?>
-														<input type="password" name="miembropress_password2" class="form-control-miembropress ctrl-textbox valid" id="miembropress_password2" size="25" placeholder="(Repetir contraseña)" />
-													<?php else: ?>
-														<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
-													<?php endif; ?>
-													<div class="desc">
-														<?php if (!$validate["empty"] && !$validate["password"]): ?><small>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br /></small>
-														<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?><small>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br /></small>
-														<?php else: ?><small>La contraseña debe tener al menos 6 caracteres (letras y números) de longitud.</small><?php endif; ?>
+														<?php if (is_admin()): ?>
+															<input type="password" name="miembropress_password2" class="form-control-miembropress ctrl-textbox valid" id="miembropress_password2" size="25" placeholder="(Repetir contraseña)" />
+														<?php else: ?>
+															<input type="password" placeholder="Vuelva a introducir la contraseña" class="form-control-miembropress ctrl-textbox valid" name="miembropress_password2" id="miembropress_password2" size="25" />
+														<?php endif; ?>
+														<div class="desc">
+															<?php if (!$validate["empty"] && !$validate["password"]): ?><small>ERROR: Su contraseña debe tener al menos 6 caracteres (letras y números).<br /></small>
+															<?php elseif (!$validate["empty"] && !$validate["passwordMatch"]): ?><small>ERROR: Las dos contraseñas que ingresaste deben coincidir.<br /></small>
+															<?php else: ?><small>La contraseña debe tener al menos 6 caracteres (letras y números) de longitud.</small><?php endif; ?>
+														</div>
 													</div>
-												</div>
 											</div>
 											<?php
 											$levelTable = $miembropress->model->getLevelTable();
@@ -1705,59 +1723,63 @@ class MiembroPressAdmin {
 												<?php
 											}
 											?>
-										
-										<?php if (is_admin()): ?>
-										
-											<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label>
-											<td style="vertical-align:middle;">
-												<select name="miembropress_level">
-													<?php foreach ($miembropress->model->getLevels() as $level): ?>
-													<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
-													<?php endforeach; ?>
-												</select>
+												
+											<?php if (is_admin()): ?>
 											
-										
-										<?php endif; ?>
-										
-										<div class="row">
-											<div class="col-md-4 col-xs-4 col-sm-4 "></div>
-											<div class="col-md-8 col-xs-8 col-sm-8 ">
-												<input type="submit" class="btn-miembropress btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+												<td style="vertical-align:middle;"><label for="miembropress_email"><b>Nivel de Membresia:</b></label>
+												<td style="vertical-align:middle;">
+													<select name="miembropress_level">
+														<?php foreach ($miembropress->model->getLevels() as $level): ?>
+														<option value="<?php echo intval($level->ID); ?>"><?php echo htmlentities($level->level_name); ?></option>
+														<?php endforeach; ?>
+													</select>
+												
+											
+											<?php endif; ?>
+												
+											<div class="row">
+												<div class="col-md-4 col-xs-4 col-sm-4 "></div>
+												<div class="col-md-8 col-xs-8 col-sm-8 ">
+													<input type="submit" class="btn-miembropress btn-info ctrl-btn button-primary button-activate" value="   Registrarse   ">
+												</div>
 											</div>
-										</div>
-										<br /><br /><br /><br /><br /><br />
-								<?php
-								if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
-									<script type="text/javascript">
-										//document.getElementById("miembropress_registration").style.display="none";
-									</script>
-								<?php endif; ?>
-								<script type="text/javascript">
-									<?php if (is_admin()): ?>document.getElementById("miembropress_password2").style.display="none";<?php endif; ?>
+											<br /><br /><br /><br /><br /><br />
+											<?php
+											if (!is_admin() && !isset($_REQUEST["existing"]) && count($_POST) == 0): ?>
+												<script type="text/javascript">
+													//document.getElementById("miembropress_registration").style.display="none";
+												</script>
+											<?php endif; ?>
+											<script type="text/javascript">
+												<?php if (is_admin()): ?>document.getElementById("miembropress_password2").style.display="none";<?php endif; ?>
 
-									function miembropress_suggest() {
-										var username = document.getElementById("miembropress_username");
-										var firstname = document.getElementById("miembropress_firstname");
-										var lastname = document.getElementById("miembropress_lastname");
+												function miembropress_suggest() {
+													var username = document.getElementById("miembropress_username");
+													var firstname = document.getElementById("miembropress_firstname");
+													var lastname = document.getElementById("miembropress_lastname");
 
-										if (!username || username.value == undefined || !firstname || firstname.value == undefined || !lastname || lastname.value == undefined) {
-											return;
-										}
+													if (!username || username.value == undefined || !firstname || firstname.value == undefined || !lastname || lastname.value == undefined) {
+														return;
+													}
 
-										var matches = username.value.split(" ");
-										if (!matches || !matches.length || matches.length != 2) { return; }
-										if (!matches[0].match(/^[A-Z]+$/i) || !matches[1].match(/^[A-Z]+$/i)) { return; }
-										if (firstname.value != "" || lastname.value != "") { return; }
+													var matches = username.value.split(" ");
+													if (!matches || !matches.length || matches.length != 2) { return; }
+													if (!matches[0].match(/^[A-Z]+$/i) || !matches[1].match(/^[A-Z]+$/i)) { return; }
+													if (firstname.value != "" || lastname.value != "") { return; }
 
-										firstname.value = matches[0];
-										lastname.value = matches[1];
-									}
-								</script>
-							</div>
-				<?php endif; ?>
-			</form>
-		</div>
-		<?php if (!is_admin()) { 
+													firstname.value = matches[0];
+													lastname.value = matches[1];
+												}
+											</script>
+										<div class="col-md-2"></div>
+									</div>
+						<?php endif; ?>
+					</form>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+		</div><div class="col-md-2"></div>
+		<?php if (!is_admin()) {
 			if ($globalFooter = $miembropress->model->levelSetting(-1, "footer")) { 
 				eval( ' ?> '.stripslashes($globalFooter).' <?php ' ); 
 			} 
